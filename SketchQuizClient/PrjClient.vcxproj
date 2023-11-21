@@ -145,7 +145,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Drawing.cpp" />
-    <ClCompile Include="DrawingAdd.cpp" />
     <ClCompile Include="PrjClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -156,7 +155,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drawing.h" />
-    <ClInclude Include="DrawingAdd.h" />
     <ClInclude Include="PrjClient.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
