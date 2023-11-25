@@ -7,6 +7,10 @@
 #include "Ranking.h"
 #include "Chatting.h"
 
+//* 지안 만든 헤더 *//
+#include "Home.h"
+#include "Login.h"
+
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창
 
@@ -44,3 +48,16 @@ static CHAT_MSG      g_chatmsg;       // 채팅 메시지
 static DRAWLINE_MSG  g_drawlinemsg;   // 선 그리기 메시지
 static int           g_drawcolor;     // 선 그리기 색상
 static ERASEPIC_MSG  g_erasepicmsg;   // 그림 지우기 메시지
+
+
+/* 지안 (2000번부터) */
+// 로그인 사용자 정의 상수
+#define ID_LOGIN_BUTTON			2000	// 로그인 버튼
+#define ID_ID_INPUT				2001	//로그인 input
+#define ID_DUPLICATION_BUTTON	2002	// 중복 확인 버튼
+#define ID_BACKHOME_BUTTON		2003	// 돌아가기 버튼
+
+// 윈도우 관련 전역 변수
+static HWND			hwndLogin;			// 로그인 윈도우 (2000..)
+static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
+
