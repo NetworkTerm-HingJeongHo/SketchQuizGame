@@ -4,6 +4,8 @@
 #include "Winsock.h"
 #include "PrjClient.h"
 #include "Drawing.h"
+#include "Ranking.h"
+#include "Chatting.h"
 
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창

@@ -233,6 +233,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case IDCANCEL:
 			closesocket(g_sock);
 			EndDialog(hDlg, IDCANCEL);
+
 			return TRUE;
 		}
 	}
@@ -414,6 +415,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	CHAT_MSG* chat_msg;
 	DRAWLINE_MSG* drawline_msg;
 	ERASEPIC_MSG* erasepic_msg;
+	char reciever[20], sender[20], tmp[5];
 
 	while (1) {
 		retval = recv(g_sock, (char*)&comm_msg, SIZE_TOT, MSG_WAITALL);
@@ -423,6 +425,11 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		if (comm_msg.type == TYPE_CHAT) {
 			chat_msg = (CHAT_MSG*)&comm_msg;
 			DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
+			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
+				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
+				sendFile(sender, reciever, chat_msg->msg);
+				
+			}
 		}
 		else if (comm_msg.type == TYPE_DRAWLINE) {
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
