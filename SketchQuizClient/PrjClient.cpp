@@ -20,6 +20,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	g_drawlinemsg.color = RGB(255, 0, 0);
 	g_erasepicmsg.type = TYPE_ERASEPIC;
 
+	// ===== 정호 =====
+	g_drawellipsemsg.type = TYPE_DRAWELLIPSE;
+	g_drawellipsemsg.color = RGB(255, 0, 0);
+	//
+
 	g_hInstance = hInstance;
 
 	// 메인 윈도우(첫 화면) 생성
@@ -320,6 +325,11 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		DeleteObject(hPen);
 		ReleaseDC(hWnd, hDC);
 		return 0;
+	// ======== 정호 ==========
+	case WM_DRAWELLIPSE:
+		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, x0, y0);
+		return 0;
+	//
 	case WM_ERASEPIC:
 		// 배경 비트맵 흰색으로 채움
 		SelectObject(hDCMem, GetStockObject(WHITE_BRUSH));
