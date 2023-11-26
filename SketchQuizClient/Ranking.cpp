@@ -1,6 +1,14 @@
 #include "stdafx.h"
 
-BOOL CALLBACK DlgRanking(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+
+void CreateRankDlg(HWND hWnd)
+{
+	g_hRankDlg = CreateDialog(g_hInstance, MAKEINTRESOURCE(IDD_DIALOG2), hWnd, DlgRanking);
+	ShowWindow(g_hRankDlg, SW_SHOW);
+	//g_bDialogVisible = true;
+}
+
+INT_PTR CALLBACK DlgRanking(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	static HWND hButtonExit;
 	static HWND hButtonStay;
 
@@ -42,9 +50,14 @@ BOOL CALLBACK DlgRanking(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		switch (LOWORD(wParam)) {
 		case IDC_EXIT:
 			EndDialog(hDlg, IDC_EXIT);
+			closesocket(g_sock);
+			//EndDialog(g_hChattingDlg, IDC_EXIT);
+			//ShowWindow(g_hChattingDlg, SW_HIDE);
+			//DestroyWindow(g_hChattingDlg);
 			return TRUE;
 		case IDOK:
 			EndDialog(hDlg, IDOK);
+			//CreateAndShowDialog(g_hChattingDlg);
 			return FALSE;
 
 		}

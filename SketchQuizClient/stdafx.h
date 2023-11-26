@@ -6,6 +6,7 @@
 #include "Drawing.h"
 #include "Ranking.h"
 #include "Chatting.h"
+#include "Game.h"
 
 //* 지안 만든 헤더 *//
 #include "Home.h"
@@ -28,6 +29,10 @@ static HWND          g_hBtnErasePic;  // [그림 지우기] 버튼
 static HWND          g_hDrawWnd;      // 그림을 그릴 윈도우
 static HWND			 g_hMainWindow;   // 처음 윈도우창 핸들
 static HWND			 g_hDialog;       // 그림판 다이어로그 핸들
+static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
+static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
+static HWND          g_hTimerStatus;  // 타이머 영역
+static HWND          g_hQuizStatus;   // 제시어 영역
 
 // 다이얼로그 상태 플래그
 static bool          g_bDialogVisible = false;

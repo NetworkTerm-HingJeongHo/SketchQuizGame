@@ -20,15 +20,17 @@
 #define IDC_DUMMY                       1014
 #define IDC_EDIT1ST                     1015
 #define IDC_EDIT3                       1018
+#define IDC_EDIT1                       1020
 #define IDC_EDIT5                       1023
 #define IDC_EDIT_ID1                    5016
 #define IDC_EXIT                        5017
+#define IDC_QUIZ                        5020
+#define IDC_TIMER                       5021
 #define IDC_EDIT2ND                     5021
 #define IDC_EDIT_ID2                    5022
 #define IDC_EDIT3RD                     5023
 #define IDC_EDIT_ID3                    5024
 #define IDC_EDITMY                      5025
-#define IDC_EDIT_ID4                    5026
 #define IDC_EDIT_MYID                   5026
 
 // Next default values for new objects
@@ -37,7 +39,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -115,6 +115,9 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnErasePic; // 전역 변수에도 저장
 	static HWND hStaticDummy;
 
+	static HWND hTimer;    // 타이머 표시 
+	static HWND hQuiz;     // 제시어 표시
+
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		// 컨트롤 핸들 얻기
@@ -136,6 +139,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hBtnErasePic = GetDlgItem(hDlg, IDC_ERASEPIC);
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
+		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);
+		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);
 
 		// 컨트롤 초기화
 		SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP4);
@@ -231,8 +236,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
 		case IDCANCEL:
-			closesocket(g_sock);
-			EndDialog(hDlg, IDCANCEL);
+			//closesocket(g_sock);
+			//EndDialog(hDlg, IDCANCEL);
+			//ShowWindow(g_hDialog, SW_HIDE);
+			CreateRankDlg(hDlg);
 
 			return TRUE;
 		}
