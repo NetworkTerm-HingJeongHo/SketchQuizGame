@@ -337,6 +337,123 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+// 로그인 윈도우 프로시저 (로그인 영역) -----------------------------------------------------------------------------------//
+LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lParam) {
+	// 로그인 윈도우 클래스 등록
+	WNDCLASS wcLogin = { 0 };
+	wcLogin.lpfnWndProc = LoginWndProc;
+	wcLogin.hInstance = g_hInstance;
+	wcLogin.lpszClassName = L"LoginWindowClass";
+	RegisterClass(&wcLogin);
+
+	switch (msg) {
+
+	case WM_CREATE:
+		// 로그인 화면 초기화 및 컨트롤 생성
+																								   //x,y,width,height
+		CreateWindow(L"STATIC", L"스케치퀴즈", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 500, 100, 300, 100, hwndLogin, NULL, NULL, NULL); // 스케치퀴즈 타이틀
+		CreateWindow(L"EDIT", L"", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 400, 300, 400, 40, hwndLogin, (HMENU)ID_ID_INPUT, NULL, NULL);
+		CreateWindow(L"BUTTON", L"중복확인", WS_VISIBLE | WS_CHILD, 850, 300, 100, 40, hwndLogin, (HMENU)ID_DUPLICATION_BUTTON, NULL, NULL); // 중복확인 버튼
+		CreateWindow(L"STATIC", L"사용 가능한 ID입니다!", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 400, 360, 400, 40, hwndLogin, NULL, NULL, NULL); // 사용 가능한 ID입니다!
+		CreateWindow(L"BUTTON", L"로그인", WS_VISIBLE | WS_CHILD, 400, 500, 500, 100, hwndLogin, (HMENU)ID_LOGIN_BUTTON, NULL, NULL); // 로그인 버튼
+		CreateWindow(L"BUTTON", L"돌아가기", WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwndLogin, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL);
+		break;
+
+	case WM_COMMAND:
+		// 버튼 클릭 이벤트 처리
+		switch (LOWORD(wParam)) {
+			// '돌아가기' 버튼 클릭 처리
+		case ID_BACKHOME_BUTTON:
+			// 로그인 창을 숨기고 메인창을 보이게 해야하는데 일단 로그인창 숨김
+			ShowWindow(hwndLogin, SW_HIDE);
+			break;
+
+		case ID_LOGIN_BUTTON: // 로그인 버튼을 클릭했을 시 
+			break;
+
+		case ID_ID_INPUT: // ID를 입력해주세요! 입력했을 시
+			break;
+
+		case ID_DUPLICATION_BUTTON: //중복 확인 버튼 클릭했을 시
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	default:
+		return DefWindowProc(hwndLogin, msg, wParam, lParam);
+	}
+	return 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------//
+
+//-------------------------------------홈 윈도우 프로시저 -----------------------------------------------------------------------//
+// 윈도우 프로시저
+LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+	// 홈 메인화면 윈도우 클래스 등록
+	WNDCLASS wcMain = { 0 };
+	wcMain.lpfnWndProc = MainWndProc;
+	wcMain.hInstance = g_hInstance;
+	wcMain.lpszClassName = L"MainWindowClass";
+	RegisterClass(&wcMain);
+
+	switch (msg) {
+
+	case WM_CREATE:
+		// 홈 메인 화면 초기화 및 컨트롤 생성
+// 
+																								   //x,y,width,height
+		CreateWindow(L"STATIC", L"id님 반갑습니다!", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 1000, 10, 200, 30, hwnd, NULL, NULL, NULL); // id 님 반갑습니다!
+		CreateWindow(L"STATIC", L"공자사항 내용", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 50, 50, 1150, 100, hwnd, NULL, NULL, NULL); // 스케치퀴즈 타이틀
+
+		CreateWindow(L"BUTTON", L"공지 전송", WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 공지 전송
+
+		CreateWindow(L"BUTTON", L"채널 A 입장", WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 채널 A 입장
+		CreateWindow(L"BUTTON", L"채널 B 입장", WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 채널 B 입장
+
+		//CreateWindow(L"BUTTON", L"방만들기", WS_VISIBLE | WS_CHILD, 282, 600, 320, 67, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 방 만들기
+		CreateWindow(L"BUTTON", L"랜덤입장", WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 랜덤 입장
+
+
+		CreateWindow(L"BUTTON", L"돌아가기", WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 돌아가기
+		break;
+
+	case WM_COMMAND:
+		// 버튼 클릭 이벤트 처리
+		switch (LOWORD(wParam)) {
+			// '돌아가기' 버튼 클릭 처리
+		case ID_BACKHOME_BUTTON:
+			// 로그인 창을 숨기고 메인 창을 다시 보이게 함
+		/*	ShowWindow(hwnd, SW_SHOW);*/
+			ShowWindow(hwnd, SW_HIDE);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	default:
+		return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+	return 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------//
+
+
 // 소켓 통신 스레드 함수(1) - 메인
 DWORD WINAPI ClientMain(LPVOID arg)
 {
