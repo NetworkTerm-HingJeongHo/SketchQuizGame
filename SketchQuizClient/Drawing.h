@@ -5,7 +5,9 @@ void CreateAndShowDialog(HWND hWnd);
 
 
 // ======================= ÁöÀ± =======================
-
+void SelectPenColor(DRAWLINE_MSG* g_drawlinemsg);
+void AddLineWidthOption(HWND hDlg);
+void SelectLineWidth(HWND hDlg, DRAWLINE_MSG* g_drawlinemsg);
 
 
 
