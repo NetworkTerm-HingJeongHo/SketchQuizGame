@@ -12,6 +12,9 @@
 #include "Home.h"
 #include "Login.h"
 
+// ====== 정호 ======
+#include "math.h"
+
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창
 
@@ -62,7 +65,19 @@ static ERASEPIC_MSG  g_erasepicmsg;   // 그림 지우기 메시지
 #define ID_DUPLICATION_BUTTON	2002	// 중복 확인 버튼
 #define ID_BACKHOME_BUTTON		2003	// 돌아가기 버튼
 
+// 로그인 관련 전역 변수
+extern _TCHAR		ID_NICKNAME[256];	// 현재 사용자 아이디 전역변수
+
+// 홈 사용자 정의 상수
+#define ID_CHANNEL_A_BUTTON		2500	// 채널 A 버튼
+#define ID_CHANNEL_B_BUTTON		2501	// 채널 B 버튼
+#define ID_CHANNEL_RANDOM_BUTTON 2502	// 랜덤 접속 버튼
+
 // 윈도우 관련 전역 변수
 static HWND			hwndLogin;			// 로그인 윈도우 (2000..)
 static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
 
+
+// ======= 정호 =========
+static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지
+//
