@@ -9,6 +9,9 @@
 #include "Home.h"
 #include "Login.h"
 
+// ====== 정호 ======
+#include "math.h"
+
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창
 
@@ -59,3 +62,6 @@ static ERASEPIC_MSG  g_erasepicmsg;   // 그림 지우기 메시지
 static HWND			hwndLogin;			// 로그인 윈도우 (2000..)
 static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
 
+// ======= 정호 =========
+static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지
+//
