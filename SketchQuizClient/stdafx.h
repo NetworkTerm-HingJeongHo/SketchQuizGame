@@ -5,9 +5,6 @@
 #include "PrjClient.h"
 #include "Drawing.h"
 
-/*추가로 사용하는 라이브러리*/
-#include "math.h"
-
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창
 
@@ -45,4 +42,3 @@ static CHAT_MSG      g_chatmsg;       // 채팅 메시지
 static DRAWLINE_MSG  g_drawlinemsg;   // 선 그리기 메시지
 static int           g_drawcolor;     // 선 그리기 색상
 static ERASEPIC_MSG  g_erasepicmsg;   // 그림 지우기 메시지
-static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지

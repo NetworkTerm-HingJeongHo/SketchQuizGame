@@ -4,12 +4,8 @@
 #define TYPE_DRAWLINE 1001              // 메시지 타입: 선 그리기
 #define TYPE_ERASEPIC 1002              // 메시지 타입: 그림 지우기
 
-// 정호 //
-#define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
-
 #define WM_DRAWLINE (WM_USER+1)         // 사용자 정의 윈도우 메시지(1)
 #define WM_ERASEPIC (WM_USER+2)         // 사용자 정의 윈도우 메시지(2)
-#define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
 
 #define SIZE_TOT 256                    // 전송 패킷(헤더 + 데이터) 전체 크기
 #define SIZE_DAT (SIZE_TOT-sizeof(int)) // 헤더를 제외한 데이터 부분만의 크기
@@ -40,17 +36,6 @@ typedef struct _DRAWLINE_MSG
 	int  x1, y1;
 	char dummy[SIZE_TOT - 6 * sizeof(int)];
 } DRAWLINE_MSG;
-
-// 타원 그리기 메시지 형식
-// sizeof(DRAWELLIPSE_MSG) == 256
-typedef struct _DRAWELLIPSE_MSG
-{
-	int type;
-	int color;
-	int x0, y0;
-	int x1, y1;
-	char dummy[SIZE_TOT - 6 * sizeof(int)];
-} DRAWELLIPSE_MSG;
 
 // 그림 지우기 메시지 형식
 // sizeof(ERASEPIC_MSG) == 256

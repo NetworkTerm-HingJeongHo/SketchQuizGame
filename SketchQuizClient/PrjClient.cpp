@@ -20,10 +20,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	g_drawlinemsg.color = RGB(255, 0, 0);
 	g_erasepicmsg.type = TYPE_ERASEPIC;
 
-	// 타원 그리기 메시지 초기화
-	g_drawellipsemsg.type = TYPE_DRAWELLIPSE;
-	g_drawellipsemsg.color = RGB(255, 0, 0);
-
 	g_hInstance = hInstance;
 
 	// 메인 윈도우(첫 화면) 생성
@@ -256,12 +252,6 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	static int x1, y1;
 	static bool bDrawing;
 
-	// ====== 정호 ======
-	int startX, startY, endX, endY, centerX, centerY;
-	int ellipseAxisX, ellipseAxisY, newX, newY, oldX, oldY;
-	double angle;
-	//
-
 	switch (uMsg) {
 	case WM_SIZE:
 		// 화면 출력용 DC 핸들 얻기
@@ -304,7 +294,6 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			g_drawlinemsg.x1 = x1;
 			g_drawlinemsg.y1 = y1;
 			send(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
-
 			// 마우스 클릭 좌표 갱신
 			x0 = x1;
 			y0 = y1;
@@ -327,60 +316,6 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		MoveToEx(hDCMem, LOWORD(wParam), HIWORD(wParam), NULL);
 		LineTo(hDCMem, LOWORD(lParam), HIWORD(lParam));
 		SelectObject(hDCMem, hOldPen);
-		// 화면 출력용 DC와 Pen 핸들 해제
-		DeleteObject(hPen);
-		ReleaseDC(hWnd, hDC);
-		return 0;
-	case WM_DRAWELLIPSE:
-		hDC = GetDC(hWnd);
-		hPen = CreatePen(PS_SOLID, 3, g_drawcolor);
-
-		startX = x0;
-		startY = y0;
-		endX = LOWORD(lParam);
-		endY = HIWORD(lParam);
-
-		centerX = (x0 + endX) / 2;
-		centerY = (y0 + endY) / 2;
-
-		ellipseAxisX = centerX - startX;
-		ellipseAxisY = centerY - startY;
-
-		oldX = endX;
-		oldY = centerY;
-
-		// 윈도우 DC에 타원 출력
-		hOldPen = (HPEN)SelectObject(hDC, hPen);
-		for (int i = 0; i <= 360; i++)
-		{
-			angle = 2 * 3.1416 * i / 360;
-			newX = centerX + ellipseAxisX * cos(angle);
-			newY = centerY + ellipseAxisY * sin(angle);
-
-			MoveToEx(hDC, oldX, oldY, NULL);
-			LineTo(hDC, newX, newY);
-
-			oldX = newX;
-			oldY = newY;
-		}
-
-		SelectObject(hDC, hOldPen);
-
-		hOldPen = (HPEN)SelectObject(hDCMem, hPen);
-		for (int i = 0; i <= 360; i++)
-		{
-			angle = 2 * 3.1416 * i / 360;
-			newX = centerX + ellipseAxisX * cos(angle);
-			newY = centerY + ellipseAxisY * sin(angle);
-
-			MoveToEx(hDC, oldX, oldY, NULL);
-			LineTo(hDC, newX, newY);
-
-			oldX = newX;
-			oldY = newY;
-		}
-		SelectObject(hDCMem, hOldPen);
-
 		// 화면 출력용 DC와 Pen 핸들 해제
 		DeleteObject(hPen);
 		ReleaseDC(hWnd, hDC);
