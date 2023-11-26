@@ -27,6 +27,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	g_hInstance = hInstance;
 
+
+	//-------지안--------//
+	// 홈 메인화면 윈도우 클래스 등록
+	WNDCLASS wcMain = { 0 };
+	wcMain.lpfnWndProc = HomeWndProc;
+	wcMain.hInstance = hInstance;
+	wcMain.lpszClassName = _T("MainWindowClass");
+	RegisterClass(&wcMain);
+
+	// 로그인 윈도우 클래스 등록
+	WNDCLASS wcLogin = { 0 };
+	wcLogin.lpfnWndProc = LoginWndProc;
+	wcLogin.hInstance = hInstance;
+	wcLogin.lpszClassName = _T("LoginWindowClass");
+	RegisterClass(&wcLogin);
+
+	//------------------//
+	
 	// 메인 윈도우(첫 화면) 생성
 	WNDCLASSEX wcex = { sizeof(WNDCLASSEX), CS_HREDRAW | CS_VREDRAW, MainWndProc, 0, 0, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("MainWindow"), NULL };
 	RegisterClassEx(&wcex);
@@ -91,6 +109,19 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			// 빈 윈도우창 숨기기
 			ShowWindow(hWnd, SW_HIDE);
 		}
+		//---지안 ----//
+		else if (LOWORD(wParam) == 2) // '로그인' 버튼 클릭
+		{
+			CreateAndShowWindow_Login(hWnd);
+		}
+
+		else if (LOWORD(wParam) == 3) // '메인' 버튼 클릭
+		{
+			CreateAndShowWindow_Home(hWnd);
+
+		}
+
+		//-----------//
 		break;
 	}
 	case WM_DESTROY:
@@ -349,24 +380,24 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 // 로그인 윈도우 프로시저 (로그인 영역) -----------------------------------------------------------------------------------//
 LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lParam) {
-	// 로그인 윈도우 클래스 등록
-	WNDCLASS wcLogin = { 0 };
-	wcLogin.lpfnWndProc = LoginWndProc;
-	wcLogin.hInstance = g_hInstance;
-	wcLogin.lpszClassName = L"LoginWindowClass";
-	RegisterClass(&wcLogin);
+	//// 로그인 윈도우 클래스 등록
+	//WNDCLASS wcLogin = { 0 };
+	//wcLogin.lpfnWndProc = LoginWndProc;
+	//wcLogin.hInstance = g_hInstance;
+	//wcLogin.lpszClassName = L"LoginWindowClass";
+	//RegisterClass(&wcLogin);
 
 	switch (msg) {
 
 	case WM_CREATE:
 		// 로그인 화면 초기화 및 컨트롤 생성
 																								   //x,y,width,height
-		CreateWindow(L"STATIC", L"스케치퀴즈", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 500, 100, 300, 100, hwndLogin, NULL, NULL, NULL); // 스케치퀴즈 타이틀
-		CreateWindow(L"EDIT", L"", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 400, 300, 400, 40, hwndLogin, (HMENU)ID_ID_INPUT, NULL, NULL);
-		CreateWindow(L"BUTTON", L"중복확인", WS_VISIBLE | WS_CHILD, 850, 300, 100, 40, hwndLogin, (HMENU)ID_DUPLICATION_BUTTON, NULL, NULL); // 중복확인 버튼
-		CreateWindow(L"STATIC", L"사용 가능한 ID입니다!", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 400, 360, 400, 40, hwndLogin, NULL, NULL, NULL); // 사용 가능한 ID입니다!
-		CreateWindow(L"BUTTON", L"로그인", WS_VISIBLE | WS_CHILD, 400, 500, 500, 100, hwndLogin, (HMENU)ID_LOGIN_BUTTON, NULL, NULL); // 로그인 버튼
-		CreateWindow(L"BUTTON", L"돌아가기", WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwndLogin, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL);
+		CreateWindow(_T("STATIC"), _T("스케치퀴즈"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 500, 100, 300, 100, hwndLogin, NULL, NULL, NULL); // 스케치퀴즈 타이틀
+		CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 400, 300, 400, 40, hwndLogin, (HMENU)ID_ID_INPUT, NULL, NULL);
+		CreateWindow(_T("BUTTON"), _T("중복확인"), WS_VISIBLE | WS_CHILD, 850, 300, 100, 40, hwndLogin, (HMENU)ID_DUPLICATION_BUTTON, NULL, NULL); // 중복확인 버튼
+		CreateWindow(_T("STATIC"), _T("사용 가능한 ID입니다!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 400, 360, 400, 40, hwndLogin, NULL, NULL, NULL); // 사용 가능한 ID입니다!
+		CreateWindow(_T("BUTTON"), _T("로그인"), WS_VISIBLE | WS_CHILD, 400, 500, 500, 100, hwndLogin, (HMENU)ID_LOGIN_BUTTON, NULL, NULL); // 로그인 버튼
+		CreateWindow(_T("BUTTON"), _T("돌아가기"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwndLogin, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL);
 		break;
 
 	case WM_COMMAND:
@@ -408,12 +439,12 @@ LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lP
 // 윈도우 프로시저
 LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-	// 홈 메인화면 윈도우 클래스 등록
-	WNDCLASS wcMain = { 0 };
-	wcMain.lpfnWndProc = MainWndProc;
-	wcMain.hInstance = g_hInstance;
-	wcMain.lpszClassName = L"MainWindowClass";
-	RegisterClass(&wcMain);
+	//// 홈 메인화면 윈도우 클래스 등록
+	//WNDCLASS wcMain = { 0 };
+	//wcMain.lpfnWndProc = MainWndProc;
+	//wcMain.hInstance = g_hInstance;
+	//wcMain.lpszClassName = L"MainWindowClass";
+	//RegisterClass(&wcMain);
 
 	switch (msg) {
 
@@ -421,19 +452,19 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 		// 홈 메인 화면 초기화 및 컨트롤 생성
 // 
 																								   //x,y,width,height
-		CreateWindow(L"STATIC", L"id님 반갑습니다!", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 1000, 10, 200, 30, hwnd, NULL, NULL, NULL); // id 님 반갑습니다!
-		CreateWindow(L"STATIC", L"공자사항 내용", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 50, 50, 1150, 100, hwnd, NULL, NULL, NULL); // 스케치퀴즈 타이틀
+		CreateWindow(_T("STATIC"), _T("id님 반갑습니다!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 1000, 10, 200, 30, hwnd, NULL, NULL, NULL); // id 님 반갑습니다!
+		CreateWindow(_T("STATIC"), _T("공자사항 내용"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 50, 50, 1150, 100, hwnd, NULL, NULL, NULL); // 스케치퀴즈 타이틀
 
-		CreateWindow(L"BUTTON", L"공지 전송", WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 공지 전송
+		CreateWindow(_T("BUTTON"), _T("공지 전송"), WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 공지 전송
 
-		CreateWindow(L"BUTTON", L"채널 A 입장", WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 채널 A 입장
-		CreateWindow(L"BUTTON", L"채널 B 입장", WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 채널 B 입장
+		CreateWindow(_T("BUTTON"), _T("채널 A 입장"), WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 채널 A 입장
+		CreateWindow(_T("BUTTON"), _T("채널 B 입장"), WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 채널 B 입장
 
 		//CreateWindow(L"BUTTON", L"방만들기", WS_VISIBLE | WS_CHILD, 282, 600, 320, 67, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 방 만들기
-		CreateWindow(L"BUTTON", L"랜덤입장", WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 랜덤 입장
+		CreateWindow(_T("BUTTON"), _T("랜덤입장"), WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 랜덤 입장
 
 
-		CreateWindow(L"BUTTON", L"돌아가기", WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 돌아가기
+		CreateWindow(_T("BUTTON"), _T("돌아가기"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 돌아가기
 		break;
 
 	case WM_COMMAND:
