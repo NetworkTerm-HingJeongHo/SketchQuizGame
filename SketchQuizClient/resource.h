@@ -1,8 +1,9 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++¿¡¼­ »ı¼ºÇÑ Æ÷ÇÔ ÆÄÀÏÀÔ´Ï´Ù.
-// PrjClient.rc¿¡¼­ »ç¿ëµÇ°í ÀÖ½À´Ï´Ù.
+// Microsoft Visual C++ì—ì„œ ìƒì„±í•œ í¬í•¨ íŒŒì¼ì…ë‹ˆë‹¤.
+// PrjClient.rcì—ì„œ ì‚¬ìš©ë˜ê³  ìˆìŠµë‹ˆë‹¤.
 //
 #define IDD_DIALOG1                     101
+#define IDD_DIALOG2                     103
 #define IDC_ISIPV6                      1001
 #define IDC_ISUDP                       1002
 #define IDC_IPADDR                      1003
@@ -17,12 +18,26 @@
 #define IDC_COLORBLUE                   1012
 #define IDC_SENDFILE                    1013
 #define IDC_DUMMY                       1014
+#define IDC_EDIT1ST                     1015
+#define IDC_EDIT3                       1018
+#define IDC_EDIT1                       1020
+#define IDC_EDIT5                       1023
+#define IDC_EDIT_ID1                    5016
+#define IDC_EXIT                        5017
+#define IDC_QUIZ                        5020
+#define IDC_TIMER                       5021
+#define IDC_EDIT2ND                     5021
+#define IDC_EDIT_ID2                    5022
+#define IDC_EDIT3RD                     5023
+#define IDC_EDIT_ID3                    5024
+#define IDC_EDITMY                      5025
+#define IDC_EDIT_MYID                   5026
 
-// =========== ÁöÀ± ===========
+// =========== ì§€ìœ¤ ===========
 #define IDC_PENCOLOR                    3100
 #define IDC_LINEWIDTH                   3101
 
-// =========== Á¤È£ ===========
+// =========== ì •í˜¸ ===========
 #define IDC_FIGURE                      4100
 
 // Next default values for new objects
