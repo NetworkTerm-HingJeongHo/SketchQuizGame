@@ -157,6 +157,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnPenColor;
 	static HWND hLineWidth;
 
+	//gameStart();
+
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		// ì»¨íŠ¸ë¡¤ í•¸ë“¤ ì–»ê¸°
@@ -178,8 +180,9 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hBtnErasePic = GetDlgItem(hDlg, IDC_ERASEPIC);
 		g_hBtnErasePic = hBtnErasePic; // ì „ì—­ ë³€ìˆ˜ì— ì €ìž¥
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
-		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);
-		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);
+
+		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);  // Å¸ÀÌ¸Ó Ç¥½ÃÇÏ´Â EditText ºÎºÐ °¡Á®¿À±â
+		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);    // Á¦½Ã¾î Ç¥½ÃÇÏ´Â EditText ºÎºÐ °¡Á®¿À±â
 
 		// ========= ì§€ìœ¤ =========
 		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
@@ -648,7 +651,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			DisplayText("[ë°›ì€ ë©”ì‹œì§€] %s\r\n", chat_msg->msg);
 			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
 				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
-				sendFile(sender, reciever, chat_msg->msg);
+				MySendFile(sender, reciever, chat_msg->msg);
 				
 			}
 		}

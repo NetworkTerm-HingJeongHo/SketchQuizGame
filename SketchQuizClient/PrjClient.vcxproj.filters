@@ -33,10 +33,13 @@
     <ClCompile Include="Chatting.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Login.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Home.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Login.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,10 +65,13 @@
     <ClInclude Include="Chatting.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Login.h">
+    <ClInclude Include="Game.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Home.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Login.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

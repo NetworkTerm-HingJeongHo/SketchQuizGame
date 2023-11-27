@@ -1,11 +1,6 @@
 #include "stdafx.h"
 
-
-void SendWhisper(char* msg, char* reciever, char& sender){
-
-}
-
-void sendFile(char* senderName, char* reciverName, char* msg) {
+void MySendFile(char* senderName, char* reciverName, char* msg) {
 
 	FILE* fp;
 	//char* fileName, *tmp;

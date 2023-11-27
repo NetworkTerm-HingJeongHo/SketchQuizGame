@@ -1,5 +1,3 @@
-#pragma once;
+#pragma once
 
-#define ANSWER "»ç°ú"
-
-void sendFile(char* senderName, char* reciverName, char*);
+void MySendFile(char* senderName, char* reciverName, char* msg);
