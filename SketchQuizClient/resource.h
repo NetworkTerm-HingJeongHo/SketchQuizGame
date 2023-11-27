@@ -17,9 +17,13 @@
 #define IDC_COLORBLUE                   1012
 #define IDC_SENDFILE                    1013
 #define IDC_DUMMY                       1014
-#define IDC_PENCOLOR                    1015
-#define IDC_LINEWIDTH                   1016
-#define IDC_FIGURE                      1017
+
+// =========== ÁöÀ± ===========
+#define IDC_PENCOLOR                    3100
+#define IDC_LINEWIDTH                   3101
+
+// =========== Á¤È£ ===========
+#define IDC_FIGURE                      4100
 
 // Next default values for new objects
 // 
