@@ -153,6 +153,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hTimer;    // 타이머 표시 
 	static HWND hQuiz;     // 제시어 표시
 
+	//gameStart();
+
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		// 컨트롤 핸들 얻기
@@ -174,8 +176,9 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hBtnErasePic = GetDlgItem(hDlg, IDC_ERASEPIC);
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
-		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);
-		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);
+
+		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);  // 타이머 표시하는 EditText 부분 가져오기
+		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);    // 제시어 표시하는 EditText 부분 가져오기
 
 		// 컨트롤 초기화
 		SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP4);
@@ -619,7 +622,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
 			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
 				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
-				sendFile(sender, reciever, chat_msg->msg);
+				MySendFile(sender, reciever, chat_msg->msg);
 				
 			}
 		}

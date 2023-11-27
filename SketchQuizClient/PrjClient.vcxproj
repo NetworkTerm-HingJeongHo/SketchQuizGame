@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="Chatting.cpp" />
     <ClCompile Include="Drawing.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Home.cpp" />
     <ClCompile Include="Login.cpp" />
     <ClCompile Include="PrjClient.cpp">
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Chatting.h" />
     <ClInclude Include="Drawing.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Home.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="PrjClient.h" />
