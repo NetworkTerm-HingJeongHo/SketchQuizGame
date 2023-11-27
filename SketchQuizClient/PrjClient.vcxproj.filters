@@ -27,7 +27,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Ranking.cpp">
+    <ClCompile Include="Login.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Home.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Chatting.cpp">
@@ -36,10 +39,7 @@
     <ClCompile Include="Game.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Home.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Login.cpp">
+    <ClCompile Include="Ranking.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,7 +59,10 @@
     <ClInclude Include="PrjClient.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Ranking.h">
+    <ClInclude Include="Login.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Home.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Chatting.h">
@@ -68,10 +71,7 @@
     <ClInclude Include="Game.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Home.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Login.h">
+    <ClInclude Include="Ranking.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
