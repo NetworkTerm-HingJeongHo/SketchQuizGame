@@ -150,10 +150,15 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnErasePic; // 전역 변수에도 저장
 	static HWND hStaticDummy;
 
+	// ========= 연경 =========
 	static HWND hTimer;    // 타이머 표시 
 	static HWND hQuiz;     // 제시어 표시
 
 	//gameStart();
+
+	// ========= 지윤 =========
+	static HWND hBtnPenColor;
+	static HWND hLineWidth;
 
 	switch (uMsg) {
 	case WM_INITDIALOG:
@@ -177,8 +182,16 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
 
+		// ========= 연경 =========
 		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);  // 타이머 표시하는 EditText 부분 
-		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);    // 제시어 표시하는 EditText 부분 
+		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);    // 제시어 표시하는 EditText 부분
+
+		// ========= 지윤 =========
+		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
+		g_hBtnPenColor = hBtnPenColor; // 전역 변수에 저장
+
+		hLineWidth = GetDlgItem(hDlg, IDC_LINEWIDTH);
+		g_hLineWidth = hLineWidth; // 전역 변수에 저장
 
 		// 컨트롤 초기화
 		SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP4);
@@ -190,6 +203,12 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(hColorGreen, BM_SETCHECK, BST_UNCHECKED, 0);
 		SendMessage(hColorBlue, BM_SETCHECK, BST_UNCHECKED, 0);
 		EnableWindow(g_hBtnErasePic, FALSE);
+
+		// ========= 지윤 =========
+		EnableWindow(g_hBtnPenColor, FALSE);
+		EnableWindow(g_hLineWidth, FALSE);
+
+		AddLineWidthOption(hDlg);
 
 		// 윈도우 클래스 등록
 		WNDCLASS wndclass;
@@ -246,6 +265,11 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			EnableWindow(g_hBtnSendMsg, TRUE);
 			SetFocus(hEditMsg);
 			EnableWindow(g_hBtnErasePic, TRUE);
+
+			// ========= 지윤 =========
+			EnableWindow(g_hBtnPenColor, TRUE);
+			EnableWindow(g_hLineWidth, TRUE);
+
 			return TRUE;
 		case IDC_SENDFILE:
 			MessageBox(NULL, _T("아직 구현하지 않았습니다."), _T("알림"), MB_ICONERROR);
@@ -278,7 +302,13 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//EndDialog(hDlg, IDCANCEL);
 			//ShowWindow(g_hDialog, SW_HIDE);
 			CreateRankDlg(hDlg);
-
+			return TRUE;
+		//	======== 지윤 ==========
+		case IDC_PENCOLOR:
+			SelectPenColor(&g_drawlinemsg);
+			return TRUE;
+		case IDC_LINEWIDTH:
+			SelectLineWidth(hDlg, &g_drawlinemsg);
 			return TRUE;
 		}
 	}
@@ -351,7 +381,7 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	case WM_DRAWLINE:
 		// 화면 출력용 DC와 Pen 핸들 얻기
 		hDC = GetDC(hWnd);
-		hPen = CreatePen(PS_SOLID, 3, g_drawcolor);
+		hPen = CreatePen(PS_SOLID, g_lineWidth, g_drawcolor);
 		// 윈도우 화면에 1차로 그리기
 		hOldPen = (HPEN)SelectObject(hDC, hPen);
 		MoveToEx(hDC, LOWORD(wParam), HIWORD(wParam), NULL);
@@ -623,11 +653,14 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
 				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
 				MySendFile(sender, reciever, chat_msg->msg);
-				
+
 			}
 		}
 		else if (comm_msg.type == TYPE_DRAWLINE) {
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
+			// ============ 지윤 ============
+			g_lineWidth = drawline_msg->width;
+			// ==============================
 			g_drawcolor = drawline_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWLINE,
 				MAKEWPARAM(drawline_msg->x0, drawline_msg->y0),

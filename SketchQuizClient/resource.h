@@ -1,9 +1,8 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ÏóêÏÑú ÏÉùÏÑ±Ìïú Ìè¨Ìï® ÌååÏùºÏûÖÎãàÎã§.
-// PrjClient.rcÏóêÏÑú ÏÇ¨Ïö©ÎêòÍ≥† ÏûàÏäµÎãàÎã§.
+// Microsoft Visual C++ø°º≠ ª˝º∫«— ∆˜«‘ ∆ƒ¿œ¿‘¥œ¥Ÿ.
+// PrjClient.rcø°º≠ ªÁøÎµ«∞Ì ¿÷Ω¿¥œ¥Ÿ.
 //
 #define IDD_DIALOG1                     101
-#define IDD_DIALOG2                     103
 #define IDC_ISIPV6                      1001
 #define IDC_ISUDP                       1002
 #define IDC_IPADDR                      1003
@@ -18,27 +17,30 @@
 #define IDC_COLORBLUE                   1012
 #define IDC_SENDFILE                    1013
 #define IDC_DUMMY                       1014
-#define IDC_EDIT1ST                     1015
-#define IDC_EDIT3                       1018
-#define IDC_EDIT1                       1020
-#define IDC_EDIT5                       1023
-#define IDC_EDIT_ID1                    5016
-#define IDC_EXIT                        5017
-#define IDC_QUIZ                        5020
-#define IDC_TIMER                       5021
-#define IDC_EDIT2ND                     5021
-#define IDC_EDIT_ID2                    5022
-#define IDC_EDIT3RD                     5023
-#define IDC_EDIT_ID3                    5024
-#define IDC_EDITMY                      5025
-#define IDC_EDIT_MYID                   5026
 
-// =========== ÏßÄÏú§ ===========
+// =========== ¡ˆ¿± ===========
 #define IDC_PENCOLOR                    3100
 #define IDC_LINEWIDTH                   3101
 
-// =========== Ï†ïÌò∏ ===========
+// =========== ¡§»£ ===========
 #define IDC_FIGURE                      4100
+
+// =========== ø¨∞Ê ===========
+#define IDD_DIALOG2                     5101
+#define IDC_EDIT1ST                     5102
+#define IDC_EDIT3                       5103
+#define IDC_EDIT1                       5104
+#define IDC_EDIT5                       5105
+#define IDC_EDIT_ID1                    5106
+#define IDC_EXIT                        5107
+#define IDC_QUIZ                        5108
+#define IDC_TIMER                       5109
+#define IDC_EDIT2ND                     5110
+#define IDC_EDIT_ID2                    5111
+#define IDC_EDIT3RD                     5112
+#define IDC_EDIT_ID3                    5113
+#define IDC_EDITMY                      5114
+#define IDC_EDIT_MYID                   5115
 
 // Next default values for new objects
 // 

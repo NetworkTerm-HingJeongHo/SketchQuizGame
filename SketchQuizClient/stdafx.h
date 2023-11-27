@@ -3,6 +3,8 @@
 /*만든 헤더*/
 #include "Winsock.h"
 #include "PrjClient.h"
+
+// ====== 지윤 ======
 #include "Drawing.h"
 
 //* 지안 만든 헤더 *//
@@ -17,6 +19,7 @@
 #include "Chatting.h"
 #include "Game.h"
 #include <time.h>
+
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창
 
@@ -34,6 +37,8 @@ static HWND          g_hBtnErasePic;  // [그림 지우기] 버튼
 static HWND          g_hDrawWnd;      // 그림을 그릴 윈도우
 static HWND			 g_hMainWindow;   // 처음 윈도우창 핸들
 static HWND			 g_hDialog;       // 그림판 다이어로그 핸들
+
+// ============= 연경 =============
 static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
 static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
 static HWND          g_hTimerStatus;  // 타이머 영역
