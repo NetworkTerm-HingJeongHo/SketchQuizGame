@@ -37,6 +37,10 @@ static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
 static HWND          g_hTimerStatus;  // 타이머 영역
 static HWND          g_hQuizStatus;   // 제시어 영역
 
+// ============= 지윤 =============
+static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
+static HWND			 g_hLineWidth;    // 선 굵기 콤보박스
+
 // 다이얼로그 상태 플래그
 static bool          g_bDialogVisible = false;
 
@@ -56,6 +60,9 @@ static CHAT_MSG      g_chatmsg;       // 채팅 메시지
 static DRAWLINE_MSG  g_drawlinemsg;   // 선 그리기 메시지
 static int           g_drawcolor;     // 선 그리기 색상
 static ERASEPIC_MSG  g_erasepicmsg;   // 그림 지우기 메시지
+
+// ============= 지윤 =============
+static int			 g_lineWidth;     // 선 그리기 굵기
 
 
 /* 지안 (2000번부터) */
