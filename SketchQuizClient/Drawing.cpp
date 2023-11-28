@@ -55,6 +55,18 @@ void SelectLineWidth(HWND hDlg, DRAWLINE_MSG* g_drawlinemsg) {
 
 // ======================= 정호 =======================
 
+// 도형 옵션 선택
+void SelectFigureOption(HWND hDlg)
+{
+	SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_ADDSTRING, 0, (LPARAM)_T("선"));
+	SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_ADDSTRING, 0, (LPARAM)_T("타원"));
+	//SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_ADDSTRING, 0, (LPARAM)_T("지우개"));
+
+	// 초기 도형 옵션은 "선"으로 설정 
+	SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_SETCURSEL, 0, 0);
+}
+
+// 타원 그리기
 void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, int startX, int startY)
 {
 	HDC hDC = GetDC(hWnd);

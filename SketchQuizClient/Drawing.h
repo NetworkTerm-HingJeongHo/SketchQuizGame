@@ -27,4 +27,8 @@ typedef struct _DRAWELLIPSE_MSG
 	char dummy[SIZE_TOT - 6 * sizeof(int)];
 } DRAWELLIPSE_MSG;
 
+// 도형 옵션 선택
+void SelectFigureOption(HWND hDlg);
+
+// 타원 그리기
 void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, int startX, int startY);
