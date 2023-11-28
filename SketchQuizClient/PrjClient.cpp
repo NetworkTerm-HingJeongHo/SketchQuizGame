@@ -192,6 +192,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hLineWidth = GetDlgItem(hDlg, IDC_LINEWIDTH);
 		g_hLineWidth = hLineWidth; // 전역 변수에 저장
 
+		// ========= 정호 =========
+
+		//
+
 		// 컨트롤 초기화
 		SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP4);
 		SetDlgItemInt(hDlg, IDC_PORT, SERVERPORT, FALSE);
@@ -206,6 +210,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// ========= 지윤 =========
 		EnableWindow(g_hBtnPenColor, FALSE);
 		EnableWindow(g_hLineWidth, FALSE);
+
+		// ========= 정호 =========
+
+		//
 
 		AddLineWidthOption(hDlg);
 
@@ -312,6 +320,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case IDC_LINEWIDTH:
 			SelectLineWidth(hDlg, &g_drawlinemsg);
 			return TRUE;
+
+		// ========= 정호 ===========
+		
+		//
 		}
 	}
 	return FALSE;
