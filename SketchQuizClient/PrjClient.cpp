@@ -159,6 +159,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnPenColor;
 	static HWND hLineWidth;
 
+	// ========= 정호 =========
+
+	//
+
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		// 컨트롤 핸들 얻기
