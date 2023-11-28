@@ -55,22 +55,52 @@ void SelectLineWidth(HWND hDlg, DRAWLINE_MSG* g_drawlinemsg) {
 
 // ======================= 정호 =======================
 
-// 도형 옵션 선택
-void SelectFigureOption(HWND hDlg)
+// 도형 옵션 선택 항목 추가
+void AddFigureOption(HWND hDlg)
 {
-	SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_ADDSTRING, 0, (LPARAM)_T("선"));
-	SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_ADDSTRING, 0, (LPARAM)_T("타원"));
-	//SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_ADDSTRING, 0, (LPARAM)_T("지우개"));
+	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("지우개"));
+	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("선"));
+	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("타원"));
+	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("사각형"));
 
 	// 초기 도형 옵션은 "선"으로 설정 
-	SendDlgItemMessage(hDlg, IDC_LINEWIDTH, CB_SETCURSEL, 0, 0);
+	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_SETCURSEL, 1, 0);
+}
+
+// 그리기 옵션 선택
+void SelectFigureOption(HWND hDlg, int &g_currentSelectFigureOption)
+{
+	// ComboBox의 선택이 변경되면, 이벤트 처리
+	int selectedIndex = SendDlgItemMessage(hDlg, IDC_FIGURE, CB_GETCURSEL, 0, 0);
+	switch (selectedIndex)
+	{
+	// "지우개" 모드 선택
+	case 0:
+		g_currentSelectFigureOption = MODE_ERASE;
+		break;
+	// "선" 모드 선택
+	case 1: 
+		g_currentSelectFigureOption = MODE_LINE;
+		break;
+	// "타원" 모드 선택
+	case 2: 
+		g_currentSelectFigureOption = MODE_ELLIPSE;
+		break;
+	// "사각형" 모드 선택
+	case 3:
+		g_currentSelectFigureOption = MODE_RECTANGLE;
+		break;
+	// "삼각형" 모드 선택
+	case 4:
+		g_currentSelectFigureOption = MODE_TRIANGLE;
+		break;
+	}
 }
 
 // 타원 그리기
-void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, int startX, int startY)
+void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, int startX, int startY, HPEN& hPen)
 {
 	HDC hDC = GetDC(hWnd);
-	HPEN hPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
 
 	// 윈도우 DC에 타원 출력
 	HPEN hOldPen = (HPEN)SelectObject(hDC, hPen);

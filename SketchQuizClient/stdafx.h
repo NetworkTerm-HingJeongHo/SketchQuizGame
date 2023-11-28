@@ -93,5 +93,20 @@ static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
 
 
 // ======= 정호 =========
+#define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
+#define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
+
+// 그리기 모드 종류
+#define MODE_ERASE 4500
+#define MODE_LINE 4501
+#define MODE_ELLIPSE 4502
+#define MODE_RECTANGLE 4503
+#define MODE_TRIANGLE 4504
+
+// 현재 그리기 모드 전역 변수
+static int g_currentSelectFigureMode = MODE_LINE;
+
+static HWND g_hFigureSelect; // 그릴 도형 선택하는 부분
+
 static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지
 //

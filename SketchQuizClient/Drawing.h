@@ -14,8 +14,6 @@ void SelectLineWidth(HWND hDlg, DRAWLINE_MSG* g_drawlinemsg);
 
 
 // ======================= 정호 =======================
-#define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
-#define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
 
 // sizeof(DRAWELLIPSE_MSG) == 256
 typedef struct _DRAWELLIPSE_MSG
@@ -27,8 +25,11 @@ typedef struct _DRAWELLIPSE_MSG
 	char dummy[SIZE_TOT - 6 * sizeof(int)];
 } DRAWELLIPSE_MSG;
 
-// 도형 옵션 선택
-void SelectFigureOption(HWND hDlg);
+// 도형 옵션 선택 항목 추가
+void AddFigureOption(HWND hDlg);
+
+// 그리기 옵션 선택
+void SelectFigureOption(HWND hDlg, int &g_currentSelectFigureOption);
 
 // 타원 그리기
-void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, int startX, int startY);
+void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, int startX, int startY, HPEN& hPen);
