@@ -164,6 +164,19 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnErasePic; // 전역 변수에도 저장
 	static HWND hStaticDummy;
 
+	// ========= 연경 =========
+	static HWND hTimer;    // 타이머 표시 
+	static HWND hWord;     // 제시어 표시
+
+
+	// ========= 지윤 =========
+	static HWND hBtnPenColor;
+	static HWND hLineWidth;
+
+	// ========= 정호 =========
+	static HWND hFigureSelect;	// 그릴 도형 선택
+	//
+
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		// 컨트롤 핸들 얻기
@@ -186,6 +199,23 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
 
+		// ========= 연경 =========
+		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // 타이머 표시하는 EditText 부분 
+		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // 제시어 표시하는 EditText 부분
+
+		// ========= 지윤 =========
+		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
+		g_hBtnPenColor = hBtnPenColor; // 전역 변수에 저장
+
+		hLineWidth = GetDlgItem(hDlg, IDC_LINEWIDTH);
+		g_hLineWidth = hLineWidth; // 전역 변수에 저장
+
+		// ========= 정호 =========
+		// 그릴 도형 선택하는 핸들러를 얻어서 전역 변수에 저장
+		hFigureSelect = GetDlgItem(hDlg, IDC_FIGURE);
+		g_hFigureSelect = hFigureSelect;
+		//
+
 		// 컨트롤 초기화
 		SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP4);
 		SetDlgItemInt(hDlg, IDC_PORT, SERVERPORT, FALSE);
@@ -196,6 +226,17 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(hColorGreen, BM_SETCHECK, BST_UNCHECKED, 0);
 		SendMessage(hColorBlue, BM_SETCHECK, BST_UNCHECKED, 0);
 		EnableWindow(g_hBtnErasePic, FALSE);
+
+		// ========= 지윤 =========
+		EnableWindow(g_hBtnPenColor, FALSE);
+		EnableWindow(g_hLineWidth, FALSE);
+
+		// ========= 정호 =========
+		AddFigureOption(hDlg);
+		EnableWindow(g_hFigureSelect, FALSE);
+		//
+
+		AddLineWidthOption(hDlg);
 
 		// 윈도우 클래스 등록
 		WNDCLASS wndclass;
@@ -252,6 +293,18 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			EnableWindow(g_hBtnSendMsg, TRUE);
 			SetFocus(hEditMsg);
 			EnableWindow(g_hBtnErasePic, TRUE);
+
+			// ========= 지윤 =========
+			EnableWindow(g_hBtnPenColor, TRUE);
+			EnableWindow(g_hLineWidth, TRUE);
+
+			// ========= 연경 =========
+			gameStart();
+
+			// ========= 정호 =========
+			EnableWindow(g_hFigureSelect, TRUE);
+			//
+
 			return TRUE;
 		case IDC_SENDFILE:
 			MessageBox(NULL, _T("아직 구현하지 않았습니다."), _T("알림"), MB_ICONERROR);
@@ -282,7 +335,22 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case IDCANCEL:
 			closesocket(g_sock);
 			EndDialog(hDlg, IDCANCEL);
+			//ShowWindow(g_hDialog, SW_HIDE);
+			//CreateRankDlg(hDlg);
 			return TRUE;
+		//	======== 지윤 ==========
+		case IDC_PENCOLOR:
+			SelectPenColor(&g_drawDetailInformation);
+			return TRUE;
+		case IDC_LINEWIDTH:
+			SelectLineWidth(hDlg, &g_drawDetailInformation);
+			return TRUE;
+
+		// ========= 정호 ===========
+		case IDC_FIGURE:
+			SelectFigureOption(hDlg, g_currentSelectFigureMode);
+			return TRUE;
+		//
 		}
 	}
 	return FALSE;
@@ -334,27 +402,66 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		return 0;
 	case WM_MOUSEMOVE:
 		if (bDrawing && g_bCommStarted) {
-			// 마우스 클릭 좌표 얻기
-			x1 = LOWORD(lParam);
-			y1 = HIWORD(lParam);
-			// 선 그리기 메시지 보내기
-			g_drawlinemsg.x0 = x0;
-			g_drawlinemsg.y0 = y0;
-			g_drawlinemsg.x1 = x1;
-			g_drawlinemsg.y1 = y1;
-			send(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
-			// 마우스 클릭 좌표 갱신
-			x0 = x1;
-			y0 = y1;
+			switch (g_currentSelectFigureMode)
+			{
+			case MODE_LINE:
+				// 마우스 클릭 좌표 얻기
+				x1 = LOWORD(lParam);
+				y1 = HIWORD(lParam);
+				// 선 그리기 메시지 보내기
+				g_drawlinemsg.x0 = x0;
+				g_drawlinemsg.y0 = y0;
+				g_drawlinemsg.x1 = x1;
+				g_drawlinemsg.y1 = y1;
+				g_drawlinemsg.color = g_drawDetailInformation.color;
+				g_drawlinemsg.width = g_drawDetailInformation.width;
+				send(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
+				// 마우스 클릭 좌표 갱신
+				x0 = x1;
+				y0 = y1;
+				break;
+			default:
+				break;
+			}
 		}
 		return 0;
 	case WM_LBUTTONUP:
+		// 서버와 연결이 완료되었을 때
+		if (g_bCommStarted)
+		{
+			switch (g_currentSelectFigureMode)
+			{
+			// "지우개" 모드
+			case MODE_ERASE:
+				break;
+			// "타원" 그리기 모드
+			case MODE_ELLIPSE:
+				g_drawellipsemsg.x0 = x0;
+				g_drawellipsemsg.y0 = y0;
+				g_drawellipsemsg.x1 = LOWORD(lParam);
+				g_drawellipsemsg.y1 = HIWORD(lParam);
+				g_drawellipsemsg.color = g_drawDetailInformation.color;
+				g_drawellipsemsg.width = g_drawDetailInformation.width;
+				send(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0);
+				break;
+
+			// "사각형" 그리기 모드
+			case MODE_RECTANGLE:
+				break;
+
+			// "삼각형" 그리기 모드
+			case MODE_TRIANGLE:
+				break;
+			default:
+				break;
+			}
+		}
 		bDrawing = false;
 		return 0;
 	case WM_DRAWLINE:
 		// 화면 출력용 DC와 Pen 핸들 얻기
 		hDC = GetDC(hWnd);
-		hPen = CreatePen(PS_SOLID, 3, g_drawcolor);
+		hPen = CreatePen(PS_SOLID, g_lineWidth, g_drawcolor);
 		// 윈도우 화면에 1차로 그리기
 		hOldPen = (HPEN)SelectObject(hDC, hPen);
 		MoveToEx(hDC, LOWORD(wParam), HIWORD(wParam), NULL);
@@ -370,8 +477,9 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		ReleaseDC(hWnd, hDC);
 		return 0;
 	// ======== 정호 ==========
+	// 타원 그리기 메시지 받음
 	case WM_DRAWELLIPSE:
-		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, x0, y0);
+		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
 		return 0;
 	//
 	case WM_ERASEPIC:
@@ -712,27 +820,66 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	CHAT_MSG* chat_msg;
 	DRAWLINE_MSG* drawline_msg;
 	ERASEPIC_MSG* erasepic_msg;
+	char reciever[20], sender[20], tmp[5];
+
+	// ====== 정호 ========
+	DRAWELLIPSE_MSG* drawEllipse_msg;
+	//
 
 	while (1) {
 		retval = recv(g_sock, (char*)&comm_msg, SIZE_TOT, MSG_WAITALL);
 		if (retval == 0 || retval == SOCKET_ERROR) {
 			break;
 		}
-		if (comm_msg.type == TYPE_CHAT) {
-			chat_msg = (CHAT_MSG*)&comm_msg;
-			DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
-		}
-		else if (comm_msg.type == TYPE_DRAWLINE) {
+		switch (comm_msg.type)
+		{
+		case TYPE_CHAT:
+			if (comm_msg.type == TYPE_CHAT) {
+				chat_msg = (CHAT_MSG*)&comm_msg;
+				DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
+				if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
+					sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
+					MySendFile(sender, reciever, chat_msg->msg);
+				}
+			}
+			break;
+
+		case TYPE_DRAWLINE:
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
+			// ============ 지윤 ============
+			g_lineWidth = drawline_msg->width;
+			// ==============================
 			g_drawcolor = drawline_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWLINE,
 				MAKEWPARAM(drawline_msg->x0, drawline_msg->y0),
 				MAKELPARAM(drawline_msg->x1, drawline_msg->y1));
-		}
-		else if (comm_msg.type == TYPE_ERASEPIC) {
+			break;
+		// ======== 정호 ==========
+		case TYPE_DRAWELLIPSE:
+			drawEllipse_msg = (DRAWELLIPSE_MSG*)&comm_msg;
+			g_lineWidth = drawEllipse_msg->width;
+			g_drawcolor = drawEllipse_msg->color;
+			SendMessage(g_hDrawWnd, WM_DRAWELLIPSE,
+				MAKEWPARAM(drawEllipse_msg->x0, drawEllipse_msg->y0),
+				MAKELPARAM(drawEllipse_msg->x1, drawEllipse_msg->y1));
+			break;
+		case TYPE_ERASEPIC:
 			erasepic_msg = (ERASEPIC_MSG*)&comm_msg;
 			SendMessage(g_hDrawWnd, WM_ERASEPIC, 0, 0);
+			break;
+
+		default:
+			break;
 		}
+		if (comm_msg.type == TYPE_CHAT) {
+			chat_msg = (CHAT_MSG*)&comm_msg;
+			DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
+			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
+				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
+				MySendFile(sender, reciever, chat_msg->msg);
+			}
+		}
+
 	}
 	return 0;
 }

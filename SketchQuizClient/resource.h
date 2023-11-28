@@ -17,14 +17,31 @@
 #define IDC_COLORBLUE                   1012
 #define IDC_SENDFILE                    1013
 #define IDC_DUMMY                       1014
+#define IDC_PENCOLOR                    3100
+#define IDC_LINEWIDTH                   3101
+#define IDC_FIGURE                      4100
+#define IDD_DIALOG2                     5101
+#define IDC_EDIT1ST                     5102
+#define IDC_EDIT_TIMER                  5103
+#define IDC_EDIT_WORD                   5104
+#define IDC_EDIT_ID1                    5106
+#define IDC_EXIT                        5107
+#define IDC_WORD                        5108
+#define IDC_TIMER                       5109
+#define IDC_EDIT2ND                     5110
+#define IDC_EDIT_ID2                    5111
+#define IDC_EDIT3RD                     5112
+#define IDC_EDIT_ID3                    5113
+#define IDC_EDITMY                      5114
+#define IDC_EDIT_MYID                   5115
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        103
+#define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -33,10 +33,20 @@
     <ClCompile Include="Home.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+
     <ClCompile Include="Home_Pass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Home_Notice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Chatting.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Ranking.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,10 +72,21 @@
     <ClInclude Include="Home.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+
     <ClInclude Include="Home_Notice.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Home_Pass.h">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClInclude Include="Chatting.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Ranking.h">
+
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

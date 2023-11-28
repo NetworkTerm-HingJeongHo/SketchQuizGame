@@ -3,6 +3,8 @@
 /*만든 헤더*/
 #include "Winsock.h"
 #include "PrjClient.h"
+
+// ====== 지윤 ======
 #include "Drawing.h"
 
 //* 지안 만든 헤더 *//
@@ -13,6 +15,12 @@
 
 // ====== 정호 ======
 #include "math.h"
+
+// ====== 연경 ======
+#include "Ranking.h"
+#include "Chatting.h"
+#include "Game.h"
+#include <time.h>
 
 /*리소스*/
 #include "resource.h" // 그림판 다이어로그창
@@ -31,6 +39,16 @@ static HWND          g_hBtnErasePic;  // [그림 지우기] 버튼
 static HWND          g_hDrawWnd;      // 그림을 그릴 윈도우
 static HWND			 g_hMainWindow;   // 처음 윈도우창 핸들
 static HWND			 g_hDialog;       // 그림판 다이어로그 핸들
+
+// ============= 연경 =============
+static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
+static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
+static HWND          g_hTimerStatus;  // 타이머 영역
+static HWND          g_hWordStatus;   // 제시어 영역
+
+// ============= 지윤 =============
+static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
+static HWND			 g_hLineWidth;    // 선 굵기 콤보박스
 
 // 다이얼로그 상태 플래그
 static bool          g_bDialogVisible = false;
@@ -51,6 +69,9 @@ static CHAT_MSG      g_chatmsg;       // 채팅 메시지
 static DRAWLINE_MSG  g_drawlinemsg;   // 선 그리기 메시지
 static int           g_drawcolor;     // 선 그리기 색상
 static ERASEPIC_MSG  g_erasepicmsg;   // 그림 지우기 메시지
+
+// ============= 지윤 =============
+static int			 g_lineWidth;     // 선 그리기 굵기
 
 
 /* 지안 (2000번부터) */
@@ -82,5 +103,23 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 
 
 // ======= 정호 =========
+#define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
+#define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
+
+// 그리기 모드 종류
+#define MODE_ERASE 4500
+#define MODE_LINE 4501
+#define MODE_ELLIPSE 4502
+#define MODE_RECTANGLE 4503
+#define MODE_TRIANGLE 4504
+
+// 현재 그리기 모드 전역 변수
+static int g_currentSelectFigureMode = MODE_LINE;
+
+// 현재 세부 그리기 정보 전역 변수
+static DRAW_DETAIL_INFORMATION g_drawDetailInformation;
+
+static HWND g_hFigureSelect; // 그릴 도형 선택하는 부분
+
 static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지
 //
