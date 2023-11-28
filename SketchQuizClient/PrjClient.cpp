@@ -152,9 +152,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	// ========= 연경 =========
 	static HWND hTimer;    // 타이머 표시 
-	static HWND hQuiz;     // 제시어 표시
+	static HWND hWord;     // 제시어 표시
 
-	//gameStart();
 
 	// ========= 지윤 =========
 	static HWND hBtnPenColor;
@@ -183,8 +182,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
 
 		// ========= 연경 =========
-		g_hTimerStatus = GetDlgItem(hDlg, IDC_TIMER);  // 타이머 표시하는 EditText 부분 
-		g_hQuizStatus = GetDlgItem(hDlg, IDC_QUIZ);    // 제시어 표시하는 EditText 부분
+		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // 타이머 표시하는 EditText 부분 
+		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // 제시어 표시하는 EditText 부분
 
 		// ========= 지윤 =========
 		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
@@ -270,6 +269,9 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			EnableWindow(g_hBtnPenColor, TRUE);
 			EnableWindow(g_hLineWidth, TRUE);
 
+			// ========= 연경 =========
+			gameStart();
+
 			return TRUE;
 		case IDC_SENDFILE:
 			MessageBox(NULL, _T("아직 구현하지 않았습니다."), _T("알림"), MB_ICONERROR);
@@ -298,10 +300,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
 		case IDCANCEL:
-			//closesocket(g_sock);
-			//EndDialog(hDlg, IDCANCEL);
+			closesocket(g_sock);
+			EndDialog(hDlg, IDCANCEL);
 			//ShowWindow(g_hDialog, SW_HIDE);
-			CreateRankDlg(hDlg);
+			//CreateRankDlg(hDlg);
 			return TRUE;
 		//	======== 지윤 ==========
 		case IDC_PENCOLOR:

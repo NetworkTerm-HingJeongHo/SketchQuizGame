@@ -17,23 +17,16 @@
 #define IDC_COLORBLUE                   1012
 #define IDC_SENDFILE                    1013
 #define IDC_DUMMY                       1014
-
-// =========== 지윤 ===========
 #define IDC_PENCOLOR                    3100
 #define IDC_LINEWIDTH                   3101
-
-// =========== 정호 ===========
 #define IDC_FIGURE                      4100
-
-// =========== 연경 ===========
 #define IDD_DIALOG2                     5101
 #define IDC_EDIT1ST                     5102
-#define IDC_EDIT3                       5103
-#define IDC_EDIT1                       5104
-#define IDC_EDIT5                       5105
+#define IDC_EDIT_TIMER                  5103
+#define IDC_EDIT_WORD                   5104
 #define IDC_EDIT_ID1                    5106
 #define IDC_EXIT                        5107
-#define IDC_QUIZ                        5108
+#define IDC_WORD                        5108
 #define IDC_TIMER                       5109
 #define IDC_EDIT2ND                     5110
 #define IDC_EDIT_ID2                    5111
@@ -48,7 +41,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

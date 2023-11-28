@@ -8,20 +8,15 @@ BOOL isGameOver = FALSE;
 BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
 
 void gameStart() {
-	int myScore = 0;
-	//quizWord = { (char*)"사과", (char*)"바나나", (char*)"포도", (char*)"오렌지" };
-	char* roundText = NULL;
 
-	countdown = 30;
+	//HANDLE hThread[2];
+	//hThread[0] = CreateThread(NULL, 0, TimerThread, NULL, CREATE_SUSPENDED, NULL);
+	//hThread[1] = CreateThread(NULL, 0, GameThread, NULL, CREATE_SUSPENDED, NULL);
 
-	while (!isGameOver) {
-
-		sprintf(roundText, "%d", roundNum);
-		Display(g_hQuizStatus, roundText);
-	}
+	//WaitForMultipleObjects(2, hThread, TRUE, INFINITE);
 	
-	//itoa(timer, timerText, 10);
-	//itoa(roundNum, roundText, 10);
+	Display(g_hTimerStatus, "%d", "10");
+	Display(g_hWordStatus, "%s", "tmp");
 
 }
 
@@ -35,7 +30,7 @@ void Display(HWND g_status, const char* fmt, ...)
 	va_end(arg);
 
 	int nLength = GetWindowTextLength(g_status);
-	SendMessage(g_status, EM_SETSEL, nLength, nLength);
+	SendMessage(g_status, EM_SETSEL, 0, 0);
 	SendMessageA(g_status, EM_REPLACESEL, FALSE, (LPARAM)cbuf);
 }
 
@@ -60,14 +55,34 @@ DWORD WINAPI TimerThread(LPVOID arg) {
 	return 0;
 }
 
+DWORD WINAPI GameThread(LPVOID arg) {
+	int myScore = 0;
+	//quizWord = { (char*)"사과", (char*)"바나나", (char*)"포도", (char*)"오렌지" };
+	char* roundText = NULL;
+
+	countdown = 30;
+
+	while (!isGameOver) {
+		//if (hThread == NULL) return 1;
+		sprintf(roundText, "%d", roundNum);
+		Display(g_hWordStatus, roundText);
+	}
+	return 0;
+}
+
 //새 라운드가 시작될 때 실행
 void newRound() {
 	roundNum += 1;
+	if (roundNum >= 1) {
+		isGameOver = TRUE;
+		return;
+	}
 	DisplayText("%d 번째 라운드 입니다.", roundNum+1);
 	if (isOwner) {
 
-		Display(g_hQuizStatus, (const char*)quizWord[roundNum]);
+		Display(g_hWordStatus, (const char*)quizWord[roundNum]);
 	}
+
 }
 
 

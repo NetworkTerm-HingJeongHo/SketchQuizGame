@@ -42,7 +42,7 @@ static HWND			 g_hDialog;       // 그림판 다이어로그 핸들
 static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
 static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
 static HWND          g_hTimerStatus;  // 타이머 영역
-static HWND          g_hQuizStatus;   // 제시어 영역
+static HWND          g_hWordStatus;   // 제시어 영역
 
 // ============= 지윤 =============
 static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
