@@ -326,10 +326,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		//	======== 지윤 ==========
 		case IDC_PENCOLOR:
-			SelectPenColor(&g_drawlinemsg);
+			SelectPenColor(&g_drawDetailInformation);
 			return TRUE;
 		case IDC_LINEWIDTH:
-			SelectLineWidth(hDlg, &g_drawlinemsg);
+			SelectLineWidth(hDlg, &g_drawDetailInformation);
 			return TRUE;
 
 		// ========= 정호 ===========
@@ -399,6 +399,8 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawlinemsg.y0 = y0;
 				g_drawlinemsg.x1 = x1;
 				g_drawlinemsg.y1 = y1;
+				g_drawlinemsg.color = g_drawDetailInformation.color;
+				g_drawlinemsg.width = g_drawDetailInformation.width;
 				send(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
 				// 마우스 클릭 좌표 갱신
 				x0 = x1;
@@ -424,6 +426,8 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawellipsemsg.y0 = y0;
 				g_drawellipsemsg.x1 = LOWORD(lParam);
 				g_drawellipsemsg.y1 = HIWORD(lParam);
+				g_drawellipsemsg.color = g_drawDetailInformation.color;
+				g_drawellipsemsg.width = g_drawDetailInformation.width;
 				send(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0);
 				break;
 
@@ -459,9 +463,9 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		ReleaseDC(hWnd, hDC);
 		return 0;
 	// ======== 정호 ==========
+	// 타원 그리기 메시지 받음
 	case WM_DRAWELLIPSE:
-		hPen = CreatePen(PS_SOLID, g_lineWidth, g_drawcolor);
-		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, x0, y0, hPen);
+		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
 		return 0;
 	//
 	case WM_ERASEPIC:
@@ -740,8 +744,10 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		// ======== 정호 ==========
 		case TYPE_DRAWELLIPSE:
 			drawEllipse_msg = (DRAWELLIPSE_MSG*)&comm_msg;
+			g_lineWidth = drawEllipse_msg->width;
+			g_drawcolor = drawEllipse_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWELLIPSE,
-				MAKEWPARAM(drawEllipse_msg->x0, drawEllipse_msg->y1),
+				MAKEWPARAM(drawEllipse_msg->x0, drawEllipse_msg->y0),
 				MAKELPARAM(drawEllipse_msg->x1, drawEllipse_msg->y1));
 			break;
 		case TYPE_ERASEPIC:

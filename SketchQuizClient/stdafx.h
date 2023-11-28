@@ -106,6 +106,9 @@ static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
 // 현재 그리기 모드 전역 변수
 static int g_currentSelectFigureMode = MODE_LINE;
 
+// 현재 세부 그리기 정보 전역 변수
+static DRAW_DETAIL_INFORMATION g_drawDetailInformation;
+
 static HWND g_hFigureSelect; // 그릴 도형 선택하는 부분
 
 static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지
