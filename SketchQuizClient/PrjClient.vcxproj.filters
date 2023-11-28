@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="소스 파일">
@@ -33,13 +33,6 @@
     <ClCompile Include="Home.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-
-    <ClCompile Include="Home_Pass.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Home_Notice.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Chatting.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -47,6 +40,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Ranking.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Home_Notice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Home_Pass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,14 +71,6 @@
     <ClInclude Include="Home.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-
-    <ClInclude Include="Home_Notice.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Home_Pass.h">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-
     <ClInclude Include="Chatting.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -87,6 +78,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Ranking.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Home_Notice.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Home_Pass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

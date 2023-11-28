@@ -101,7 +101,6 @@ static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
 static HWND			hwndHome_Pass;		// 공지사항 비밀번호 윈도우
 static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 
-
 // ======= 정호 =========
 #define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
 #define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
