@@ -15,6 +15,7 @@
 
 // ====== 정호 ======
 #include "math.h"
+#include "socket.h"
 
 // ====== 연경 ======
 #include "Ranking.h"
