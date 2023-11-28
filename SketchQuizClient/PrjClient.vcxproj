@@ -148,6 +148,8 @@
     <ClCompile Include="Drawing.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Home.cpp" />
+    <ClCompile Include="Home_Pass.cpp" />
+    <ClCompile Include="Home_Notice.cpp" />
     <ClCompile Include="Login.cpp" />
     <ClCompile Include="PrjClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -163,6 +165,8 @@
     <ClInclude Include="Drawing.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Home.h" />
+    <ClInclude Include="Home_Notice.h" />
+    <ClInclude Include="Home_Pass.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="PrjClient.h" />
     <ClInclude Include="Ranking.h" />

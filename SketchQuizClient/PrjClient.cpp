@@ -43,6 +43,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcLogin.lpszClassName = _T("LoginWindowClass");
 	RegisterClass(&wcLogin);
 
+	// 홈_공지사항_입력 윈도우 클래스 등록
+	WNDCLASS wcHome_Notice = { 0 };
+	wcHome_Notice.lpfnWndProc = Home_NoticeWndProc;
+	wcHome_Notice.hInstance = hInstance;
+	wcHome_Notice.lpszClassName = _T("Home_NoticeWindowClass");
+	RegisterClass(&wcHome_Notice);
+
+	// 홈_공지사항_비밀번호 입력 윈도우 클래스 등록
+	WNDCLASS wcHome_Pass = { 0 };
+	wcHome_Pass.lpfnWndProc = Home_PassWndProc;
+	wcHome_Pass.hInstance = hInstance;
+	wcHome_Pass.lpszClassName = _T("Home_PassWindowClass");
+	RegisterClass(&wcHome_Pass);
+
 	//------------------//
 	
 	// 메인 윈도우(첫 화면) 생성
@@ -581,7 +595,7 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 		CreateWindow(_T("STATIC"), _T("님 반갑습니다!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 1000, 10, 200, 30, hwnd, NULL, NULL, NULL); // id 님 반갑습니다!
 		CreateWindow(_T("STATIC"), _T("공자사항 내용"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 50, 50, 1150, 100, hwnd, NULL, NULL, NULL); // 스케치퀴즈 타이틀
 
-		CreateWindow(_T("BUTTON"), _T("공지 전송"), WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 공지 전송
+		CreateWindow(_T("BUTTON"), _T("공지 전송"), WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_NOTICE_BUTTON, NULL, NULL); // 공지 전송
 
 		CreateWindow(_T("BUTTON"), _T("채널 A 입장"), WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_CHANNEL_A_BUTTON, NULL, NULL); // 채널 A 입장
 		CreateWindow(_T("BUTTON"), _T("채널 B 입장"), WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_CHANNEL_B_BUTTON, NULL, NULL); // 채널 B 입장
@@ -603,6 +617,10 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 			ShowWindow(hwnd, SW_HIDE);
 			break;
 
+		case ID_NOTICE_BUTTON: //[공지 전송] 버튼 클릭시
+			CreateAndShowWindow_Home_Pass(hwndHome_Pass); // 관리자 비밀번호 입력 창 띄우기
+			break;
+
 		case ID_CHANNEL_A_BUTTON: // 채널 A 버튼 클릭시
 			CreateAndShowDialog(hwnd);
 			break;
@@ -611,6 +629,101 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 			break;
 		case ID_CHANNEL_RANDOM_BUTTON: // 채널 랜덤 버튼 클릭시
 			CreateAndShowDialog(hwnd);
+			break;
+		default:
+			break;
+		}
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	default:
+		return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+	return 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------//
+
+
+//------------------------------------- 홈 공지사항 윈도우 프로시저 -----------------------------------------------------------------------//
+// 홈 공지사항 윈도우 프로시저
+LRESULT CALLBACK Home_NoticeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+	switch (msg) {
+
+	case WM_CREATE:
+		// 로그인 화면 초기화 및 컨트롤 생성
+																								   //x,y,width,height
+		CreateWindow(_T("STATIC"), _T("공지사항 입력"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 200, 50, 200, 50, hwnd, NULL, NULL, NULL); // 스케치퀴즈 타이틀
+		CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_NOTICE_INPUT, NULL, NULL);	// 공지사항 입력 input
+		CreateWindow(_T("BUTTON"), _T("확인"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // 확인 버튼
+		CreateWindow(_T("BUTTON"), _T("취소"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// 취소 버튼
+		break;
+
+	case WM_COMMAND:
+		// 버튼 클릭 이벤트 처리
+		switch (LOWORD(wParam)) {
+			// '취소' 버튼 클릭 처리
+		case ID_CANCLE_BUTTON:
+			// 홈 공지사항 입력창을 숨기고 메인 창을 다시 보이게 함
+		/*	ShowWindow(hwnd, SW_SHOW);*/
+			ShowWindow(hwnd, SW_HIDE);
+			break;
+		case ID_OK_BUTTON: //확인 버튼 클릭시 - input 내용이 저장됨.
+			ShowWindow(hwnd, SW_HIDE);
+			break;
+		default:
+			break;
+		}
+		break;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+
+	default:
+		return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+	return 0;
+}
+
+//----------------------------------------------------------------------------------------------------------------------//
+
+
+//------------------------------------- 홈 공지사항 비밀번호 윈도우 프로시저 -----------------------------------------------------------------------//
+// 홈 공지사항 윈도우 프로시저
+LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+	switch (msg) {
+
+	case WM_CREATE:
+		// 로그인 화면 초기화 및 컨트롤 생성
+																								   //x,y,width,height
+		CreateWindow(_T("STATIC"), _T("관리자 비밀번호를 입력해주세요."), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 100, 50, 400, 50, hwnd, NULL, NULL, NULL); // 관리자 비밀번호 타이틀
+		CreateWindow(_T("EDIT"), _T("비밀번호 입력하기"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_NOTICE_INPUT, NULL, NULL);	// 공지사항 입력 input
+		CreateWindow(_T("BUTTON"), _T("확인"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // 확인 버튼
+		CreateWindow(_T("BUTTON"), _T("취소"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// 취소 버튼
+		break;
+
+	case WM_COMMAND:
+		// 버튼 클릭 이벤트 처리
+		switch (LOWORD(wParam)) {
+			// '취소' 버튼 클릭 처리
+		case ID_CANCLE_BUTTON:
+			// 홈 공지사항 비밀번호 입력창을 숨기고 메인 창을 다시 보이게 함
+		/*	ShowWindow(hwnd, SW_SHOW);*/
+			ShowWindow(hwndHome_Notice, SW_HIDE);
+			break;
+		case ID_OK_BUTTON: //확인 버튼 클릭시 - input 내용이 저장됨.
+			if (true) {
+				MessageBox(hwndLogin, _T("비밀번호가 틀렸다우."), _T("비밀번호 창"), MB_OK);
+			}
+			else {
+				CreateAndShowWindow_Home_Notice(hwndHome_Notice); // 공지사항 입력 화면 보여주기
+			}
 			break;
 		default:
 			break;

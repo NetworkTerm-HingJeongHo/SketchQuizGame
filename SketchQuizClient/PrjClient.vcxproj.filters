@@ -33,6 +33,13 @@
     <ClCompile Include="Home.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+
+    <ClCompile Include="Home_Pass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Home_Notice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="Chatting.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -63,6 +70,13 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Home.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+
+    <ClInclude Include="Home_Notice.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Home_Pass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Chatting.h">
