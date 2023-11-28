@@ -90,10 +90,17 @@ extern _TCHAR		ID_NICKNAME[256];	// 현재 사용자 아이디 전역변수
 #define ID_CHANNEL_RANDOM_BUTTON 2502	// 랜덤 접속 버튼
 #define ID_NOTICE_BUTTON		2506	// 공지 전송 버튼
 
+// 홈 관련 전역 변수
+extern _TCHAR		ID_NOTICE_TEXT[256];	// 공지사항 내용
+extern _TCHAR		ID_NOTICE_INPUT_TEXT[256];	// 공지사항 입력 내용
+
 // 홈 공지사항 사용자 정의 상수 (2600~ )
 #define ID_NOTICE_INPUT			2600	// 홈 공지사항 입력 input
 #define ID_OK_BUTTON			2601	// 확인 버튼
 #define ID_CANCLE_BUTTON		2602	// 취소 버튼
+
+// 홈 공지사항 비밀번호 사용자 정의 상수 (2700 ~)
+#define ID_PASSWORD_INPUT		2700	// 비밀번호 입력 input
 
 // 윈도우 관련 전역 변수
 static HWND			hwndLogin;			// 로그인 윈도우 (2000..)

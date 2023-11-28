@@ -703,7 +703,7 @@ LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 		// 로그인 화면 초기화 및 컨트롤 생성
 																								   //x,y,width,height
 		CreateWindow(_T("STATIC"), _T("관리자 비밀번호를 입력해주세요."), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 100, 50, 400, 50, hwnd, NULL, NULL, NULL); // 관리자 비밀번호 타이틀
-		CreateWindow(_T("EDIT"), _T("비밀번호 입력하기"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_NOTICE_INPUT, NULL, NULL);	// 공지사항 입력 input
+		CreateWindow(_T("EDIT"), _T("비밀번호 입력하기"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_PASSWORD_INPUT, NULL, NULL);	// 비밀번호 입력 input
 		CreateWindow(_T("BUTTON"), _T("확인"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // 확인 버튼
 		CreateWindow(_T("BUTTON"), _T("취소"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// 취소 버튼
 		break;
@@ -715,14 +715,25 @@ LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 		case ID_CANCLE_BUTTON:
 			// 홈 공지사항 비밀번호 입력창을 숨기고 메인 창을 다시 보이게 함
 		/*	ShowWindow(hwnd, SW_SHOW);*/
-			ShowWindow(hwndHome_Notice, SW_HIDE);
+			ShowWindow(hwnd, SW_HIDE);
 			break;
 		case ID_OK_BUTTON: //확인 버튼 클릭시 - input 내용이 저장됨.
-			if (true) {
-				MessageBox(hwndLogin, _T("비밀번호가 틀렸다우."), _T("비밀번호 창"), MB_OK);
-			}
-			else {
+			_TCHAR password[256]; // 이미 있는 유저아이디?
+			_tcscpy(password, _T("abc123")); // Copy the string "abc123" into userId
+			
+			GetDlgItemText(hwnd, ID_PASSWORD_INPUT, input_result, sizeof(input_result));
+
+
+			// 비밀번호가 일치하는지 비교
+			if (_tcscmp(password, input_result) == 0 )
+			{
 				CreateAndShowWindow_Home_Notice(hwndHome_Notice); // 공지사항 입력 화면 보여주기
+				ShowWindow(hwnd, SW_HIDE);
+			}
+			else
+			{
+				MessageBox(hwndHome_Pass, _T("비밀번호가 일치하지 않습니다. 다시 입력해주세요."), _T("오류"), MB_OK);
+				
 			}
 			break;
 		default:
