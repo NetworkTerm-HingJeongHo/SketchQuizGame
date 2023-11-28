@@ -148,8 +148,8 @@
     <ClCompile Include="Drawing.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Home.cpp" />
-    <ClCompile Include="Home_Pass.cpp" />
     <ClCompile Include="Home_Notice.cpp" />
+    <ClCompile Include="Home_Pass.cpp" />
     <ClCompile Include="Login.cpp" />
     <ClCompile Include="PrjClient.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
