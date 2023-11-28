@@ -84,6 +84,11 @@ int main(int argc, char *argv[])
 	struct sockaddr_in clientaddr4;
 	// 데이터 통신에 사용할 변수(IPv6)
 	struct sockaddr_in6 clientaddr6;
+	
+	// ========== 정호 ==========
+	int recvLen; // 받은 가변 데이터 크기
+	int sendLen; // 보낼 가변 데이터 크기
+	//
 
 	while (1) {
 		// 소켓 셋 초기화
@@ -143,29 +148,51 @@ int main(int argc, char *argv[])
 			SOCKETINFO *ptr = SocketInfoArray[i];
 			if (FD_ISSET(ptr->sock, &rset)) {
 				// 데이터 받기
-				retval = recv(ptr->sock, ptr->buf + ptr->recvbytes,
-					BUFSIZE - ptr->recvbytes, 0);
+
+				// ============ 정호 ============
+				// 고정 크기 데이터 받기
+				retval = recvn(ptr->sock, (char*)&recvLen, sizeof(int), 0);
+				if (retval == 0 || retval == SOCKET_ERROR)
+				{
+					RemoveSocketInfo(i);
+					continue;
+				}
+				// 가변 크기 데이터 받기
+				retval = recvn(ptr->sock, ptr->buf, recvLen, 0);
 				if (retval == 0 || retval == SOCKET_ERROR) {
 					RemoveSocketInfo(i);
 					continue;
 				}
 
-				// 받은 바이트 수 누적
-				ptr->recvbytes += retval;
+				//// 받은 바이트 수 누적
+				//ptr->recvbytes += retval;
+				//sendLen = ptr->recvbytes;
+				//// 받은 바이트 수 리셋
+				//ptr->recvbytes = 0;
 
-				if (ptr->recvbytes == BUFSIZE) {
-					// 받은 바이트 수 리셋
-					ptr->recvbytes = 0;
-					// 현재 접속한 모든 클라이언트에 데이터 전송
-					for (int j = 0; j < nTotalSockets; j++) {
-						SOCKETINFO *ptr2 = SocketInfoArray[j];
-						retval = send(ptr2->sock, ptr->buf, BUFSIZE, 0);
-						if (retval == SOCKET_ERROR) {
-							err_display("send()");
-							RemoveSocketInfo(j);
-							--j; // 루프 인덱스 보정
-							continue;
-						}
+				// 현재 접속한 모든 클라이언트에 데이터 전송
+				for (int j = 0; j < nTotalSockets; j++) {
+					SOCKETINFO *ptr2 = SocketInfoArray[j];
+
+					// ======== 정호 ==========
+					// 고정 길이 전송
+					retval = sendn(ptr2->sock, (char*)&recvLen, sizeof(int), 0);
+					if (retval == SOCKET_ERROR) 
+					{
+						err_display("send()");
+						RemoveSocketInfo(j);
+						--j; // 루프 인덱스 보정
+						continue;
+					}
+
+					// 가변 길이 전송
+					retval = sendn(ptr2->sock, ptr->buf, recvLen, 0);
+					if (retval == SOCKET_ERROR) 
+					{
+						err_display("send()");
+						RemoveSocketInfo(j);
+						--j; // 루프 인덱스 보정
+						continue;
 					}
 				}
 			}

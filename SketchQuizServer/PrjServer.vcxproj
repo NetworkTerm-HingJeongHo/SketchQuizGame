@@ -145,6 +145,9 @@
   <ItemGroup>
     <ClCompile Include="PrjServer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="socket.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
