@@ -8,6 +8,8 @@
 //* 지안 만든 헤더 *//
 #include "Home.h"
 #include "Login.h"
+#include "Home_Notice.h"
+#include "Home_Pass.h"
 
 // ====== 정호 ======
 #include "math.h"
@@ -65,10 +67,18 @@ extern _TCHAR		ID_NICKNAME[256];	// 현재 사용자 아이디 전역변수
 #define ID_CHANNEL_A_BUTTON		2500	// 채널 A 버튼
 #define ID_CHANNEL_B_BUTTON		2501	// 채널 B 버튼
 #define ID_CHANNEL_RANDOM_BUTTON 2502	// 랜덤 접속 버튼
+#define ID_NOTICE_BUTTON		2506	// 공지 전송 버튼
+
+// 홈 공지사항 사용자 정의 상수 (2600~ )
+#define ID_NOTICE_INPUT			2600	// 홈 공지사항 입력 input
+#define ID_OK_BUTTON			2601	// 확인 버튼
+#define ID_CANCLE_BUTTON		2602	// 취소 버튼
 
 // 윈도우 관련 전역 변수
 static HWND			hwndLogin;			// 로그인 윈도우 (2000..)
 static HWND			hwndHome;			// 홈 화면 윈도우 (2500..)
+static HWND			hwndHome_Pass;		// 공지사항 비밀번호 윈도우
+static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 
 
 // ======= 정호 =========
