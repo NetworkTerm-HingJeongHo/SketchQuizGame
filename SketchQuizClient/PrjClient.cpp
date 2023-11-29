@@ -868,6 +868,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		switch (comm_msg.type)
 		{
 		case TYPE_CHAT:
+			// ============ 연경 ==========
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
 				DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);

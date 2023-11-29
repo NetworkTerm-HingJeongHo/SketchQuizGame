@@ -46,6 +46,9 @@ static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
 static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
 static HWND          g_hTimerStatus;  // 타이머 영역
 static HWND          g_hWordStatus;   // 제시어 영역
+static int           gameScore;       // 게임 점수
+
+extern _TCHAR* messageQueue[10];      // 메시지 큐(도중에 들어온 클라이언트에게 이전 채팅 내용 표시
 
 // ============= 지윤 =============
 static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
