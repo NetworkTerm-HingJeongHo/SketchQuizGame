@@ -46,3 +46,9 @@ void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, DR
 
 // 타원을 특정 HDC에 그림
 void DrawEllipseInHDC(HDC tHDC, WPARAM wParam, LPARAM lParam);
+
+// 선 그리기 과정 실행
+void DrawLineProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, DRAW_DETAIL_INFORMATION drawDetailInformation);
+
+// 선을 특정 HDC에 그림
+void DrawLineInHDC(HDC tHDC, WPARAM wParam, LPARAM lParam);
