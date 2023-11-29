@@ -3,7 +3,7 @@
 
 int roundNum = 0;   //진행한 문제 개수. 제시어 배열의 인덱스 역할도 한다.
 int countdown = 30;
-const TCHAR* quizWord[4] = { _T("사과"), _T("바나나"), _T("포도"),_T("오렌지") };   // 제시어 배열
+const _TCHAR* quizWord[4] = { _T("사과"), _T("바나나"), _T("포도"),_T("오렌지") };   // 제시어 배열
 BOOL isGameOver = FALSE;
 BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
 
