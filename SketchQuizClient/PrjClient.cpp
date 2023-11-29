@@ -334,8 +334,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		case IDCANCEL:
 			closesocket(g_sock);
-			EndDialog(hDlg, IDCANCEL);
-			//ShowWindow(g_hDialog, SW_HIDE);
+			//EndDialog(hDlg, IDCANCEL);
+			ShowWindow(g_hDialog, SW_HIDE);
 			//CreateRankDlg(hDlg);
 			return TRUE;
 		//	======== 지윤 ==========
@@ -871,7 +871,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			// ============ 연경 ==========
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
-				DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
+				DisplayText("[%s] %s\r\n", (char*)ID_NICKNAME, chat_msg->msg);
 				if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
 					sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
 					MySendFile(sender, reciever, chat_msg->msg);
@@ -906,14 +906,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		default:
 			break;
 		}
-		if (comm_msg.type == TYPE_CHAT) {
-			chat_msg = (CHAT_MSG*)&comm_msg;
-			DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
-			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
-				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
-				MySendFile(sender, reciever, chat_msg->msg);
-			}
-		}
+
 
 	}
 	return 0;
