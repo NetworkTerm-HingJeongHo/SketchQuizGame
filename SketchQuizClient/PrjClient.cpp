@@ -349,6 +349,17 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// ========= 정호 ===========
 		case IDC_FIGURE:
 			SelectFigureOption(hDlg, g_currentSelectFigureMode);
+			// "지우개" 모드에서는 색상 선택 불가능으로 설정
+			if (g_currentSelectFigureMode == MODE_ERASE)
+			{
+				EnableWindow(g_hBtnPenColor, FALSE);
+				// 색상 흰색 고정
+				g_drawDetailInformation.color = RGB(255, 255, 255);
+			}
+			else
+			{
+				EnableWindow(g_hBtnPenColor, TRUE);
+			}
 			return TRUE;
 		//
 		}
@@ -394,17 +405,18 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		// 화면 출력용 DC 핸들 해제
 		EndPaint(hWnd, &ps);
 		return 0;
+
 	case WM_LBUTTONDOWN:
 		// 마우스 클릭 좌표 얻기
 		x0 = LOWORD(lParam);
 		y0 = HIWORD(lParam);
 		bDrawing = true;
 		return 0;
+		// ======= 정호 =======
 	case WM_MOUSEMOVE:
 		if (bDrawing && g_bCommStarted) {
-			switch (g_currentSelectFigureMode)
+			if (g_currentSelectFigureMode == MODE_ERASE || g_currentSelectFigureMode == MODE_LINE)
 			{
-			case MODE_LINE:
 				// 마우스 클릭 좌표 얻기
 				x1 = LOWORD(lParam);
 				y1 = HIWORD(lParam);
@@ -413,16 +425,16 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawlinemsg.y0 = y0;
 				g_drawlinemsg.x1 = x1;
 				g_drawlinemsg.y1 = y1;
+
+				// 전송 메시지의 선에 대한 색상과 굵기 설정
 				g_drawlinemsg.color = g_drawDetailInformation.color;
 				g_drawlinemsg.width = g_drawDetailInformation.width;
+
 				sendMsgLen(g_sock, sizeof(g_drawlinemsg));
 				sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
 				// 마우스 클릭 좌표 갱신
 				x0 = x1;
 				y0 = y1;
-				break;
-			default:
-				break;
 			}
 		}
 		return 0;
@@ -460,28 +472,20 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		bDrawing = false;
 		return 0;
-	case WM_DRAWLINE:
-		// 화면 출력용 DC와 Pen 핸들 얻기
-		hDC = GetDC(hWnd);
-		hPen = CreatePen(PS_SOLID, g_lineWidth, g_drawcolor);
-		// 윈도우 화면에 1차로 그리기
-		hOldPen = (HPEN)SelectObject(hDC, hPen);
-		MoveToEx(hDC, LOWORD(wParam), HIWORD(wParam), NULL);
-		LineTo(hDC, LOWORD(lParam), HIWORD(lParam));
-		SelectObject(hDC, hOldPen);
-		// 배경 비트맵에 2차로 그리기
-		hOldPen = (HPEN)SelectObject(hDCMem, hPen);
-		MoveToEx(hDCMem, LOWORD(wParam), HIWORD(wParam), NULL);
-		LineTo(hDCMem, LOWORD(lParam), HIWORD(lParam));
-		SelectObject(hDCMem, hOldPen);
-		// 화면 출력용 DC와 Pen 핸들 해제
-		DeleteObject(hPen);
-		ReleaseDC(hWnd, hDC);
-		return 0;
 	// ======== 정호 ==========
+	// 선 그리기 메시지 받음
+	case WM_DRAWLINE:
+		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		return 0;
+
 	// 타원 그리기 메시지 받음
 	case WM_DRAWELLIPSE:
 		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		return 0;
+
+	// 특정 부분 조금 지우기 윈도우 메시지 받음
+	case WM_ERASEALITTLE:
+		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
 		return 0;
 	//
 	case WM_ERASEPIC:

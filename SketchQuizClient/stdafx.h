@@ -115,6 +115,7 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 // ======= 정호 =========
 #define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
 #define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
+#define WM_ERASEALITTLE (WM_USER+4)		// 특정 부분 조금 지우기 윈도우 메시지
 
 // 그리기 모드 종류
 #define MODE_ERASE 4500
