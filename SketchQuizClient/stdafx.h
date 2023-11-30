@@ -28,8 +28,8 @@
 #include "resource.h" // 그림판 다이어로그창
 
 /*식별자*/
-#define SERVERIP4_CHAR   "127.0,0.1" //브로드캐스트 대상 주소 및 서버 ip char 버전 (지안)
-#define SERVERIP4  _T("127.0,0.1")
+#define SERVERIP4_CHAR   "127.0.0.1" //브로드캐스트 대상 주소 및 서버 ip char 버전 (지안)
+#define SERVERIP4  _T("127.0.0.1")
 #define SERVERIP6  _T("::1")
 #define SERVERPORT  9000
 
