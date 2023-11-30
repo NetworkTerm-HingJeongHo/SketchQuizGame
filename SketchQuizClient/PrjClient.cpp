@@ -904,7 +904,8 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		case TYPE_CHAT:
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
-				sscanf(chat_msg->msg, "[%s] %s", senderName, sendMsg);
+				sscanf(chat_msg->msg, "{%[^}]%*s%s", senderName, sendMsg);
+
  				if (strncmp(sendMsg, "/w ", 3) == 0) {
 					sscanf(sendMsg, "%s %s %s", tmp, sender, reciever);
 					if (strcmp(reciever, NICKNAME_CHAR) == 0) {
@@ -986,7 +987,7 @@ DWORD WINAPI WriteThread(LPVOID arg)
 
 		char sendMsg[256];
 		if(g_chatmsg.type==TYPE_CHAT){
-			snprintf(sendMsg,sizeof(sendMsg), "[%s] %s", NICKNAME_CHAR, g_chatmsg.msg);
+			snprintf(sendMsg,sizeof(sendMsg), "{%s} %s", NICKNAME_CHAR, g_chatmsg.msg);
 			strcpy(g_chatmsg.msg, sendMsg);
 			
 		}
