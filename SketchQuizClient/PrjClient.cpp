@@ -234,13 +234,14 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		EnableWindow(g_hBtnPenColor, FALSE);
 		EnableWindow(g_hLineWidth, FALSE);
 
+		AddLineWidthOption(hDlg);
+
 		// ========= 정호 =========
 		AddFigureOption(hDlg);
 		EnableWindow(g_hFigureSelect, FALSE);
 		//
 
-		AddLineWidthOption(hDlg);
-
+		
 		// 윈도우 클래스 등록
 		WNDCLASS wndclass;
 		wndclass.style = CS_HREDRAW | CS_VREDRAW;
