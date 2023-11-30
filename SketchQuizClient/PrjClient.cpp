@@ -677,6 +677,9 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 
 //------------------------------------- 홈 공지사항 윈도우 프로시저 -----------------------------------------------------------------------//
+// 
+ _TCHAR input_notice_result[256]; // input 결과 저장할 배열
+// 
 // 홈 공지사항 윈도우 프로시저
 LRESULT CALLBACK Home_NoticeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
@@ -701,7 +704,13 @@ LRESULT CALLBACK Home_NoticeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
 			ShowWindow(hwnd, SW_HIDE);
 			break;
 		case ID_OK_BUTTON: //확인 버튼 클릭시 - input 내용이 저장됨.
-			ShowWindow(hwnd, SW_HIDE);
+			
+
+			GetDlgItemText(hwnd, ID_NOTICE_INPUT, input_notice_result, sizeof(input_notice_result));
+			MessageBox(hwnd, input_notice_result, _T("공지사항 전송 내용"), MB_OK); // 공지사항 전송할 내용 띄우기
+			BoradcaseSendToNotice(input_notice_result); //전송가느자
+
+			//ShowWindow(hwnd, SW_HIDE);	// 공지사항 입력창 닫기
 			break;
 		default:
 			break;
