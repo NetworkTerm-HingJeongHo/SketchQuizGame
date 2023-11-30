@@ -941,9 +941,9 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		case TYPE_DRAWLINE:
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
 			// ============ ÁöÀ± ============
-			g_lineWidth = drawline_msg->width;
+			g_drawDetailInformation.width = drawline_msg->width;
 			// ==============================
-			g_drawcolor = drawline_msg->color;
+			g_drawDetailInformation.color = drawline_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWLINE,
 				MAKEWPARAM(drawline_msg->x0, drawline_msg->y0),
 				MAKELPARAM(drawline_msg->x1, drawline_msg->y1));
@@ -951,8 +951,8 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		// ======== Á¤È£ ==========
 		case TYPE_DRAWELLIPSE:
 			drawEllipse_msg = (DRAWELLIPSE_MSG*)&comm_msg;
-			g_lineWidth = drawEllipse_msg->width;
-			g_drawcolor = drawEllipse_msg->color;
+			g_drawDetailInformation.width = drawEllipse_msg->width;
+			g_drawDetailInformation.color = drawEllipse_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWELLIPSE,
 				MAKEWPARAM(drawEllipse_msg->x0, drawEllipse_msg->y0),
 				MAKELPARAM(drawEllipse_msg->x1, drawEllipse_msg->y1));
