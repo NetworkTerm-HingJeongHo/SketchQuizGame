@@ -13,14 +13,22 @@
 #define IDC_STATUS                      1008
 #define IDC_ERASEPIC                    1009
 #define IDC_COLORRED                    1010
-#define IDC_ANNOUNCE                    5010
 #define IDC_COLORGREEN                  1011
 #define IDC_COLORBLUE                   1012
 #define IDC_SENDFILE                    1013
 #define IDC_DUMMY                       1014
+
+// =========== 지윤 ===========
 #define IDC_PENCOLOR                    3100
 #define IDC_LINEWIDTH                   3101
+#define IDC_DRAWINGTEXTID               3102
+#define IDC_DRAWINGTEXT                 3103
+
+// =========== 정호 ===========
 #define IDC_FIGURE                      4100
+
+// =========== 연경 ===========
+#define IDC_ANNOUNCE                    5010
 #define IDD_DIALOG2                     5101
 #define IDC_EDIT1ST                     5102
 #define IDC_EDIT_TIMER                  5103
@@ -42,7 +50,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1031
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
