@@ -6,7 +6,7 @@ void CreateAndShowDialog(HWND hWnd);
 // 타입 정의
 // ======================= 정호 =======================
 
-// sizeof(DRAWELLIPSE_MSG) == 256
+// sizeof(DRAWELLIPSE_MSG) == 28
 typedef struct _DRAWELLIPSE_MSG
 {
 	int  type;
@@ -14,7 +14,6 @@ typedef struct _DRAWELLIPSE_MSG
 	int  color;
 	int  x0, y0;
 	int  x1, y1;
-	char dummy[SIZE_TOT - 7 * sizeof(int)];
 } DRAWELLIPSE_MSG;
 
 // 그림 세부 정보에 대한 구조체
@@ -47,3 +46,9 @@ void DrawEllipseProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, DR
 
 // 타원을 특정 HDC에 그림
 void DrawEllipseInHDC(HDC tHDC, WPARAM wParam, LPARAM lParam);
+
+// 선 그리기 과정 실행
+void DrawLineProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, DRAW_DETAIL_INFORMATION drawDetailInformation);
+
+// 선을 특정 HDC에 그림
+void DrawLineInHDC(HDC tHDC, WPARAM wParam, LPARAM lParam);

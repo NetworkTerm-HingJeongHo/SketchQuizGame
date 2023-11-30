@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-// 대화 상자를 만들고 표시하는 함수
+// ======================= 지윤 =======================
+// 그림판창 다이얼로그를 만들고 표시하는 함수
 void CreateAndShowDialog(HWND hWnd)
 {
 	g_hDialog = CreateDialog(g_hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgProc);
@@ -8,7 +9,6 @@ void CreateAndShowDialog(HWND hWnd)
 	g_bDialogVisible = true;
 }
 
-// ======================= 지윤 =======================
 void SelectPenColor(DRAW_DETAIL_INFORMATION* g_drawDetailInformation) {
 	// 색상 대화 상자 열기
 	CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
@@ -62,6 +62,7 @@ void AddFigureOption(HWND hDlg)
 	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("선"));
 	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("타원"));
 	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("사각형"));
+	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_ADDSTRING, 0, (LPARAM)_T("삼각형"));
 
 	// 초기 도형 옵션은 "선"으로 설정 
 	SendDlgItemMessage(hDlg, IDC_FIGURE, CB_SETCURSEL, 1, 0);
@@ -152,12 +153,36 @@ void DrawEllipseInHDC(HDC tHDC, WPARAM wParam, LPARAM lParam)
 		// 첫 번째는 같은 지점을 찍으므로 무시
 		if (i != 0)
 		{
-			MoveToEx(tHDC, oldX, oldY, NULL);
-			LineTo(tHDC, newX, newY);
+			DrawLineInHDC(tHDC, MAKEWPARAM(oldX, oldY), MAKELPARAM(newX, newY));
 		}
 
 		// 종료 위치를 다시 시작 위치로 옮김.
 		oldX = newX;
 		oldY = newY;
 	}
+}
+
+// 선 그리기 과정 실행
+void DrawLineProcess(HWND hWnd, HDC& hDCMem, WPARAM wParam, LPARAM lParam, DRAW_DETAIL_INFORMATION drawDetailInformation)
+{
+	HDC hDC = GetDC(hWnd);
+	HPEN hPen = CreatePen(PS_SOLID, drawDetailInformation.width, drawDetailInformation.color);
+	// 윈도우 화면에 선을 1차로 그리기
+	HPEN hOldPen = (HPEN)SelectObject(hDC, hPen);
+	DrawLineInHDC(hDC, wParam, lParam);
+	SelectObject(hDC, hOldPen);
+	// 배경 비트맵에 선을 2차로 그리기
+	hOldPen = (HPEN)SelectObject(hDCMem, hPen);
+	DrawLineInHDC(hDCMem, wParam, lParam);
+	SelectObject(hDCMem, hOldPen);
+	// 화면 출력용 DC와 Pen 핸들 해제
+	DeleteObject(hPen);
+	ReleaseDC(hWnd, hDC);
+}
+
+// 선을 특정 HDC에 그림
+void DrawLineInHDC(HDC tHDC, WPARAM wParam, LPARAM lParam)
+{
+	MoveToEx(tHDC, LOWORD(wParam), HIWORD(wParam), NULL);
+	LineTo(tHDC, LOWORD(lParam), HIWORD(lParam));
 }

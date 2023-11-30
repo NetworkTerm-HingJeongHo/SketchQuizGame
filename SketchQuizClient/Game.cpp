@@ -3,21 +3,22 @@
 
 int roundNum = 0;   //진행한 문제 개수. 제시어 배열의 인덱스 역할도 한다.
 int countdown = 30;
-const TCHAR* quizWord[4] = { _T("사과"), _T("바나나"), _T("포도"),_T("오렌지") };   // 제시어 배열
+const _TCHAR* quizWord[4] = { _T("사과"), _T("바나나"), _T("포도"),_T("오렌지") };   // 제시어 배열
 BOOL isGameOver = FALSE;
 BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
 
-void gameStart() {
+void gameStart(HWND statusTimer, HWND statusWord) {
 
-	//HANDLE hThread[2];
-	//hThread[0] = CreateThread(NULL, 0, TimerThread, NULL, CREATE_SUSPENDED, NULL);
-	//hThread[1] = CreateThread(NULL, 0, GameThread, NULL, CREATE_SUSPENDED, NULL);
+	HANDLE hThread[2];
+	hThread[0] = CreateThread(NULL, 0, TimerThread, (LPVOID)statusTimer, CREATE_SUSPENDED, NULL);
+	hThread[1] = CreateThread(NULL, 0, GameThread, (LPVOID)statusWord, CREATE_SUSPENDED, NULL);
 
 	//WaitForMultipleObjects(2, hThread, TRUE, INFINITE);
 	
-	Display(g_hTimerStatus, "%d", "10");
-	Display(g_hWordStatus, "%s", "tmp");
-
+	//Display(statusTimer, "%d", "10");
+	//Display(statusWord, "%s", "tmp");
+	//Display(statusTimer, "%d", "10");
+	//Display(statusWord, "%s", "tmp");
 }
 
 void Display(HWND g_status, const char* fmt, ...)
@@ -35,11 +36,11 @@ void Display(HWND g_status, const char* fmt, ...)
 }
 
 DWORD WINAPI TimerThread(LPVOID arg) {
-
+	HWND status = (HWND)arg;
 	clock_t start = clock();
 
 	int timer = (int)start;
-	countdown = 30 - timer;   //30부터 내려오는 카운트다운 형식
+	countdown = 5 - timer;   //30부터 내려오는 카운트다운 형식
 	char* timerText = NULL;
 
 	while (!isGameOver) {
@@ -49,23 +50,26 @@ DWORD WINAPI TimerThread(LPVOID arg) {
 
 		}
 		sprintf(timerText, "%d", countdown);
-		Display(g_hTimerStatus, timerText);
+		//Display(status, "%d", timerText);
+		SetDlgItemTextA(status, IDC_EDIT_TIMER, timerText);
 	}
 
 	return 0;
 }
 
 DWORD WINAPI GameThread(LPVOID arg) {
-	int myScore = 0;
-	//quizWord = { (char*)"사과", (char*)"바나나", (char*)"포도", (char*)"오렌지" };
+
+	HWND status = (HWND)arg;
 	char* roundText = NULL;
 
 	countdown = 30;
 
 	while (!isGameOver) {
 		//if (hThread == NULL) return 1;
-		sprintf(roundText, "%d", roundNum);
-		Display(g_hWordStatus, roundText);
+		snprintf(roundText,sizeof(roundText), "%s", quizWord[roundNum]);
+		//Display(status, "%s", roundText);
+
+		SetDlgItemTextA(status, IDC_EDIT_WORD, roundText);
 	}
 	return 0;
 }

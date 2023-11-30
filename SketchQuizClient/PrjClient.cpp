@@ -199,9 +199,12 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
 
+
+
 		// ========= 연경 =========
 		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // 타이머 표시하는 EditText 부분 
 		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // 제시어 표시하는 EditText 부분
+		WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR 형 문자열을 char* 형 문자열로 변경
 
 		// ========= 지윤 =========
 		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
@@ -299,7 +302,14 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			EnableWindow(g_hLineWidth, TRUE);
 
 			// ========= 연경 =========
-			gameStart();
+			gameStart(g_hTimerStatus, g_hWordStatus);
+
+			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
+			WaitForSingleObject(g_hReadEvent, INFINITE);
+			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "님이 입장하였습니다.", NICKNAME_CHAR);
+			SetEvent(g_hWriteEvent);
+
 
 			// ========= 정호 =========
 			EnableWindow(g_hFigureSelect, TRUE);
@@ -333,9 +343,16 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
 		case IDCANCEL:
+
+			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
+			WaitForSingleObject(g_hReadEvent, INFINITE);
+			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]님이 퇴장하였습니다.", NICKNAME_CHAR);
+			SetEvent(g_hWriteEvent);
+
 			closesocket(g_sock);
-			EndDialog(hDlg, IDCANCEL);
-			//ShowWindow(g_hDialog, SW_HIDE);
+			//EndDialog(hDlg, IDCANCEL);
+			ShowWindow(g_hDialog, SW_HIDE);
 			//CreateRankDlg(hDlg);
 			return TRUE;
 		//	======== 지윤 ==========
@@ -349,6 +366,17 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// ========= 정호 ===========
 		case IDC_FIGURE:
 			SelectFigureOption(hDlg, g_currentSelectFigureMode);
+			// "지우개" 모드에서는 색상 선택 불가능으로 설정
+			if (g_currentSelectFigureMode == MODE_ERASE)
+			{
+				EnableWindow(g_hBtnPenColor, FALSE);
+				// 색상 흰색 고정
+				g_drawDetailInformation.color = RGB(255, 255, 255);
+			}
+			else
+			{
+				EnableWindow(g_hBtnPenColor, TRUE);
+			}
 			return TRUE;
 		//
 		}
@@ -394,17 +422,18 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		// 화면 출력용 DC 핸들 해제
 		EndPaint(hWnd, &ps);
 		return 0;
+
 	case WM_LBUTTONDOWN:
 		// 마우스 클릭 좌표 얻기
 		x0 = LOWORD(lParam);
 		y0 = HIWORD(lParam);
 		bDrawing = true;
 		return 0;
+		// ======= 정호 =======
 	case WM_MOUSEMOVE:
 		if (bDrawing && g_bCommStarted) {
-			switch (g_currentSelectFigureMode)
+			if (g_currentSelectFigureMode == MODE_ERASE || g_currentSelectFigureMode == MODE_LINE)
 			{
-			case MODE_LINE:
 				// 마우스 클릭 좌표 얻기
 				x1 = LOWORD(lParam);
 				y1 = HIWORD(lParam);
@@ -413,15 +442,16 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawlinemsg.y0 = y0;
 				g_drawlinemsg.x1 = x1;
 				g_drawlinemsg.y1 = y1;
+
+				// 전송 메시지의 선에 대한 색상과 굵기 설정
 				g_drawlinemsg.color = g_drawDetailInformation.color;
 				g_drawlinemsg.width = g_drawDetailInformation.width;
-				send(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
+
+				sendMsgLen(g_sock, sizeof(g_drawlinemsg));
+				sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
 				// 마우스 클릭 좌표 갱신
 				x0 = x1;
 				y0 = y1;
-				break;
-			default:
-				break;
 			}
 		}
 		return 0;
@@ -442,7 +472,8 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawellipsemsg.y1 = HIWORD(lParam);
 				g_drawellipsemsg.color = g_drawDetailInformation.color;
 				g_drawellipsemsg.width = g_drawDetailInformation.width;
-				send(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0);
+				sendMsgLen(g_sock, sizeof(g_drawellipsemsg));
+				sendn(g_sock, (char*)&g_drawellipsemsg, sizeof(g_drawellipsemsg), 0);
 				break;
 
 			// "사각형" 그리기 모드
@@ -458,28 +489,20 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		bDrawing = false;
 		return 0;
-	case WM_DRAWLINE:
-		// 화면 출력용 DC와 Pen 핸들 얻기
-		hDC = GetDC(hWnd);
-		hPen = CreatePen(PS_SOLID, g_lineWidth, g_drawcolor);
-		// 윈도우 화면에 1차로 그리기
-		hOldPen = (HPEN)SelectObject(hDC, hPen);
-		MoveToEx(hDC, LOWORD(wParam), HIWORD(wParam), NULL);
-		LineTo(hDC, LOWORD(lParam), HIWORD(lParam));
-		SelectObject(hDC, hOldPen);
-		// 배경 비트맵에 2차로 그리기
-		hOldPen = (HPEN)SelectObject(hDCMem, hPen);
-		MoveToEx(hDCMem, LOWORD(wParam), HIWORD(wParam), NULL);
-		LineTo(hDCMem, LOWORD(lParam), HIWORD(lParam));
-		SelectObject(hDCMem, hOldPen);
-		// 화면 출력용 DC와 Pen 핸들 해제
-		DeleteObject(hPen);
-		ReleaseDC(hWnd, hDC);
-		return 0;
 	// ======== 정호 ==========
+	// 선 그리기 메시지 받음
+	case WM_DRAWLINE:
+		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		return 0;
+
 	// 타원 그리기 메시지 받음
 	case WM_DRAWELLIPSE:
 		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		return 0;
+
+	// 특정 부분 조금 지우기 윈도우 메시지 받음
+	case WM_ERASEALITTLE:
+		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
 		return 0;
 	//
 	case WM_ERASEPIC:
@@ -502,6 +525,9 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 // ---- 지안 (로그인을 위함) ----- //
 _TCHAR input_result[256]; // input 결과 저장할 배열
 _TCHAR ID_NICKNAME[256]; // stdafx.h 파일에 같은 주소에 저장하기 위함
+
+// ---- 연경 ------------------- //
+
 
 //-------------------------------//
 
@@ -833,24 +859,58 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	ERASEPIC_MSG* erasepic_msg;
 	char reciever[20], sender[20], tmp[5];
 
+
+	// ------ 연경 --------
+	char senderName[256];
+	char recieverName[256];
+	char sendMsg[256];
+
 	// ====== 정호 ========
 	DRAWELLIPSE_MSG* drawEllipse_msg;
+	int len;
 	//
 
 	while (1) {
-		retval = recv(g_sock, (char*)&comm_msg, SIZE_TOT, MSG_WAITALL);
-		if (retval == 0 || retval == SOCKET_ERROR) {
+
+		// 데이터 받기(고정 길이)
+		retval = recvn(g_sock, (char*)&len, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) 
+		{
+			err_display("recvn()");
 			break;
 		}
+		else if (retval == 0)
+		{
+			break;
+		}
+
+		// 데이터 받기(가변 길이)
+		retval = recvn(g_sock, (char*)&comm_msg, len, 0);
+		if (retval == 0 || retval == SOCKET_ERROR) {
+			err_display("recv()");
+			break;
+		}
+		else if (retval == 0)
+		{
+			break;
+		}
+
 		switch (comm_msg.type)
 		{
 		case TYPE_CHAT:
+			// ============ 연경 ==========
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
-				DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
-				if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
-					sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
-					MySendFile(sender, reciever, chat_msg->msg);
+				sscanf(chat_msg->msg, "[%s] %s", senderName, sendMsg);
+				if (strncmp(sendMsg, "/w ", 2) == 0) {
+					sscanf(sendMsg, "%s %s %s", tmp, sender, reciever);
+					if (strcmp(reciever, NICKNAME_CHAR) == 0) {
+						MySendFile(sender, reciever, chat_msg->msg);
+						DisplayText("[%s] %s\r\n", NICKNAME_CHAR, chat_msg->msg);
+					}
+				}
+				else {
+					DisplayText("%s\r\n", chat_msg->msg);
 				}
 			}
 			break;
@@ -879,17 +939,13 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			SendMessage(g_hDrawWnd, WM_ERASEPIC, 0, 0);
 			break;
 
+		case TYPE_ENTEREXIT:
+			DisplayText("%s", ((CHAT_MSG*)&comm_msg)->msg);
+			break;
 		default:
 			break;
 		}
-		if (comm_msg.type == TYPE_CHAT) {
-			chat_msg = (CHAT_MSG*)&comm_msg;
-			DisplayText("[받은 메시지] %s\r\n", chat_msg->msg);
-			if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
-				sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
-				MySendFile(sender, reciever, chat_msg->msg);
-			}
-		}
+
 
 	}
 	return 0;
@@ -898,7 +954,8 @@ DWORD WINAPI ReadThread(LPVOID arg)
 // 소켓 통신 스레드 함수(3) - 데이터 송신
 DWORD WINAPI WriteThread(LPVOID arg)
 {
-	int retval;
+	int retval, len;
+	char* nickName;
 
 	// 서버와 데이터 통신
 	while (1) {
@@ -912,8 +969,22 @@ DWORD WINAPI WriteThread(LPVOID arg)
 			SetEvent(g_hReadEvent);
 			continue;
 		}
+		// ============ 정호 ===========
 		// 데이터 보내기
-		retval = send(g_sock, (char*)&g_chatmsg, SIZE_TOT, 0);
+
+		// 고정 크기 데이터 전송
+
+		char sendMsg[256];
+		//strcpy(sendMsg, NICKNAME_CHAR);
+		//sendMsg = strcat(sendMsg, ": ");
+		//sendMsg = strcat(sendMsg, g_chatmsg.msg);
+		//strcpy(g_chatmsg.msg, sendMsg);
+		snprintf(sendMsg,sizeof(sendMsg), "[%s] %s", NICKNAME_CHAR, g_chatmsg.msg);
+		strcpy(g_chatmsg.msg, sendMsg);
+		len = sizeof(g_chatmsg);
+		retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
+		// 가변 크기 데이터 전송
+		retval = sendn(g_sock, (char*)&g_chatmsg, len, 0);
 		if (retval == SOCKET_ERROR) break;
 		// [메시지 전송] 버튼 활성화
 		EnableWindow(g_hBtnSendMsg, TRUE);

@@ -27,7 +27,7 @@ typedef struct _CHAT_MSG
 } CHAT_MSG;
 
 // 선 그리기 메시지 형식
-// sizeof(DRAWLINE_MSG) == 256
+// sizeof(DRAWLINE_MSG) == 28
 typedef struct _DRAWLINE_MSG
 {
 	int  type;
@@ -35,7 +35,6 @@ typedef struct _DRAWLINE_MSG
 	int  color;
 	int  x0, y0;
 	int  x1, y1;
-	char dummy[SIZE_TOT - 6 * sizeof(int)];
 } DRAWLINE_MSG;
 
 // 그림 지우기 메시지 형식

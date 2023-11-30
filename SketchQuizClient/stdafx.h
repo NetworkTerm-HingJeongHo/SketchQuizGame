@@ -15,6 +15,7 @@
 
 // ====== 정호 ======
 #include "math.h"
+#include "socket.h"
 
 // ====== 연경 ======
 #include "Ranking.h"
@@ -45,11 +46,15 @@ static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
 static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
 static HWND          g_hTimerStatus;  // 타이머 영역
 static HWND          g_hWordStatus;   // 제시어 영역
+static int           g_gameScore;     // 게임 점수
+#define TYPE_ENTEREXIT 5000  // 입장, 퇴장 메시지 출력
+
+extern _TCHAR* messageQueue[10];      // 메시지 큐(도중에 들어온 클라이언트에게 이전 채팅 내용 표시
 
 // ============= 지윤 =============
 static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
 static HWND			 g_hLineWidth;    // 선 굵기 콤보박스
-
+static char NICKNAME_CHAR[256];
 // 다이얼로그 상태 플래그
 static bool          g_bDialogVisible = false;
 
@@ -111,6 +116,7 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 // ======= 정호 =========
 #define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
 #define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
+#define WM_ERASEALITTLE (WM_USER+4)		// 특정 부분 조금 지우기 윈도우 메시지
 
 // 그리기 모드 종류
 #define MODE_ERASE 4500
