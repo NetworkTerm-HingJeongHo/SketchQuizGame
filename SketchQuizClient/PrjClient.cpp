@@ -199,9 +199,12 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
 
+
+
 		// ========= 연경 =========
 		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // 타이머 표시하는 EditText 부분 
 		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // 제시어 표시하는 EditText 부분
+		WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR 형 문자열을 char* 형 문자열로 변경
 
 		// ========= 지윤 =========
 		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
@@ -301,6 +304,13 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// ========= 연경 =========
 			gameStart(g_hTimerStatus, g_hWordStatus);
 
+			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
+			WaitForSingleObject(g_hReadEvent, INFINITE);
+			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "님이 입장하였습니다.", NICKNAME_CHAR);
+			SetEvent(g_hWriteEvent);
+
+
 			// ========= 정호 =========
 			EnableWindow(g_hFigureSelect, TRUE);
 			//
@@ -333,6 +343,13 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
 		case IDCANCEL:
+
+			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
+			WaitForSingleObject(g_hReadEvent, INFINITE);
+			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]님이 퇴장하였습니다.", NICKNAME_CHAR);
+			SetEvent(g_hWriteEvent);
+
 			closesocket(g_sock);
 			//EndDialog(hDlg, IDCANCEL);
 			ShowWindow(g_hDialog, SW_HIDE);
@@ -504,6 +521,9 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 // ---- 지안 (로그인을 위함) ----- //
 _TCHAR input_result[256]; // input 결과 저장할 배열
 _TCHAR ID_NICKNAME[256]; // stdafx.h 파일에 같은 주소에 저장하기 위함
+
+// ---- 연경 ------------------- //
+
 
 //-------------------------------//
 
@@ -835,6 +855,12 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	ERASEPIC_MSG* erasepic_msg;
 	char reciever[20], sender[20], tmp[5];
 
+
+	// ------ 연경 --------
+	char senderName[256];
+	char recieverName[256];
+	char sendMsg[256];
+
 	// ====== 정호 ========
 	DRAWELLIPSE_MSG* drawEllipse_msg;
 	int len;
@@ -871,10 +897,16 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			// ============ 연경 ==========
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
-				DisplayText("[%s] %s\r\n", (char*)ID_NICKNAME, chat_msg->msg);
-				if (strncmp(chat_msg->msg, "/w ", 2) == 0) {
-					sscanf(chat_msg->msg, "%s %s %s", tmp, sender, reciever);
-					MySendFile(sender, reciever, chat_msg->msg);
+				sscanf(chat_msg->msg, "[%s] %s", senderName, sendMsg);
+				if (strncmp(sendMsg, "/w ", 2) == 0) {
+					sscanf(sendMsg, "%s %s %s", tmp, sender, reciever);
+					if (strcmp(reciever, NICKNAME_CHAR) == 0) {
+						MySendFile(sender, reciever, chat_msg->msg);
+						DisplayText("[%s] %s\r\n", NICKNAME_CHAR, chat_msg->msg);
+					}
+				}
+				else {
+					DisplayText("%s\r\n", chat_msg->msg);
 				}
 			}
 			break;
@@ -903,6 +935,9 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			SendMessage(g_hDrawWnd, WM_ERASEPIC, 0, 0);
 			break;
 
+		case TYPE_ENTEREXIT:
+			DisplayText("%s", ((CHAT_MSG*)&comm_msg)->msg);
+			break;
 		default:
 			break;
 		}
@@ -916,6 +951,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 DWORD WINAPI WriteThread(LPVOID arg)
 {
 	int retval, len;
+	char* nickName;
 
 	// 서버와 데이터 통신
 	while (1) {
@@ -933,6 +969,14 @@ DWORD WINAPI WriteThread(LPVOID arg)
 		// 데이터 보내기
 
 		// 고정 크기 데이터 전송
+
+		char sendMsg[256];
+		//strcpy(sendMsg, NICKNAME_CHAR);
+		//sendMsg = strcat(sendMsg, ": ");
+		//sendMsg = strcat(sendMsg, g_chatmsg.msg);
+		//strcpy(g_chatmsg.msg, sendMsg);
+		snprintf(sendMsg,sizeof(sendMsg), "[%s] %s", NICKNAME_CHAR, g_chatmsg.msg);
+		strcpy(g_chatmsg.msg, sendMsg);
 		len = sizeof(g_chatmsg);
 		retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
 		// 가변 크기 데이터 전송
