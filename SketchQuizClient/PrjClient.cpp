@@ -299,7 +299,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			EnableWindow(g_hLineWidth, TRUE);
 
 			// ========= 연경 =========
-			gameStart();
+			gameStart(g_hTimerStatus, g_hWordStatus);
 
 			// ========= 정호 =========
 			EnableWindow(g_hFigureSelect, TRUE);
