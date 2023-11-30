@@ -42,14 +42,23 @@ static HWND			 g_hMainWindow;   // 처음 윈도우창 핸들
 static HWND			 g_hDialog;       // 그림판 다이어로그 핸들
 
 // ============= 연경 =============
+// 채팅 관련 변수
+#define TYPE_NOTY 5000  // 입장, 퇴장, 새 라운드 알림 메시지 출력
+
 static HWND          g_hRankDlg;      // 랭킹 다이얼로그 핸들
 static HWND          g_hChattingDlg;  // 채팅 다이얼로그 핸들
 static HWND          g_hTimerStatus;  // 타이머 영역
 static HWND          g_hWordStatus;   // 제시어 영역
 static int           g_gameScore;     // 게임 점수
-#define TYPE_ENTEREXIT 5000  // 입장, 퇴장 메시지 출력
-
 extern _TCHAR* messageQueue[10];      // 메시지 큐(도중에 들어온 클라이언트에게 이전 채팅 내용 표시
+
+// 게임 관련 변수
+static int roundNum = 0;   //진행한 문제 개수. 제시어 배열의 인덱스 역할도 한다.
+static int countdown = 30;
+static const _TCHAR* quizWord[4] = { _T("apple"), _T("바나나"), _T("포도"),_T("오렌지") };   // 제시어 배열
+static BOOL isGameOver = FALSE;
+static BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
+
 
 // ============= 지윤 =============
 static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼

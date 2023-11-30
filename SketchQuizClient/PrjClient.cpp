@@ -307,7 +307,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
 			WaitForSingleObject(g_hReadEvent, INFINITE);
 			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
-			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "님이 입장하였습니다.", NICKNAME_CHAR);
+			g_chatmsg.type = TYPE_NOTY;
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s] 님이 입장하였습니다.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
 
 
@@ -322,6 +323,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// 전송할 파일을 선택한다. 2. 선택한 파일을 읽어서 서버에 전송한다.
 			return TRUE;
 		case IDC_SENDMSG:
+			g_chatmsg.type = TYPE_CHAT;
 			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
 			WaitForSingleObject(g_hReadEvent, INFINITE);
 			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
@@ -860,6 +862,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	char senderName[256];
 	char recieverName[256];
 	char sendMsg[256];
+	char word[10];
 
 	// ====== 정호 ========
 	DRAWELLIPSE_MSG* drawEllipse_msg;
@@ -893,24 +896,34 @@ DWORD WINAPI ReadThread(LPVOID arg)
 
 		switch (comm_msg.type)
 		{
+		// ============ 연경 ==========
 		case TYPE_CHAT:
-			// ============ 연경 ==========
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
 				sscanf(chat_msg->msg, "[%s] %s", senderName, sendMsg);
-				if (strncmp(sendMsg, "/w ", 2) == 0) {
+ 				if (strncmp(sendMsg, "/w ", 3) == 0) {
 					sscanf(sendMsg, "%s %s %s", tmp, sender, reciever);
 					if (strcmp(reciever, NICKNAME_CHAR) == 0) {
 						MySendFile(sender, reciever, chat_msg->msg);
-						DisplayText("[%s] %s\r\n", NICKNAME_CHAR, chat_msg->msg);
+						DisplayText("%s\r\n", chat_msg->msg);
 					}
 				}
 				else {
 					DisplayText("%s\r\n", chat_msg->msg);
 				}
+
+				WideCharToMultiByte(CP_ACP, 0, quizWord[roundNum], 10, word, 10, NULL, NULL);
+				if (strcmp(sendMsg, word) == 0) {  // 제시어를 맞춘 경우: 정답임을 출력하고 새 라운드 시작
+
+					DisplayText("[%s] 정답입니다!\r\n", word);
+					newRound();
+				}
 			}
 			break;
-
+		case TYPE_NOTY:
+			chat_msg = (CHAT_MSG*)&comm_msg;
+			DisplayText("%s\r\n", chat_msg->msg);
+			break;
 		case TYPE_DRAWLINE:
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
 			// ============ 지윤 ============
@@ -935,9 +948,6 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			SendMessage(g_hDrawWnd, WM_ERASEPIC, 0, 0);
 			break;
 
-		case TYPE_ENTEREXIT:
-			DisplayText("%s", ((CHAT_MSG*)&comm_msg)->msg);
-			break;
 		default:
 			break;
 		}
@@ -971,12 +981,11 @@ DWORD WINAPI WriteThread(LPVOID arg)
 		// 고정 크기 데이터 전송
 
 		char sendMsg[256];
-		//strcpy(sendMsg, NICKNAME_CHAR);
-		//sendMsg = strcat(sendMsg, ": ");
-		//sendMsg = strcat(sendMsg, g_chatmsg.msg);
-		//strcpy(g_chatmsg.msg, sendMsg);
-		snprintf(sendMsg,sizeof(sendMsg), "[%s] %s", NICKNAME_CHAR, g_chatmsg.msg);
-		strcpy(g_chatmsg.msg, sendMsg);
+		if(g_chatmsg.type==TYPE_CHAT){
+			snprintf(sendMsg,sizeof(sendMsg), "[%s] %s", NICKNAME_CHAR, g_chatmsg.msg);
+			strcpy(g_chatmsg.msg, sendMsg);
+			
+		}
 		len = sizeof(g_chatmsg);
 		retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
 		// 가변 크기 데이터 전송

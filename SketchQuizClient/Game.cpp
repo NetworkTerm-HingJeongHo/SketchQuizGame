@@ -1,11 +1,6 @@
 #include "stdafx.h"
 
 
-int roundNum = 0;   //진행한 문제 개수. 제시어 배열의 인덱스 역할도 한다.
-int countdown = 30;
-const _TCHAR* quizWord[4] = { _T("사과"), _T("바나나"), _T("포도"),_T("오렌지") };   // 제시어 배열
-BOOL isGameOver = FALSE;
-BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
 
 void gameStart(HWND statusTimer, HWND statusWord) {
 
@@ -66,10 +61,12 @@ DWORD WINAPI GameThread(LPVOID arg) {
 
 	while (!isGameOver) {
 		//if (hThread == NULL) return 1;
-		snprintf(roundText,sizeof(roundText), "%s", quizWord[roundNum]);
-		//Display(status, "%s", roundText);
+		//snprintf(roundText,sizeof(roundText), "%s", quizWord[roundNum]);
+		WideCharToMultiByte(CP_ACP, 0, quizWord[roundNum], 10, roundText, 10, NULL, NULL);
+		Display(status, "%s", "tmp");
 
-		SetDlgItemTextA(status, IDC_EDIT_WORD, roundText);
+		//SetDlgItemTextA(status, IDC_EDIT_WORD, (LPCSTR)quizWord[roundNum]);
+		SetDlgItemTextA(status, IDC_EDIT_WORD, "tmp");
 	}
 	return 0;
 }
@@ -81,7 +78,15 @@ void newRound() {
 		isGameOver = TRUE;
 		return;
 	}
-	DisplayText("%d 번째 라운드 입니다.", roundNum+1);
+
+	// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
+	WaitForSingleObject(g_hReadEvent, INFINITE);
+	// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
+	g_chatmsg.type = TYPE_NOTY;
+	snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "%d번째 라운드.", roundNum);
+	SetEvent(g_hWriteEvent);
+
+	//DisplayText("%d 번째 라운드 입니다.", roundNum+1);
 	if (isOwner) {
 
 		Display(g_hWordStatus, (const char*)quizWord[roundNum]);
