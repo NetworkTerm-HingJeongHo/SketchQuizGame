@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-// 대화 상자를 만들고 표시하는 함수
+// ======================= 지윤 =======================
+// 그림판창 다이얼로그를 만들고 표시하는 함수
 void CreateAndShowDialog(HWND hWnd)
 {
 	g_hDialog = CreateDialog(g_hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, DlgProc);
@@ -8,7 +9,6 @@ void CreateAndShowDialog(HWND hWnd)
 	g_bDialogVisible = true;
 }
 
-// ======================= 지윤 =======================
 void SelectPenColor(DRAW_DETAIL_INFORMATION* g_drawDetailInformation) {
 	// 색상 대화 상자 열기
 	CHOOSECOLOR cc = { sizeof(CHOOSECOLOR) };
