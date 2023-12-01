@@ -22,13 +22,15 @@ typedef struct _SOCKETINFO
 
 // ======= 연경 ======= 
 typedef struct _MESSAGEQUEUE {
-	char* queue[BUFSIZE] = { NULL };         // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
+	char queue[BUFSIZE][100] = { NULL };         // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
 	int head = 0;                 // 원형 큐 인덱스
 	int tail = 0;
 } MESSAGEQUEUE;
-//char* g_messageQueue[BUFSIZE];    // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
-int head = 0, tail = 0;           // 원형 큐 인덱스
+
+//char* g_msgQueue[BUFSIZE];    // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
+//int head = 0, tail = 0;           // 원형 큐 인덱스
 MESSAGEQUEUE g_msgQueue;
+// ====================
 
 int nTotalSockets = 0;
 SOCKETINFO *SocketInfoArray[FD_SETSIZE];
@@ -165,7 +167,26 @@ int main(int argc, char *argv[])
 		}
 		// ====== 연경 ======
 		// 새로 들어온 클라이언트에게 이전 대화 내용 전송
+		SOCKETINFO* curClientPtr = SocketInfoArray[nTotalSockets - 1];
+		int sendLen = sizeof(g_msgQueue);
+		// 고정 길이 전송
+		retval = sendn(curClientPtr->sock, (char*)&sendLen, sizeof(int), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("send()");
+			continue;
+		}
 
+		// 가변 길이 전송
+		retval = sendn(curClientPtr->sock, (char*)&g_msgQueue, recvLen, 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("send()");
+			continue;
+		}
+
+		// =========================
+		
 
 		// 소켓 셋 검사(2): 데이터 통신
 		for (int i = 0; i < nTotalSockets; i++) {
