@@ -11,13 +11,31 @@ typedef struct _SOCKETINFO
 	bool   isUDP;
 	char   buf[BUFSIZE + 1];
 	int    recvbytes;
+
+	// ===== 연경 ======
+	_TCHAR id_nickname[BUFSIZE]; // 사용자 닉네임
+	int    score=0;       // 게임 플레이 점수
 } SOCKETINFO;
+
+
+
+// ======= 연경 ======= 
+typedef struct _MESSAGEQUEUE {
+	char* queue[BUFSIZE] = { NULL };         // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
+	int head = 0;                 // 원형 큐 인덱스
+	int tail = 0;
+} MESSAGEQUEUE;
+//char* g_messageQueue[BUFSIZE];    // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
+int head = 0, tail = 0;           // 원형 큐 인덱스
+MESSAGEQUEUE g_msgQueue;
+
 int nTotalSockets = 0;
 SOCKETINFO *SocketInfoArray[FD_SETSIZE];
 
 // 소켓 정보 관리 함수
 bool AddSocketInfo(SOCKET sock, bool isIPv6, bool isUDP);
 void RemoveSocketInfo(int nIndex);
+void addMessage(char* message); 
 
 int main(int argc, char *argv[])
 {
@@ -142,6 +160,9 @@ int main(int argc, char *argv[])
 					closesocket(client_sock);
 			}
 		}
+		// ====== 연경 ======
+		// 새로 들어온 클라이언트에게 이전 대화 내용 전송
+
 
 		// 소켓 셋 검사(2): 데이터 통신
 		for (int i = 0; i < nTotalSockets; i++) {
@@ -261,4 +282,14 @@ void RemoveSocketInfo(int nIndex)
 	if (nIndex != (nTotalSockets - 1))
 		SocketInfoArray[nIndex] = SocketInfoArray[nTotalSockets - 1];
 	--nTotalSockets;
+}
+
+
+void addMessage(char* message) {
+	if ((g_msgQueue.tail + 1) % BUFSIZE == g_msgQueue.head) { //큐가 꽉찬 경우: 
+		g_msgQueue.head = (g_msgQueue.head + 1) % BUFSIZE; //마지막 요소를 하나 지우고 공간 하나를 확보한다.
+	}
+	g_msgQueue.queue[g_msgQueue.tail] = message;
+	g_msgQueue.tail = (g_msgQueue.tail + 1) % BUFSIZE;
+
 }
