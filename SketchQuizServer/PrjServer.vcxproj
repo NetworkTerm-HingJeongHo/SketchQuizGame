@@ -147,7 +147,11 @@
     <ClCompile Include="tmpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="socket.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PrjServer.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
