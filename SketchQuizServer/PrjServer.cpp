@@ -166,24 +166,24 @@ int main(int argc, char *argv[])
 			}
 		}
 		// ====== 연경 ======
-		// 새로 들어온 클라이언트에게 이전 대화 내용 전송
-		SOCKETINFO* curClientPtr = SocketInfoArray[nTotalSockets - 1];
-		int sendLen = sizeof(g_msgQueue);
-		// 고정 길이 전송
-		retval = sendn(curClientPtr->sock, (char*)&sendLen, sizeof(int), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("send()");
-			continue;
-		}
+		//// 새로 들어온 클라이언트에게 이전 대화 내용 전송
+		//SOCKETINFO* curClientPtr = SocketInfoArray[nTotalSockets - 1];
+		//int sendLen = sizeof(g_msgQueue);
+		//// 고정 길이 전송
+		//retval = sendn(curClientPtr->sock, (char*)&sendLen, sizeof(int), 0);
+		//if (retval == SOCKET_ERROR)
+		//{
+		//	err_display("send()");
+		//	continue;
+		//}
 
-		// 가변 길이 전송
-		retval = sendn(curClientPtr->sock, (char*)&g_msgQueue, recvLen, 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("send()");
-			continue;
-		}
+		//// 가변 길이 전송
+		//retval = sendn(curClientPtr->sock, (char*)&g_msgQueue, recvLen, 0);
+		//if (retval == SOCKET_ERROR)
+		//{
+		//	err_display("send()");
+		//	continue;
+		//}
 
 		// =========================
 		
