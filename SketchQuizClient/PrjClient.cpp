@@ -128,7 +128,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 		{
 			CreateAndShowWindow_Login(hwndLogin);
 		}
-
 		else if (LOWORD(wParam) == 3) // '메인' 버튼 클릭
 		{
 			CreateAndShowWindow_Home(hwndHome); // 메인 생성
@@ -158,9 +157,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnSendMsg; // 전역 변수에도 저장
 	static HWND hEditMsg;
 	static HWND hEditStatus; // 전역 변수에도 저장
-	static HWND hColorRed;
-	static HWND hColorGreen;
-	static HWND hColorBlue;
 	static HWND hBtnErasePic; // 전역 변수에도 저장
 	static HWND hStaticDummy;
 
@@ -192,9 +188,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hEditMsg = GetDlgItem(hDlg, IDC_MSG);
 		hEditStatus = GetDlgItem(hDlg, IDC_STATUS);
 		g_hEditStatus = hEditStatus; // 전역 변수에 저장
-		hColorRed = GetDlgItem(hDlg, IDC_COLORRED);
-		hColorGreen = GetDlgItem(hDlg, IDC_COLORGREEN);
-		hColorBlue = GetDlgItem(hDlg, IDC_COLORBLUE);
 		hBtnErasePic = GetDlgItem(hDlg, IDC_ERASEPIC);
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
@@ -225,9 +218,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		EnableWindow(g_hBtnSendFile, FALSE);
 		EnableWindow(g_hBtnSendMsg, FALSE);
 		SendMessage(hEditMsg, EM_SETLIMITTEXT, SIZE_DAT / 2, 0);
-		SendMessage(hColorRed, BM_SETCHECK, BST_CHECKED, 0);
-		SendMessage(hColorGreen, BM_SETCHECK, BST_UNCHECKED, 0);
-		SendMessage(hColorBlue, BM_SETCHECK, BST_UNCHECKED, 0);
 		EnableWindow(g_hBtnErasePic, FALSE);
 
 		// ========= 지윤 =========

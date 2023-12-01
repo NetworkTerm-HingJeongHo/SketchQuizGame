@@ -12,11 +12,8 @@
 #define IDC_MSG                         1007
 #define IDC_STATUS                      1008
 #define IDC_ERASEPIC                    1009
-#define IDC_COLORRED                    1010
-#define IDC_COLORGREEN                  1011
-#define IDC_COLORBLUE                   1012
-#define IDC_SENDFILE                    1013
-#define IDC_DUMMY                       1014
+#define IDC_SENDFILE                    1010
+#define IDC_DUMMY                       1011
 
 // =========== ÁöÀ± ===========
 #define IDC_PENCOLOR                    3100
