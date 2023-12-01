@@ -9,6 +9,9 @@
 #include <stdlib.h> // exit(), ...
 #include <string.h> // strncpy(), ...
 
+// ======== ÁöÀ± ========
+#include <commctrl.h>
+
 // ======== Á¤È£ ========
 #include "socket.h"
 
