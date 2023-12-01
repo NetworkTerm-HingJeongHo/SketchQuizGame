@@ -1,5 +1,13 @@
 #include "stdafx.h"
 
+// ---- 지안 변수 (로그인을 위함) ----- //
+_TCHAR input_result[256]; // input 결과 저장할 배열
+_TCHAR ID_NICKNAME[256]; // stdafx.h 파일에 같은 주소에 저장하기 위함
+
+// 홈 창 변수
+int channel;	//udp 채널 가져오기. stdafx.h 파일에 같은 주소에 저장하기 위함
+
+//-------------------------------//
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -273,6 +281,22 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			g_port = GetDlgItemInt(hDlg, IDC_PORT, NULL, TRUE);
 			g_isIPv6 = SendMessage(hChkIsIPv6, BM_GETCHECK, 0, 0);
 			g_isUDP = SendMessage(hChkIsUDP, BM_GETCHECK, 0, 0);
+			//=============  지안 ===============//
+			// 채널에 따라 UDP, TCP 체크 여부 바꾸기
+			switch (channel) {
+				case CHANNEL_TCP: //TCP면 UDP 채널 falsem
+					g_isUDP = false;
+					break;
+				case CHANNEL_UDP1: //UDP면 udp 버튼 true
+					g_isUDP = true;
+					break;
+				case CHANNEL_UDP2: //UDP면 udp 버튼 true
+					g_isUDP = true;
+				default:
+					break;
+			}
+			//=====================================//
+
 			// 소켓 통신 스레드 시작
 			g_hClientThread = CreateThread(NULL, 0, ClientMain, NULL, 0, NULL);
 			if (g_hClientThread == NULL) exit(0);
@@ -509,9 +533,14 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-// ---- 지안 (로그인을 위함) ----- //
-_TCHAR input_result[256]; // input 결과 저장할 배열
-_TCHAR ID_NICKNAME[256]; // stdafx.h 파일에 같은 주소에 저장하기 위함
+//// ---- 지안 변수 (로그인을 위함) ----- //
+//_TCHAR input_result[256]; // input 결과 저장할 배열
+//_TCHAR ID_NICKNAME[256]; // stdafx.h 파일에 같은 주소에 저장하기 위함
+//
+//// 홈 창 변수
+//int channel;	//udp 채널 가져오기. stdafx.h 파일에 같은 주소에 저장하기 위함
+//
+////-------------------------------//
 
 // ---- 연경 ------------------- //
 
@@ -596,7 +625,7 @@ LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lP
 
 
 //-------------------------------------홈 윈도우 프로시저 -----------------------------------------------------------------------//
-// 윈도우 프로시저
+// 윈도우 프로시저 (지안)
 LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
@@ -610,11 +639,11 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 		CreateWindow(_T("BUTTON"), _T("공지 전송"), WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_NOTICE_BUTTON, NULL, NULL); // 공지 전송
 
-		CreateWindow(_T("BUTTON"), _T("채널 A 입장"), WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_CHANNEL_A_BUTTON, NULL, NULL); // 채널 A 입장
-		CreateWindow(_T("BUTTON"), _T("채널 B 입장"), WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_CHANNEL_B_BUTTON, NULL, NULL); // 채널 B 입장
+		CreateWindow(_T("BUTTON"), _T("TCP 채널 입장"), WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_CHANNEL_A_BUTTON, NULL, NULL); // 채널 A 입장
+		CreateWindow(_T("BUTTON"), _T("UDP 채널1 입장"), WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_CHANNEL_B_BUTTON, NULL, NULL); // 채널 B 입장
 
 		//CreateWindow(L"BUTTON", L"방만들기", WS_VISIBLE | WS_CHILD, 282, 600, 320, 67, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 방 만들기
-		CreateWindow(_T("BUTTON"), _T("랜덤입장"), WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_CHANNEL_RANDOM_BUTTON, NULL, NULL); // 랜덤 입장
+		CreateWindow(_T("BUTTON"), _T("UDP 채널2 입장"), WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_CHANNEL_RANDOM_BUTTON, NULL, NULL); // 랜덤 입장
 
 
 		CreateWindow(_T("BUTTON"), _T("돌아가기"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // 돌아가기
@@ -634,7 +663,8 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 			CreateAndShowWindow_Home_Pass(hwndHome_Pass); // 관리자 비밀번호 입력 창 띄우기
 			break;
 
-		case ID_CHANNEL_A_BUTTON: // 채널 A 버튼 클릭시
+		case ID_CHANNEL_A_BUTTON: // TCP 채널 버튼 클릭시
+			channel = CHANNEL_TCP;	// tcp 채널 버전 0으로 변경
 			if (g_bDrawDlgVisible) {
 				ShowWindow(g_hDrawDlg, SW_SHOW);
 			}
@@ -643,10 +673,12 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 			}
 			break;
-		case ID_CHANNEL_B_BUTTON: // 채널 B 버튼 클릭시
+		case ID_CHANNEL_B_BUTTON: // UDP 채널1 버튼 클릭시
+			channel = CHANNEL_UDP1;	//udp 채널 버전 1로 변경
 			CreateAndShowDialog(hwnd);
 			break;
-		case ID_CHANNEL_RANDOM_BUTTON: // 채널 랜덤 버튼 클릭시
+		case ID_CHANNEL_RANDOM_BUTTON: // UDP 채널2 버튼 클릭시
+			channel = CHANNEL_UDP2;	//udp 채널 버전 2로 변경
 			CreateAndShowDialog(hwnd);
 			break;
 		default:
@@ -816,8 +848,90 @@ DWORD WINAPI ClientMain(LPVOID arg)
 		if (retval == SOCKET_ERROR) err_quit("connect()");
 	}
 	else if (g_isIPv6 == false && g_isUDP == true) { // UDP/IPv4 서버
-		MessageBox(NULL, _T("아직 구현하지 않았습니다."), _T("알림"), MB_ICONERROR);
-		exit(1);
+		//========================================== 지안 ==========================================//
+		
+		//--------------------- UDP 서버 1 ----------------------//
+		if (channel == CHANNEL_UDP1) { //UDP 채널 1 이라면
+			MessageBox(NULL, _T("지안이가 구현중인 UDP 채널1 IPv4 클라이언트 소켓임"), _T("알림"), MB_ICONERROR);
+			// socket()
+			g_sock = socket(AF_INET, SOCK_DGRAM, 0);
+			if (g_sock == INVALID_SOCKET) err_quit("socket()");
+
+			// 멀티캐스트 그룹 가입 - (UDP는 연결설정을 하지 않으므로, connet() 불필요)
+			struct ip_mreq mreq;
+			mreq.imr_multiaddr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1); // 가입하거나 탈퇴할 IPv4 멀티케스트 address(주소) (가입할 동아리)
+			mreq.imr_interface.s_addr = htonl(INADDR_ANY);		// 로컬 ip address (나)
+			retval = setsockopt(g_sock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+				(char*)&mreq, sizeof(mreq));
+			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
+
+			// 소켓 주소 구조체 초기화
+			SOCKADDR_IN remoteaddr;
+			ZeroMemory(&remoteaddr, sizeof(remoteaddr));
+			remoteaddr.sin_family = AF_INET;
+			remoteaddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1);
+			remoteaddr.sin_port = htons(SERVERPORT);
+
+			// 데이터 통신에 사용할 변수
+			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel1 !!";
+			int len;
+
+			// 데이터 보내기
+			retval = sendto(g_sock, buf, strlen(buf), 0,
+				(SOCKADDR*)&remoteaddr, sizeof(remoteaddr));
+			if (retval == SOCKET_ERROR) {
+				err_display("sendto()");
+			}
+
+			// 멀티캐스트 그룹 탈퇴 (연경아 udp 채널 x할때 이렇게 하셈)
+			retval = setsockopt(g_sock, IPPROTO_IP, IP_DROP_MEMBERSHIP,
+				(char*)&mreq, sizeof(mreq));
+			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
+		}
+		//------------------------------------------------------//
+
+		//--------------------- UDP 서버 2 ----------------------//
+		else if (channel == CHANNEL_UDP2) { //UDP 채널 2라면
+			MessageBox(NULL, _T("지안이가 구현중인 UDP 채널2 IPv4 클라이언트 소켓임"), _T("알림"), MB_ICONERROR);
+			// socket()
+			g_sock = socket(AF_INET, SOCK_DGRAM, 0);
+			if (g_sock == INVALID_SOCKET) err_quit("socket()");
+
+			// 멀티캐스트 그룹 가입 - (UDP는 연결설정을 하지 않으므로, connet() 불필요)
+			struct ip_mreq mreq;
+			mreq.imr_multiaddr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2); // 가입하거나 탈퇴할 IPv4 멀티케스트 address(주소) (가입할 동아리)
+			mreq.imr_interface.s_addr = htonl(INADDR_ANY);		// 로컬 ip address (나)
+			retval = setsockopt(g_sock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+				(char*)&mreq, sizeof(mreq));
+			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
+
+			// 소켓 주소 구조체 초기화
+			SOCKADDR_IN remoteaddr;
+			ZeroMemory(&remoteaddr, sizeof(remoteaddr));
+			remoteaddr.sin_family = AF_INET;
+			remoteaddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2);
+			remoteaddr.sin_port = htons(SERVERPORT);
+
+			// 데이터 통신에 사용할 변수
+			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel2 !!";
+			int len;
+
+			// 데이터 보내기
+			retval = sendto(g_sock, buf, strlen(buf), 0,
+				(SOCKADDR*)&remoteaddr, sizeof(remoteaddr));
+			if (retval == SOCKET_ERROR) {
+				err_display("sendto()");
+			}
+
+			// 멀티캐스트 그룹 탈퇴 (연경아 udp 채널 x할때 이렇게 하셈)
+			retval = setsockopt(g_sock, IPPROTO_IP, IP_DROP_MEMBERSHIP,
+				(char*)&mreq, sizeof(mreq));
+			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
+
+		}
+		//------------------------------------------------------//
+		
+		//==========================================================================================//
 	}
 	else if (g_isIPv6 == true && g_isUDP == true) { // UDP/IPv6 서버
 		MessageBox(NULL, _T("아직 구현하지 않았습니다."), _T("알림"), MB_ICONERROR);
