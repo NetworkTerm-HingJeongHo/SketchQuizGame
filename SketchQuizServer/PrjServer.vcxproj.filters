@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PrjServer.cpp">
+    <ClCompile Include="tmpServer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
