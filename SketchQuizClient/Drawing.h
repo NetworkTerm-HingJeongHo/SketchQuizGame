@@ -28,7 +28,7 @@ typedef struct _DRAW_DETAIL_INFORMATION
 void SelectPenColor(DRAW_DETAIL_INFORMATION* g_drawDetailInformation);
 void AddLineWidthOption(HWND hDlg);
 void SelectLineWidth(HWND hDlg, DRAW_DETAIL_INFORMATION* g_drawDetailInformation);
-
+char* GetRandomUserID(char* userIDs[], int numUsers);
 
 
 
