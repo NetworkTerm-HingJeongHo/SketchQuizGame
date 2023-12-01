@@ -50,7 +50,21 @@ void SelectLineWidth(HWND hDlg, DRAW_DETAIL_INFORMATION* g_drawDetailInformation
 	}
 }
 
+// 랜덤하게 사용자 아이디 선택하는 함수
+char* GetRandomUserID(char* userIDs[], int numUsers) {
+	if (numUsers <= 0) {
+		return NULL; // 유효하지 않은 인자 처리
+	}
 
+	// 시드값 설정
+	srand(time(NULL));
+
+	// 랜덤 인덱스 생성
+	int randomIndex = rand() % numUsers;
+
+	// 랜덤으로 선택된 사용자 아이디 반환
+	return userIDs[randomIndex];
+}
 
 
 // ======================= 정호 =======================

@@ -128,7 +128,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 		{
 			CreateAndShowWindow_Login(hwndLogin);
 		}
-
 		else if (LOWORD(wParam) == 3) // '메인' 버튼 클릭
 		{
 			CreateAndShowWindow_Home(hwndHome); // 메인 생성
@@ -158,9 +157,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hBtnSendMsg; // 전역 변수에도 저장
 	static HWND hEditMsg;
 	static HWND hEditStatus; // 전역 변수에도 저장
-	static HWND hColorRed;
-	static HWND hColorGreen;
-	static HWND hColorBlue;
 	static HWND hBtnErasePic; // 전역 변수에도 저장
 	static HWND hStaticDummy;
 
@@ -192,9 +188,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		hEditMsg = GetDlgItem(hDlg, IDC_MSG);
 		hEditStatus = GetDlgItem(hDlg, IDC_STATUS);
 		g_hEditStatus = hEditStatus; // 전역 변수에 저장
-		hColorRed = GetDlgItem(hDlg, IDC_COLORRED);
-		hColorGreen = GetDlgItem(hDlg, IDC_COLORGREEN);
-		hColorBlue = GetDlgItem(hDlg, IDC_COLORBLUE);
 		hBtnErasePic = GetDlgItem(hDlg, IDC_ERASEPIC);
 		g_hBtnErasePic = hBtnErasePic; // 전역 변수에 저장
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
@@ -226,22 +219,20 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		EnableWindow(g_hBtnSendFile, FALSE);
 		EnableWindow(g_hBtnSendMsg, FALSE);
 		SendMessage(hEditMsg, EM_SETLIMITTEXT, SIZE_DAT / 2, 0);
-		SendMessage(hColorRed, BM_SETCHECK, BST_CHECKED, 0);
-		SendMessage(hColorGreen, BM_SETCHECK, BST_UNCHECKED, 0);
-		SendMessage(hColorBlue, BM_SETCHECK, BST_UNCHECKED, 0);
 		EnableWindow(g_hBtnErasePic, FALSE);
 
 		// ========= 지윤 =========
 		EnableWindow(g_hBtnPenColor, FALSE);
 		EnableWindow(g_hLineWidth, FALSE);
 
+		AddLineWidthOption(hDlg);
+
 		// ========= 정호 =========
 		AddFigureOption(hDlg);
 		EnableWindow(g_hFigureSelect, FALSE);
 		//
 
-		AddLineWidthOption(hDlg);
-
+		
 		// 윈도우 클래스 등록
 		WNDCLASS wndclass;
 		wndclass.style = CS_HREDRAW | CS_VREDRAW;
@@ -332,15 +323,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetEvent(g_hWriteEvent);
 			// 입력된 텍스트 전체를 선택 표시
 			SendMessage(hEditMsg, EM_SETSEL, 0, -1);
-			return TRUE;
-		case IDC_COLORRED:
-			g_drawlinemsg.color = RGB(255, 0, 0);
-			return TRUE;
-		case IDC_COLORGREEN:
-			g_drawlinemsg.color = RGB(0, 255, 0);
-			return TRUE;
-		case IDC_COLORBLUE:
-			g_drawlinemsg.color = RGB(0, 0, 255);
 			return TRUE;
 		case IDC_ERASEPIC:
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
@@ -950,9 +932,9 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		case TYPE_DRAWLINE:
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
 			// ============ 지윤 ============
-			g_lineWidth = drawline_msg->width;
+			g_drawDetailInformation.width = drawline_msg->width;
 			// ==============================
-			g_drawcolor = drawline_msg->color;
+			g_drawDetailInformation.color = drawline_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWLINE,
 				MAKEWPARAM(drawline_msg->x0, drawline_msg->y0),
 				MAKELPARAM(drawline_msg->x1, drawline_msg->y1));
@@ -960,8 +942,8 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		// ======== 정호 ==========
 		case TYPE_DRAWELLIPSE:
 			drawEllipse_msg = (DRAWELLIPSE_MSG*)&comm_msg;
-			g_lineWidth = drawEllipse_msg->width;
-			g_drawcolor = drawEllipse_msg->color;
+			g_drawDetailInformation.width = drawEllipse_msg->width;
+			g_drawDetailInformation.color = drawEllipse_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWELLIPSE,
 				MAKEWPARAM(drawEllipse_msg->x0, drawEllipse_msg->y0),
 				MAKELPARAM(drawEllipse_msg->x1, drawEllipse_msg->y1));
