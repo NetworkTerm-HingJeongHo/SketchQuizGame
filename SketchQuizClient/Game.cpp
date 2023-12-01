@@ -86,7 +86,7 @@ void newRound() {
 	snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "%d번째 라운드.", roundNum);
 	SetEvent(g_hWriteEvent);
 
-	//DisplayText("%d 번째 라운드 입니다.", roundNum+1);
+	DisplayText("%d 번째 라운드 입니다.", roundNum+1);
 	if (isOwner) {
 
 		Display(g_hWordStatus, (const char*)quizWord[roundNum]);
