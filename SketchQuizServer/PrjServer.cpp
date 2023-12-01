@@ -1,4 +1,5 @@
 #include "..\Common.h"
+#include "resource.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    256
@@ -15,6 +16,8 @@ typedef struct _SOCKETINFO
 int nTotalSockets = 0;
 SOCKETINFO *SocketInfoArray[FD_SETSIZE];
 
+// 다이얼로그 프로시저
+INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 // 소켓 정보 관리 함수
 bool AddSocketInfo(SOCKET sock, bool isIPv6, bool isUDP);
 void RemoveSocketInfo(int nIndex);
@@ -205,6 +208,32 @@ int main(int argc, char *argv[])
 	// 윈속 종료
 	WSACleanup();
 	return 0;
+}
+
+// 다이얼로그 프로시저
+INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	HWND hIDListTabCtrl, hChatDataTabCtrl;
+	TCITEM tItem_ID, tItem_ChatData;
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+		hIDListTabCtrl = GetDlgItem(hDlg, IDC_IDLIST_TAB);
+		tItem_ID.mask = TCIF_TEXT;
+		tItem_ID.pszText = (LPTSTR)_T("전체");
+		TabCtrl_InsertItem(hIDListTabCtrl, 0, &tItem_ID); // 첫 번째 탭 추가
+
+		tItem_ID.pszText = (LPTSTR)_T("TCP 채널");
+		TabCtrl_InsertItem(hIDListTabCtrl, 1, &tItem_ID); // 두 번째 탭 추가
+		return TRUE;
+	case WM_COMMAND:
+
+	case WM_CLOSE:
+
+		break;
+	}
+
+	return FALSE;
 }
 
 // 소켓 정보 추가
