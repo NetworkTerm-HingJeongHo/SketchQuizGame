@@ -110,7 +110,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	{
 		if (LOWORD(wParam) == 1) // '그림판' 버튼 클릭
 		{
-			if (!g_bDialogVisible) // 대화 상자가 현재 보이지 않는 경우
+			if (!g_bDrawDlgVisible) // 대화 상자가 현재 보이지 않는 경우
 			{
 				// 대화 상자를 만들고 표시하는 함수 호출
 				CreateAndShowDialog(hWnd);
@@ -197,6 +197,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// ========= 연경 =========
 		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // 타이머 표시하는 EditText 부분 
 		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // 제시어 표시하는 EditText 부분
+		g_hDrawDlg = hDlg;
 		WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR 형 문자열을 char* 형 문자열로 변경
 
 		// ========= 지윤 =========
@@ -326,7 +327,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case IDC_ERASEPIC:
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
-		case IDCANCEL:
+ 		case IDCANCEL:
 
 			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
 			WaitForSingleObject(g_hReadEvent, INFINITE);
@@ -334,9 +335,11 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]님이 퇴장하였습니다.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
 
-			closesocket(g_sock);
 			//EndDialog(hDlg, IDCANCEL);
-			ShowWindow(g_hDialog, SW_HIDE);
+			closesocket(g_sock);
+			ShowWindow(hDlg, SW_HIDE); 
+			ShowWindow(hDlg, SW_SHOW);
+
 			//CreateRankDlg(hDlg);
 			return TRUE;
 		//	======== 지윤 ==========
@@ -632,7 +635,13 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 			break;
 
 		case ID_CHANNEL_A_BUTTON: // 채널 A 버튼 클릭시
-			CreateAndShowDialog(hwnd);
+			if (g_bDrawDlgVisible) {
+				ShowWindow(g_hDrawDlg, SW_SHOW);
+			}
+			else {
+				CreateAndShowDialog(hwnd);
+
+			}
 			break;
 		case ID_CHANNEL_B_BUTTON: // 채널 B 버튼 클릭시
 			CreateAndShowDialog(hwnd);
