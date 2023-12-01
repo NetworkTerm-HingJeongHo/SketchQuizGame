@@ -323,15 +323,6 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// 입력된 텍스트 전체를 선택 표시
 			SendMessage(hEditMsg, EM_SETSEL, 0, -1);
 			return TRUE;
-		case IDC_COLORRED:
-			g_drawlinemsg.color = RGB(255, 0, 0);
-			return TRUE;
-		case IDC_COLORGREEN:
-			g_drawlinemsg.color = RGB(0, 255, 0);
-			return TRUE;
-		case IDC_COLORBLUE:
-			g_drawlinemsg.color = RGB(0, 0, 255);
-			return TRUE;
 		case IDC_ERASEPIC:
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
