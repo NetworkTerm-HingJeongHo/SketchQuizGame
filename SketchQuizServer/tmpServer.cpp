@@ -4,6 +4,11 @@
 #define SERVERPORT 9000
 #define BUFSIZE    256
 
+
+// ========= 연경 ========
+// 메시지 저장 기능: 나중에 들어온 클라이언트도 이전 대화 내용 볼 수 있도록
+char* messageQueue[BUFSIZE];
+
 // 소켓 정보 저장을 위한 구조체와 변수
 typedef struct _SOCKETINFO
 {
