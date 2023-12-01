@@ -1,5 +1,6 @@
 #pragma once
 
+
 // 해당 byte만큼 받기
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
