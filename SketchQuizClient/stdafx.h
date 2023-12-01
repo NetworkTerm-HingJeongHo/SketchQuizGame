@@ -28,6 +28,8 @@
 #include "resource.h" // 그림판 다이어로그창
 
 /*식별자*/
+#define SERVERIP4_CHAR_UDP1 "235.7.8.18" // UDP 서버1 (지안)
+#define SERVERIP4_CHAR_UDP2 "235.7.8.19" // UDP 서버2 (지안)
 #define SERVERIP4_CHAR   "127.0.0.1" //브로드캐스트 대상 주소 및 서버 ip char 버전 (지안)
 #define SERVERIP4  _T("127.0.0.1")
 #define SERVERIP6  _T("::1")
@@ -103,14 +105,20 @@ static int			 g_lineWidth;     // 선 그리기 굵기
 extern _TCHAR		ID_NICKNAME[256];	// 현재 사용자 아이디 전역변수
 
 // 홈 사용자 정의 상수
-#define ID_CHANNEL_A_BUTTON		2500	// 채널 A 버튼
-#define ID_CHANNEL_B_BUTTON		2501	// 채널 B 버튼
-#define ID_CHANNEL_RANDOM_BUTTON 2502	// 랜덤 접속 버튼
+#define ID_CHANNEL_A_BUTTON		2500	// 채널 A 버튼 ( TCP)
+#define ID_CHANNEL_B_BUTTON		2501	// 채널 B 버튼 ( UDP1)
+#define ID_CHANNEL_RANDOM_BUTTON 2502	// 랜덤 접속 버튼 (UDP2)
 #define ID_NOTICE_BUTTON		2506	// 공지 전송 버튼
 
 // 홈 관련 전역 변수
 extern _TCHAR		ID_NOTICE_TEXT[256];	// 공지사항 내용
 extern _TCHAR		ID_NOTICE_INPUT_TEXT[256];	// 공지사항 입력 내용
+
+// 홈 채널 관련 전역 변수 및 상수
+#define CHANNEL_TCP				0		// TCP 채널
+#define CHANNEL_UDP1			1		// UDP 채널 1
+#define CHANNEL_UDP2			2		// UDP 채널 2
+extern int			channel;				//채널. (0 : top, 1(udp1) 또는 2(udp2)가 있다.) 
 
 // 홈 공지사항 사용자 정의 상수 (2600~ )
 #define ID_NOTICE_INPUT			2600	// 홈 공지사항 입력 input
