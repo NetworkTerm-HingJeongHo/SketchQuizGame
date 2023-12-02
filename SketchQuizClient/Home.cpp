@@ -9,5 +9,4 @@ void CreateAndShowWindow_Home(HWND hWnd)
 	hwndHome = CreateWindow(_T("MainWindowClass"), _T("메인 화면"), WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, NULL, NULL, g_hInstance, NULL);
 	ShowWindow(hwndHome, SW_SHOW);
-	g_bDialogVisible = true;
 }

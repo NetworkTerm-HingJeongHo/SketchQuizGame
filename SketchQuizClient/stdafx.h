@@ -42,8 +42,12 @@ static HWND          g_hBtnSendMsg;   // [메시지 전송] 버튼
 static HWND          g_hEditStatus;   // 각종 메시지 출력 영역
 static HWND          g_hBtnErasePic;  // [그림 지우기] 버튼
 static HWND          g_hDrawWnd;      // 그림을 그릴 윈도우
+
+// ============= 지윤 =============
 static HWND			 g_hMainWindow;   // 처음 윈도우창 핸들
 static HWND			 g_hDialog;       // 그림판 다이어로그 핸들
+static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
+static HWND			 g_hLineWidth;    // 선 굵기 콤보박스
 
 // ============= 연경 =============
 // 채팅 관련 변수
@@ -65,13 +69,7 @@ static BOOL isGameOver = FALSE;
 static BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
 
 
-// ============= 지윤 =============
-static HWND			 g_hBtnPenColor;  // [색상 변경] 버튼
-static HWND			 g_hLineWidth;    // 선 굵기 콤보박스
 static char NICKNAME_CHAR[256];
-// 다이얼로그 상태 플래그
-static bool          g_bDialogVisible = false;
-static bool          g_bDrawDlgVisible = false;
 
 /* 통신 관련 전역 변수 */
 static volatile bool g_isIPv6;        // IPv4 or IPv6 주소

@@ -7,5 +7,4 @@ void CreateAndShowWindow_Home_Pass(HWND hWnd)
 	hwndHome_Pass = CreateWindow(_T("Home_PassWindowClass"), _T("패스워드 입력 창"), WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, 640, 480, NULL, NULL, g_hInstance, NULL);
 	ShowWindow(hwndHome_Pass, SW_SHOW);
-	g_bDialogVisible = true;
 }
