@@ -3,6 +3,7 @@
 // 타입 정의
 // ======================= 정호 =======================
 
+// 타원
 // sizeof(DRAWELLIPSE_MSG) == 256
 typedef struct _DRAWELLIPSE_MSG
 {
@@ -13,6 +14,17 @@ typedef struct _DRAWELLIPSE_MSG
 	int  x1, y1;
 	char dummy[SIZE_TOT - 7 * sizeof(int)];
 } DRAWELLIPSE_MSG;
+
+// 사각형
+typedef struct _DRAWRECTANGLE_MSG
+{
+	int type;
+	int width;
+	int color;
+	int startX, startY;
+	int endX, endY;
+	char dummy[SIZE_TOT - 7 * sizeof(int)];
+} DRAWRECTANGLE_MSG;
 
 // 그림 세부 정보에 대한 구조체
 typedef struct _DRAW_DETAIL_INFORMATION
