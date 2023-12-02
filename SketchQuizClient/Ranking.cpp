@@ -26,6 +26,7 @@ INT_PTR CALLBACK DlgRanking(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		hRank2 = GetDlgItem(hDlg, IDC_EDIT2ND);
 		hRank3 = GetDlgItem(hDlg, IDC_EDIT3RD);
 		hMyRank = GetDlgItem(hDlg, IDC_EDIT_MYID);
+		g_hChattingDlg = hDlg;
 
 		// 컨트롤 초기화
 		SendMessage(hRank1, EM_SETLIMITTEXT, MSGSIZE, 0);

@@ -1,4 +1,4 @@
 #pragma once
 
 void MySendFile(char* senderName, char* reciverName, char* msg);
-void printMessageQueue();
+void printMessageQueue(HWND hDlg);
