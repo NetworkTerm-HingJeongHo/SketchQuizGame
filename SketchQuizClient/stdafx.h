@@ -151,17 +151,8 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 // 현재 그리기 모드 전역 변수
 static int g_currentSelectFigureMode = MODE_LINE;
 
-// 현재 서버로부터 받은세부 그리기 정보 전역 변수
-static DRAW_DETAIL_INFORMATION g_serverDrawDetailInformation;
-
-// 현재 클라이언트가 선택한 그리기 정보 전역 변수
-static DRAW_DETAIL_INFORMATION g_clientDrawDetailInformation;
-
-// 지우개 모드 선택하기 전 클라이언트가 마지막으로 선택한 색깔
-static int g_lastSelectColor = RGB(255, 0, 0);
-
-// 이전 모드가 "지우개" 모드인지 확인하고 한 번만 실행하도록 설정
-static bool g_isBeforeModeErase = false;
+// 현재 세부 그리기 정보 전역 변수
+static DRAW_DETAIL_INFORMATION g_drawDetailInformation;
 
 static HWND g_hFigureSelect; // 그릴 도형 선택하는 부분
 
