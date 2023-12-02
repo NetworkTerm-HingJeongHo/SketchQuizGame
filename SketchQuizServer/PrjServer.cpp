@@ -216,6 +216,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			// 고정 데이터 받기
 			retval = recv(ptr->sock, ptr->buf, BUFSIZE, 0);
+			addMessage(ptr->buf);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 				RemoveSocketInfo(wParam);
@@ -232,6 +233,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// 데이터 받기
 			addrlen = sizeof(clientaddr);
 			retval = recvfrom(socket_UDP, buf, BUFSIZE, 0, (SOCKADDR*)&clientaddr, &addrlen);
+			addMessage(buf);
 			if (retval == SOCKET_ERROR) {
 				err_display("recvfrom()");
 				return;
@@ -403,10 +405,10 @@ void RemoveSocketInfo(SOCKET sock)
 
 
 void addMessage(char* message) {
-	//if ((g_msgQueue.tail + 1) % BUFSIZE == g_msgQueue.head) { //큐가 꽉찬 경우: 
-	//	g_msgQueue.head = (g_msgQueue.head + 1) % BUFSIZE; //마지막 요소를 하나 지우고 공간 하나를 확보한다.
-	//}
-	//g_msgQueue.queue[g_msgQueue.tail] = message;
-	//g_msgQueue.tail = (g_msgQueue.tail + 1) % BUFSIZE;
+	if ((g_msgQueue.tail + 1) % BUFSIZE == g_msgQueue.head) { //큐가 꽉찬 경우: 
+		g_msgQueue.head = (g_msgQueue.head + 1) % BUFSIZE; //마지막 요소를 하나 지우고 공간 하나를 확보한다.
+	}
+	strcpy(g_msgQueue.queue[g_msgQueue.tail],message);
+	g_msgQueue.tail = (g_msgQueue.tail + 1) % BUFSIZE;
 
 }

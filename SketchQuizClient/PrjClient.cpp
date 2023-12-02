@@ -162,6 +162,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	// ========= 연경 =========
 	static HWND hTimer;    // 타이머 표시 
 	static HWND hWord;     // 제시어 표시
+	static HWND hBtnStart; // 게임 시작 버튼
 
 
 	// ========= 지윤 =========
@@ -197,7 +198,8 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// ========= 연경 =========
 		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // 타이머 표시하는 EditText 부분 
 		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // 제시어 표시하는 EditText 부분
-		g_hDrawDlg = hDlg;
+		hBtnStart = GetDlgItem(hDlg, IDC_GAMESTART);        // 게임 스타트 버튼
+		g_hDrawDlg = hDlg; // 다이얼로그 전역변수로 저장(나중에 채팅 표시하는 용도로 사용)
 		WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR 형 문자열을 char* 형 문자열로 변경
 
 		// ========= 지윤 =========
@@ -230,6 +232,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// ========= 정호 =========
 		AddFigureOption(hDlg);
 		EnableWindow(g_hFigureSelect, FALSE);
+		//
+
+		// ========= 연경 =========
+		EnableWindow(hBtnStart, FALSE); //서버 연결 전에는 비활성화
 		//
 
 		
@@ -310,15 +316,17 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			EnableWindow(g_hLineWidth, TRUE);
 
 			// ========= 연경 =========
-			gameStart(g_hTimerStatus, g_hWordStatus);
+			EnableWindow(hBtnStart, FALSE); // 게임 시작 버튼 활성화
 
 			// 이전에 얻은 채팅 메시지 읽기 완료를 기다림
 			WaitForSingleObject(g_hReadEvent, INFINITE);
+			isMessageQueue = TRUE;
 			// 새로운 채팅 메시지를 얻고 쓰기 완료를 알림
 			g_chatmsg.type = TYPE_NOTY;
+			
 			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s] 님이 입장하였습니다.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
-
+			// ===================================
 
 			// ========= 정호 =========
 			EnableWindow(g_hFigureSelect, TRUE);
@@ -391,8 +399,11 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 			}
 			return TRUE;
-		//
+		// ========== 연경 ============
+		case IDC_GAMESTART:
+			gameStart(g_hTimerStatus, g_hWordStatus);
 		}
+		//
 	}
 	return FALSE;
 }
@@ -1009,6 +1020,9 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		//	break;
 		//}
 		// 
+		if (isMessageQueue == TRUE) {
+
+		}
 
 		retval = recvn(g_sock, (char*)&comm_msg, BUFSIZE, 0, serveraddr, g_isUDP);
 		if (retval == 0 || retval == SOCKET_ERROR) {
