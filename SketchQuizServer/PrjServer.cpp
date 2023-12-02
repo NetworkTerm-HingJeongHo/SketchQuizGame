@@ -10,8 +10,6 @@
 typedef struct _SOCKETINFO
 {
 	SOCKET sock;
-	bool   isIPv6;
-	bool   isUDP;
 	char   buf[BUFSIZE + 1];
 	int    recvbytes;
 
@@ -19,8 +17,6 @@ typedef struct _SOCKETINFO
 	_TCHAR id_nickname[BUFSIZE]; // 사용자 닉네임
 	int    score=0;       // 게임 플레이 점수
 } SOCKETINFO;
-
-
 
 // ======= 연경 ======= 
 typedef struct _MESSAGEQUEUE {
@@ -34,13 +30,18 @@ typedef struct _MESSAGEQUEUE {
 MESSAGEQUEUE g_msgQueue;
 // ====================
 
+// ==== 정호 ====
+// 클라이언트 관리 배열
 int nTotalSockets = 0;
+int nTotalUDPSockets = 0;
 SOCKETINFO *SocketInfoArray[FD_SETSIZE];
+SOCKADDR_IN UDPSocketInfoArray[FD_SETSIZE];
 
 // 다이얼로그 프로시저
 INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 // 소켓 정보 관리 함수
-bool AddSocketInfo(SOCKET sock, bool isIPv6, bool isUDP);
+bool AddSocketInfoTCP(SOCKET sock);
+bool AddSocketInfoUDP(SOCKADDR_IN addr);
 void RemoveSocketInfo(int nIndex);
 void addMessage(char* message); 
 SOCKETINFO* GetSocketInfo(SOCKET sock);
@@ -219,9 +220,10 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		else {
 			// 접속한 클라이언트 정보 출력
-			printf("\n[TCP/IPv4 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+			printf("\n[TCP/IPv4 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n", 
+				inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 			// 소켓 정보 추가
-			AddSocketInfo(client_sock, false, false);
+			AddSocketInfoTCP(client_sock);
 			retval = WSAAsyncSelect(client_sock, hWnd,
 				WM_SOCKET, FD_READ | FD_WRITE | FD_CLOSE);
 			if (retval == SOCKET_ERROR) {
@@ -253,53 +255,54 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// UDP socket
 		else
 		{
-			//// 데이터 받기
-			//addrlen = sizeof(clientaddrv4);
-			//retval = recvfrom(listen_sock_udp, buf,
-			//	BUFSIZE, 0, (SOCKADDR*)&clientaddrv4, &addrlen);
-			//if (retval == SOCKET_ERROR) {
-			//	err_display("recvfrom()");
-			//	return;
-			//}
+			// 데이터 받기
+			addrlen = sizeof(clientaddr);
+			retval = recvfrom(socket_UDP, buf, BUFSIZE, 0, (SOCKADDR*)&clientaddr, &addrlen);
+			if (retval == SOCKET_ERROR) {
+				err_display("recvfrom()");
+				return;
+			}
+
+			// UDP로 접속한 클라 정보 수집
+			AddSocketInfoUDP(clientaddr);
 		}
 	case FD_WRITE:
-		// udp 소켓이 아닌 경우 (TCP인 경우)
+		// UDP 소켓이 아닌 경우 (TCP인 경우)
 		if (wParam != socket_UDP)
 		{
 			ptr = GetSocketInfo(wParam);
-			// 소켓 셋 검사(2): 데이터 통신
 			//for (int i = 0; i < nTotalSockets; i++) {
 			//	SOCKETINFO* ptr = SocketInfoArray[i];
-				if (ptr->recvbytes == BUFSIZE) {
-					// 받은 바이트 수 리셋
-					ptr->recvbytes = 0;
+			if (ptr->recvbytes == BUFSIZE) {
+				// 받은 바이트 수 리셋
+				ptr->recvbytes = 0;
 
-					// 현재 접속한 모든 클라이언트에게 데이터를 보냄!
-					for (int j = 0; j < nTotalSockets; j++) {
-						SOCKETINFO* ptr2 = SocketInfoArray[j];
-						retval = send(ptr2->sock, ptr->buf, BUFSIZE, 0);
-						if (retval == SOCKET_ERROR) {
-							err_display("send()");
-							RemoveSocketInfo(j);
-							--j; // 루프 인덱스 보정
-							continue;
-						}
+				// 현재 접속한 모든 클라이언트에게 데이터를 보냄!
+				for (int j = 0; j < nTotalSockets; j++) {
+					SOCKETINFO* ptr2 = SocketInfoArray[j];
+					retval = send(ptr2->sock, ptr->buf, BUFSIZE, 0);
+					if (retval == SOCKET_ERROR) {
+						err_display("send()");
+						RemoveSocketInfo(j);
+						--j; // 루프 인덱스 보정
+						continue;
 					}
 				}
+			}
 			//}
 		}
 		else
 		{
-			//for (int i = 0; i < nTotalUdpSockets; i++)
-			//{
-			//	SOCKADDR_IN client = SocketUdpArray[i];
-			//	// 데이터 보내기
-			//	retval = sendto(listen_sock_udp, buf, BUFSIZE, 0, (SOCKADDR*)&client, sizeof(client));
-			//	if (retval == SOCKET_ERROR) {
-			//		err_display("sendto()");
-			//		return;
-			//	}
-			//}
+			for (int i = 0; i < nTotalUDPSockets; i++)
+			{
+				SOCKADDR_IN clientUDP = UDPSocketInfoArray[i];
+				// 데이터 보내기
+				retval = sendto(socket_UDP, buf, BUFSIZE, 0, (SOCKADDR*)&clientUDP, sizeof(clientUDP));
+				if (retval == SOCKET_ERROR) {
+					err_display("sendto()");
+					return;
+				}
+			}
 		}
 		break;
 	case FD_CLOSE:
@@ -350,9 +353,27 @@ SOCKETINFO* GetSocketInfo(SOCKET sock)
 	return NULL;
 }
 
+// UDP 클라 정보 추가
+bool AddSocketInfoUDP(SOCKADDR_IN addr)
+{
+	// 이전에 접속한 적이 있는 상태인지 확인
+	for (int i = 0; i < nTotalUDPSockets; i++)
+	{
+		if (inet_ntoa(UDPSocketInfoArray[i].sin_addr) == inet_ntoa(addr.sin_addr) &&
+			ntohs(UDPSocketInfoArray[i].sin_port) == ntohs(addr.sin_port) &&
+			ntohs(UDPSocketInfoArray[i].sin_family) == ntohs(addr.sin_family))
+		{
+			return false;
+		}
+	}
 
-// 소켓 정보 추가
-bool AddSocketInfo(SOCKET sock, bool isIPv6, bool isUDP)
+	// UDP 클라 정보 추가
+	UDPSocketInfoArray[nTotalUDPSockets++] = addr;
+	return true;
+}
+
+// TCP 소켓 정보 추가
+bool AddSocketInfoTCP(SOCKET sock)
 {
 	if (nTotalSockets >= FD_SETSIZE) {
 		printf("[오류] 소켓 정보를 추가할 수 없습니다!\n");
@@ -364,10 +385,12 @@ bool AddSocketInfo(SOCKET sock, bool isIPv6, bool isUDP)
 		return false;
 	}
 	ptr->sock = sock;
-	ptr->isIPv6 = isIPv6;
-	ptr->isUDP = isUDP;
 	ptr->recvbytes = 0;
+
+
+	// TCP 소켓 배열에 추가
 	SocketInfoArray[nTotalSockets++] = ptr;
+
 	return true;
 }
 
@@ -376,7 +399,6 @@ void RemoveSocketInfo(int nIndex)
 {
 	SOCKETINFO *ptr = SocketInfoArray[nIndex];
 
-	if (ptr->isIPv6 == false) {
 		// 클라이언트 정보 얻기
 		struct sockaddr_in clientaddr;
 		int addrlen = sizeof(clientaddr);
@@ -386,18 +408,8 @@ void RemoveSocketInfo(int nIndex)
 		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 		printf("[TCP/IPv4 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 			addr, ntohs(clientaddr.sin_port));
-	}
-	else {
-		// 클라이언트 정보 얻기
-		struct sockaddr_in6 clientaddr;
-		int addrlen = sizeof(clientaddr);
-		getpeername(ptr->sock, (struct sockaddr *)&clientaddr, &addrlen);
-		// 클라이언트 정보 출력
-		char addr[INET6_ADDRSTRLEN];
-		inet_ntop(AF_INET6, &clientaddr.sin6_addr, addr, sizeof(addr));
-		printf("[TCP/IPv6 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-			addr, ntohs(clientaddr.sin6_port));
-	}
+
+
 	// 소켓 닫기
 	closesocket(ptr->sock);
 	delete ptr;
