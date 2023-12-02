@@ -38,7 +38,7 @@ int nTotalSockets = 0;
 SOCKETINFO *SocketInfoArray[FD_SETSIZE];
 
 // 다이얼로그 프로시저
-INT_PTR CALLBACK DialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 // 소켓 정보 관리 함수
 bool AddSocketInfo(SOCKET sock, bool isIPv6, bool isUDP);
 void RemoveSocketInfo(int nIndex);
@@ -54,7 +54,7 @@ SOCKET socket_UDP;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int main(int argc, char *argv[])
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// ========= 정호 ========
 	// 윈도우 클래스 등록
