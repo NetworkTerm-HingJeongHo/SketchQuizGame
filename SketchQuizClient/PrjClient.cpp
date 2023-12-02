@@ -1,34 +1,34 @@
 #include "stdafx.h"
 
-// ---- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ----- //
-_TCHAR input_result[256]; // input ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
-_TCHAR ID_NICKNAME[256]; // stdafx.h ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+// ---- Áö¾È º¯¼ö (·Î±×ÀÎÀ» À§ÇÔ) ----- //
+_TCHAR input_result[256]; // input °á°ú ÀúÀåÇÒ ¹è¿­
+_TCHAR ID_NICKNAME[256]; // stdafx.h ÆÄÀÏ¿¡ °°Àº ÁÖ¼Ò¿¡ ÀúÀåÇÏ±â À§ÇÔ
 
-// È¨ Ã¢ ï¿½ï¿½ï¿½ï¿½
-int channel;	//udp Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. stdafx.h ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+// È¨ Ã¢ º¯¼ö
+int channel;	//udp Ã¤³Î °¡Á®¿À±â. stdafx.h ÆÄÀÏ¿¡ °°Àº ÁÖ¼Ò¿¡ ÀúÀåÇÏ±â À§ÇÔ
 
 //-------------------------------//
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+	// À©¼Ó ÃÊ±âÈ­
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£, ï¿½ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½)
+	// ÀÌº¥Æ® »ý¼º(°¢°¢ ½ÅÈ£, ºñ½ÅÈ£ »óÅÂ)
 	g_hReadEvent = CreateEvent(NULL, FALSE, TRUE, NULL);
 	if (g_hReadEvent == NULL) return 1;
 	g_hWriteEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	if (g_hWriteEvent == NULL) return 1;
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­(ï¿½Ïºï¿½)
+	// Àü¿ª º¯¼ö ÃÊ±âÈ­(ÀÏºÎ)
 	g_chatmsg.type = TYPE_CHAT;
 	g_drawlinemsg.type = TYPE_DRAWLINE;
 	g_drawlinemsg.color = RGB(255, 0, 0);
 	g_erasepicmsg.type = TYPE_ERASEPIC;
 
-	// ===== ï¿½ï¿½È£ =====
+	// ===== Á¤È£ =====
 	g_drawellipsemsg.type = TYPE_DRAWELLIPSE;
 	g_drawellipsemsg.color = RGB(255, 0, 0);
 	//
@@ -36,29 +36,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	g_hInstance = hInstance;
 
 
-	//-------ï¿½ï¿½ï¿½ï¿½--------//
-	// È¨ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	//-------Áö¾È--------//
+	// È¨ ¸ÞÀÎÈ­¸é À©µµ¿ì Å¬·¡½º µî·Ï
 	WNDCLASS wcMain = { 0 };
 	wcMain.lpfnWndProc = HomeWndProc;
 	wcMain.hInstance = hInstance;
 	wcMain.lpszClassName = _T("MainWindowClass");
 	RegisterClass(&wcMain);
 
-	// ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	// ·Î±×ÀÎ À©µµ¿ì Å¬·¡½º µî·Ï
 	WNDCLASS wcLogin = { 0 };
 	wcLogin.lpfnWndProc = LoginWndProc;
 	wcLogin.hInstance = hInstance;
 	wcLogin.lpszClassName = _T("LoginWindowClass");
 	RegisterClass(&wcLogin);
 
-	// È¨_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	// È¨_°øÁö»çÇ×_ÀÔ·Â À©µµ¿ì Å¬·¡½º µî·Ï
 	WNDCLASS wcHome_Notice = { 0 };
 	wcHome_Notice.lpfnWndProc = Home_NoticeWndProc;
 	wcHome_Notice.hInstance = hInstance;
 	wcHome_Notice.lpszClassName = _T("Home_NoticeWindowClass");
 	RegisterClass(&wcHome_Notice);
 
-	// È¨_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½Ð¹ï¿½È£ ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	// È¨_°øÁö»çÇ×_ºñ¹Ð¹øÈ£ ÀÔ·Â À©µµ¿ì Å¬·¡½º µî·Ï
 	WNDCLASS wcHome_Pass = { 0 };
 	wcHome_Pass.lpfnWndProc = Home_PassWndProc;
 	wcHome_Pass.hInstance = hInstance;
@@ -66,8 +66,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClass(&wcHome_Pass);
 
 	//------------------//
-	
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Ã¹ È­ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½
+
+	// ¸ÞÀÎ À©µµ¿ì(Ã¹ È­¸é) »ý¼º
 	WNDCLASSEX wcex = { sizeof(WNDCLASSEX), CS_HREDRAW | CS_VREDRAW, MainWndProc, 0, 0, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("MainWindow"), NULL };
 	RegisterClassEx(&wcex);
 	g_hMainWindow = CreateWindow(_T("MainWindow"), _T("Main Window"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 200, NULL, NULL, hInstance, NULL);
@@ -75,61 +75,61 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ShowWindow(g_hMainWindow, nCmdShow);
 	UpdateWindow(g_hMainWindow);
 
-	// ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ¸Þ½ÃÁö ·çÇÁ
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
-		if (!IsDialogMessage(g_hMainWindow, &msg)) // ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
+		if (!IsDialogMessage(g_hMainWindow, &msg)) // ´ëÈ­ »óÀÚ ¸Þ½ÃÁö Ã³¸®
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 	}
 
-	// ï¿½Ìºï¿½Æ® ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
+	// ÀÌº¥Æ® °´Ã¼ Á¦°Å
 	CloseHandle(g_hReadEvent);
 	CloseHandle(g_hWriteEvent);
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// À©¼Ó Á¾·á
 	WSACleanup();
 	return 0;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½
+// ¸ÞÀÎ À©µµ¿ì ÇÁ·Î½ÃÀú
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 	case WM_CREATE:
 	{
-		// 'ï¿½×¸ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
-		CreateWindow(_T("BUTTON"), _T("ï¿½×¸ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 10, 10, 100, 30, hWnd, (HMENU)1, g_hInstance, NULL);
+		// '±×¸²ÆÇ' ¹öÆ° »ý¼º
+		CreateWindow(_T("BUTTON"), _T("±×¸²ÆÇ"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 10, 10, 100, 30, hWnd, (HMENU)1, g_hInstance, NULL);
 
-		// 'ï¿½Î±ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½
-		CreateWindow(_T("BUTTON"), _T("ï¿½Î±ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 120, 10, 100, 30, hWnd, (HMENU)2, g_hInstance, NULL);
+		// '·Î±×ÀÎ' ¹öÆ° »ý¼º
+		CreateWindow(_T("BUTTON"), _T("·Î±×ÀÎ"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 120, 10, 100, 30, hWnd, (HMENU)2, g_hInstance, NULL);
 
-		// 'ï¿½ï¿½Å·' ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½Ä¡)
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½Å·"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 230, 10, 100, 30, hWnd, (HMENU)4, g_hInstance, NULL);
+		// '·©Å·' ¹öÆ° »ý¼º (¼¼ ¹øÂ°·Î À§Ä¡)
+		CreateWindow(_T("BUTTON"), _T("·©Å·"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 230, 10, 100, 30, hWnd, (HMENU)4, g_hInstance, NULL);
 
-		// 'ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½ï¿½Ä¡)
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 340, 10, 100, 30, hWnd, (HMENU)3, g_hInstance, NULL);
+		// '¸ÞÀÎ' ¹öÆ° »ý¼º (³× ¹øÂ°·Î À§Ä¡)
+		CreateWindow(_T("BUTTON"), _T("¸ÞÀÎ"), WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 340, 10, 100, 30, hWnd, (HMENU)3, g_hInstance, NULL);
 		break;
 	}
 	case WM_COMMAND:
 	{
-		if (LOWORD(wParam) == 1) // 'ï¿½×¸ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½
+		if (LOWORD(wParam) == 1) // '±×¸²ÆÇ' ¹öÆ° Å¬¸¯
 		{
 			CreateAndShowDialog(hWnd);
 
 			ShowWindow(hWnd, SW_HIDE);
 		}
-		//---ï¿½ï¿½ï¿½ï¿½ ----//
-		else if (LOWORD(wParam) == 2) // 'ï¿½Î±ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½
+		//---Áö¾È ----//
+		else if (LOWORD(wParam) == 2) // '·Î±×ÀÎ' ¹öÆ° Å¬¸¯
 		{
 			CreateAndShowWindow_Login(hwndLogin);
 		}
-		else if (LOWORD(wParam) == 3) // 'ï¿½ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½
+		else if (LOWORD(wParam) == 3) // '¸ÞÀÎ' ¹öÆ° Å¬¸¯
 		{
-			CreateAndShowWindow_Home(hwndHome); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			CreateAndShowWindow_Home(hwndHome); // ¸ÞÀÎ »ý¼º
 		}
 
 		//-----------//
@@ -144,7 +144,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	return 0;
 }
 
-// ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½(ï¿½×¸ï¿½ï¿½ï¿½ Ã¢)
+// ´ëÈ­»óÀÚ ÇÁ·Î½ÃÀú(±×¸²ÆÇ Ã¢)
 INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	static HWND hChkIsIPv6;
@@ -152,70 +152,68 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	static HWND hEditPort;
 	static HWND hChkIsUDP;
 	static HWND hBtnConnect;
-	static HWND hBtnSendFile; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	static HWND hBtnSendMsg; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	static HWND hBtnSendFile; // Àü¿ª º¯¼ö¿¡µµ ÀúÀå
+	static HWND hBtnSendMsg; // Àü¿ª º¯¼ö¿¡µµ ÀúÀå
 	static HWND hEditMsg;
-	static HWND hEditStatus; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	static HWND hBtnErasePic; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	static HWND hEditStatus; // Àü¿ª º¯¼ö¿¡µµ ÀúÀå
+	static HWND hBtnErasePic; // Àü¿ª º¯¼ö¿¡µµ ÀúÀå
 	static HWND hStaticDummy;
 
-	// ========= ï¿½ï¿½ï¿½ï¿½ =========
-	static HWND hTimer;    // Å¸ï¿½Ì¸ï¿½ Ç¥ï¿½ï¿½ 
-	static HWND hWord;     // ï¿½ï¿½ï¿½Ã¾ï¿½ Ç¥ï¿½ï¿½
-	static HWND hBtnStart; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
+	// ========= ¿¬°æ =========
+	static HWND hTimer;    // Å¸ÀÌ¸Ó Ç¥½Ã 
+	static HWND hWord;     // Á¦½Ã¾î Ç¥½Ã
 
 
-	// ========= ï¿½ï¿½ï¿½ï¿½ =========
+	// ========= ÁöÀ± =========
 	static HWND hBtnPenColor;
 	static HWND hLineWidth;
 	static HWND hDlgChannel;
 
-	// ========= ï¿½ï¿½È£ =========
-	static HWND hFigureSelect;	// ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ========= Á¤È£ =========
+	static HWND hFigureSelect;	// ±×¸± µµÇü ¼±ÅÃ
 	//
 
 	switch (uMsg) {
 	case WM_INITDIALOG:
-		// ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½
+		// ÄÁÆ®·Ñ ÇÚµé ¾ò±â
 		hChkIsIPv6 = GetDlgItem(hDlg, IDC_ISIPV6);
 		hEditIPaddr = GetDlgItem(hDlg, IDC_IPADDR);
 		hEditPort = GetDlgItem(hDlg, IDC_PORT);
 		hChkIsUDP = GetDlgItem(hDlg, IDC_ISUDP);
 		hBtnConnect = GetDlgItem(hDlg, IDC_CONNECT);
 		hBtnSendFile = GetDlgItem(hDlg, IDC_SENDFILE);
-		g_hBtnSendFile = hBtnSendFile; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		g_hBtnSendFile = hBtnSendFile; // Àü¿ª º¯¼ö¿¡ ÀúÀå
 		hBtnSendMsg = GetDlgItem(hDlg, IDC_SENDMSG);
-		g_hBtnSendMsg = hBtnSendMsg; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		g_hBtnSendMsg = hBtnSendMsg; // Àü¿ª º¯¼ö¿¡ ÀúÀå
 		hEditMsg = GetDlgItem(hDlg, IDC_MSG);
 		hEditStatus = GetDlgItem(hDlg, IDC_STATUS);
-		g_hEditStatus = hEditStatus; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		g_hEditStatus = hEditStatus; // Àü¿ª º¯¼ö¿¡ ÀúÀå
 		hBtnErasePic = GetDlgItem(hDlg, IDC_ERASEPIC);
-		g_hBtnErasePic = hBtnErasePic; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		g_hBtnErasePic = hBtnErasePic; // Àü¿ª º¯¼ö¿¡ ÀúÀå
 		hStaticDummy = GetDlgItem(hDlg, IDC_DUMMY);
 
 
 
-		// ========= ï¿½ï¿½ï¿½ï¿½ =========
-		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // Å¸ï¿½Ì¸ï¿½ Ç¥ï¿½ï¿½ï¿½Ï´ï¿½ EditText ï¿½Îºï¿½ 
-		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // ï¿½ï¿½ï¿½Ã¾ï¿½ Ç¥ï¿½ï¿½ï¿½Ï´ï¿½ EditText ï¿½Îºï¿½
-		hBtnStart = GetDlgItem(hDlg, IDC_GAMESTART);        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸Æ® ï¿½ï¿½Æ°
-		g_hDrawDlg = hDlg; // ï¿½ï¿½ï¿½Ì¾ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ß¿ï¿½ Ã¤ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ëµµï¿½ï¿½ ï¿½ï¿½ï¿½)
-		WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ char* ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ========= ¿¬°æ =========
+		g_hTimerStatus = GetDlgItem(hDlg, IDC_EDIT_TIMER);  // Å¸ÀÌ¸Ó Ç¥½ÃÇÏ´Â EditText ºÎºÐ 
+		g_hWordStatus = GetDlgItem(hDlg, IDC_EDIT_WORD);    // Á¦½Ã¾î Ç¥½ÃÇÏ´Â EditText ºÎºÐ
+		g_hDrawDlg = hDlg;
+		WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR Çü ¹®ÀÚ¿­À» char* Çü ¹®ÀÚ¿­·Î º¯°æ
 
-		// ========= ï¿½ï¿½ï¿½ï¿½ =========
+		// ========= ÁöÀ± =========
 		hBtnPenColor = GetDlgItem(hDlg, IDC_PENCOLOR);
-		g_hBtnPenColor = hBtnPenColor; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		g_hBtnPenColor = hBtnPenColor; // Àü¿ª º¯¼ö¿¡ ÀúÀå
 
 		hLineWidth = GetDlgItem(hDlg, IDC_LINEWIDTH);
-		g_hLineWidth = hLineWidth; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		g_hLineWidth = hLineWidth; // Àü¿ª º¯¼ö¿¡ ÀúÀå
 
-		// ========= ï¿½ï¿½È£ =========
-		// ï¿½×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Úµé·¯ï¿½ï¿½ ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ========= Á¤È£ =========
+		// ±×¸± µµÇü ¼±ÅÃÇÏ´Â ÇÚµé·¯¸¦ ¾ò¾î¼­ Àü¿ª º¯¼ö¿¡ ÀúÀå
 		hFigureSelect = GetDlgItem(hDlg, IDC_FIGURE);
 		g_hFigureSelect = hFigureSelect;
 		//
 
-		// ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ê±ï¿½È­
+		// ÄÁÆ®·Ñ ÃÊ±âÈ­
 		SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP4);
 		SetDlgItemInt(hDlg, IDC_PORT, SERVERPORT, FALSE);
 		EnableWindow(g_hBtnSendFile, FALSE);
@@ -223,23 +221,19 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SendMessage(hEditMsg, EM_SETLIMITTEXT, SIZE_DAT / 2, 0);
 		EnableWindow(g_hBtnErasePic, FALSE);
 
-		// ========= ï¿½ï¿½ï¿½ï¿½ =========
+		// ========= ÁöÀ± =========
 		EnableWindow(g_hBtnPenColor, FALSE);
 		EnableWindow(g_hLineWidth, FALSE);
 
 		AddLineWidthOption(hDlg);
 
-		// ========= ï¿½ï¿½È£ =========
+		// ========= Á¤È£ =========
 		AddFigureOption(hDlg);
 		EnableWindow(g_hFigureSelect, FALSE);
 		//
 
-		// ========= ï¿½ï¿½ï¿½ï¿½ =========
-		EnableWindow(hBtnStart, FALSE); //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
-		//
 
-		
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+		// À©µµ¿ì Å¬·¡½º µî·Ï
 		WNDCLASS wndclass;
 		wndclass.style = CS_HREDRAW | CS_VREDRAW;
 		wndclass.lpfnWndProc = ChildWndProc;
@@ -253,7 +247,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		wndclass.lpszClassName = _T("MyWndClass");
 		if (!RegisterClass(&wndclass)) exit(1);
 
-		// ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ÀÚ½Ä À©µµ¿ì »ý¼º
 		RECT rect; GetWindowRect(hStaticDummy, &rect);
 		POINT pt; pt.x = rect.left; pt.y = rect.top;
 		ScreenToClient(hDlg, &pt);
@@ -274,33 +268,33 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SetDlgItemText(hDlg, IDC_IPADDR, SERVERIP6);
 			return TRUE;
 		case IDC_CONNECT:
-			// ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+			// ÄÁÆ®·Ñ »óÅÂ ¾ò±â
 			GetDlgItemTextA(hDlg, IDC_IPADDR, g_ipaddr, sizeof(g_ipaddr));
 			g_port = GetDlgItemInt(hDlg, IDC_PORT, NULL, TRUE);
 			g_isIPv6 = SendMessage(hChkIsIPv6, BM_GETCHECK, 0, 0);
 			g_isUDP = SendMessage(hChkIsUDP, BM_GETCHECK, 0, 0);
-			//=============  ï¿½ï¿½ï¿½ï¿½ ===============//
-			// Ã¤ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ UDP, TCP Ã¼Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù±ï¿½
+			//=============  Áö¾È ===============//
+			// Ã¤³Î¿¡ µû¶ó UDP, TCP Ã¼Å© ¿©ºÎ ¹Ù²Ù±â
 			switch (channel) {
-				case CHANNEL_TCP: //TCPï¿½ï¿½ UDP Ã¤ï¿½ï¿½ falsem
-					g_isUDP = false;
-					break;
-				case CHANNEL_UDP1: //UDPï¿½ï¿½ udp ï¿½ï¿½Æ° true
-					g_isUDP = true;
-					break;
-				case CHANNEL_UDP2: //UDPï¿½ï¿½ udp ï¿½ï¿½Æ° true
-					g_isUDP = true;
-				default:
-					break;
+			case CHANNEL_TCP: //TCP¸é UDP Ã¤³Î falsem
+				g_isUDP = false;
+				break;
+			case CHANNEL_UDP1: //UDP¸é udp ¹öÆ° true
+				g_isUDP = true;
+				break;
+			case CHANNEL_UDP2: //UDP¸é udp ¹öÆ° true
+				g_isUDP = true;
+			default:
+				break;
 			}
 			//=====================================//
 
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// ¼ÒÄÏ Åë½Å ½º·¹µå ½ÃÀÛ
 			g_hClientThread = CreateThread(NULL, 0, ClientMain, NULL, 0, NULL);
 			if (g_hClientThread == NULL) exit(0);
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½
+			// ¼­¹ö Á¢¼Ó ¼º°ø ±â´Ù¸²
 			while (g_bCommStarted == false);
-			// ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// ÄÁÆ®·Ñ »óÅÂ º¯°æ
 			EnableWindow(hChkIsIPv6, FALSE);
 			EnableWindow(hEditIPaddr, FALSE);
 			EnableWindow(hEditPort, FALSE);
@@ -311,53 +305,50 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetFocus(hEditMsg);
 			EnableWindow(g_hBtnErasePic, TRUE);
 
-			// ========= ï¿½ï¿½ï¿½ï¿½ =========
+			// ========= ÁöÀ± =========
 			EnableWindow(g_hBtnPenColor, TRUE);
 			EnableWindow(g_hLineWidth, TRUE);
 
-			// ========= ï¿½ï¿½ï¿½ï¿½ =========
-			EnableWindow(hBtnStart, FALSE); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
-			
+			// ========= ¿¬°æ =========
+			gameStart(g_hTimerStatus, g_hWordStatus);
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½Ï·á¸¦ ï¿½ï¿½Ù¸ï¿½
+			// ÀÌÀü¿¡ ¾òÀº Ã¤ÆÃ ¸Þ½ÃÁö ÀÐ±â ¿Ï·á¸¦ ±â´Ù¸²
 			WaitForSingleObject(g_hReadEvent, INFINITE);
-			isMessageQueue = TRUE;
-			// ï¿½ï¿½ï¿½Î¿ï¿½ Ã¤ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·á¸¦ ï¿½Ë¸ï¿½
+			// »õ·Î¿î Ã¤ÆÃ ¸Þ½ÃÁö¸¦ ¾ò°í ¾²±â ¿Ï·á¸¦ ¾Ë¸²
 			g_chatmsg.type = TYPE_NOTY;
-			
-			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s] ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.", NICKNAME_CHAR);
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s] ´ÔÀÌ ÀÔÀåÇÏ¿´½À´Ï´Ù.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
-			// ===================================
 
-			// ========= ï¿½ï¿½È£ =========
+
+			// ========= Á¤È£ =========
 			EnableWindow(g_hFigureSelect, TRUE);
 			//
 
 			return TRUE;
 		case IDC_SENDFILE:
-			MessageBox(NULL, _T("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½."), _T("ï¿½Ë¸ï¿½"), MB_ICONERROR);
-			// 1. GetOpenFileName() ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ APIï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
+			MessageBox(NULL, _T("¾ÆÁ÷ ±¸ÇöÇÏÁö ¾Ê¾Ò½À´Ï´Ù."), _T("¾Ë¸²"), MB_ICONERROR);
+			// 1. GetOpenFileName() À©µµ¿ì API¸¦ ÀÌ¿ëÇØ¼­ ÆÄÀÏ ¿­±â ´ëÈ­»óÀÚ¸¦ ¿­°í
+			// Àü¼ÛÇÒ ÆÄÀÏÀ» ¼±ÅÃÇÑ´Ù. 2. ¼±ÅÃÇÑ ÆÄÀÏÀ» ÀÐ¾î¼­ ¼­¹ö¿¡ Àü¼ÛÇÑ´Ù.
 			return TRUE;
 		case IDC_SENDMSG:
 			g_chatmsg.type = TYPE_CHAT;
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½Ï·á¸¦ ï¿½ï¿½Ù¸ï¿½
+			// ÀÌÀü¿¡ ¾òÀº Ã¤ÆÃ ¸Þ½ÃÁö ÀÐ±â ¿Ï·á¸¦ ±â´Ù¸²
 			WaitForSingleObject(g_hReadEvent, INFINITE);
-			// ï¿½ï¿½ï¿½Î¿ï¿½ Ã¤ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·á¸¦ ï¿½Ë¸ï¿½
+			// »õ·Î¿î Ã¤ÆÃ ¸Þ½ÃÁö¸¦ ¾ò°í ¾²±â ¿Ï·á¸¦ ¾Ë¸²
 			GetDlgItemTextA(hDlg, IDC_MSG, g_chatmsg.msg, SIZE_DAT);
 			SetEvent(g_hWriteEvent);
-			// ï¿½Ô·Âµï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+			// ÀÔ·ÂµÈ ÅØ½ºÆ® ÀüÃ¼¸¦ ¼±ÅÃ Ç¥½Ã
 			SendMessage(hEditMsg, EM_SETSEL, 0, -1);
 			return TRUE;
 		case IDC_ERASEPIC:
 			send(g_sock, (char*)&g_erasepicmsg, SIZE_TOT, 0);
 			return TRUE;
- 		case IDCANCEL:
+		case IDCANCEL:
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½ ï¿½Ï·á¸¦ ï¿½ï¿½Ù¸ï¿½
+			// ÀÌÀü¿¡ ¾òÀº Ã¤ÆÃ ¸Þ½ÃÁö ÀÐ±â ¿Ï·á¸¦ ±â´Ù¸²
 			WaitForSingleObject(g_hReadEvent, INFINITE);
-			// ï¿½ï¿½ï¿½Î¿ï¿½ Ã¤ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·á¸¦ ï¿½Ë¸ï¿½
-			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.", NICKNAME_CHAR);
+			// »õ·Î¿î Ã¤ÆÃ ¸Þ½ÃÁö¸¦ ¾ò°í ¾²±â ¿Ï·á¸¦ ¾Ë¸²
+			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]´ÔÀÌ ÅðÀåÇÏ¿´½À´Ï´Ù.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
 
 			closesocket(g_sock);
@@ -367,7 +358,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			//CreateRankDlg(hDlg);
 			return TRUE;
-		//	======== ï¿½ï¿½ï¿½ï¿½ ==========
+			//	======== ÁöÀ± ==========
 		case IDC_PENCOLOR:
 			SelectPenColor(&g_clientDrawDetailInformation);
 			return TRUE;
@@ -375,14 +366,14 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SelectLineWidth(hDlg, &g_clientDrawDetailInformation);
 			return TRUE;
 
-		// ========= ï¿½ï¿½È£ ===========
+			// ========= Á¤È£ ===========
 		case IDC_FIGURE:
 			SelectFigureOption(hDlg, g_currentSelectFigureMode);
-			// "ï¿½ï¿½ï¿½ì°³" ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// "Áö¿ì°³" ¸ðµå¿¡¼­´Â »ö»ó ¼±ÅÃ ºÒ°¡´ÉÀ¸·Î ¼³Á¤
 			if (g_currentSelectFigureMode == MODE_ERASE)
 			{
 				EnableWindow(g_hBtnPenColor, FALSE);
-				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				// »ö»ó Èò»ö °íÁ¤
 				if (!g_isBeforeModeErase)
 				{
 					g_isBeforeModeErase = true;
@@ -393,23 +384,20 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			else
 			{
 				if (g_isBeforeModeErase)
-				{	
+				{
 					g_isBeforeModeErase = false;
 					g_clientDrawDetailInformation.color = g_lastSelectColor;
 					EnableWindow(g_hBtnPenColor, TRUE);
 				}
 			}
 			return TRUE;
-		// ========== ï¿½ï¿½ï¿½ï¿½ ============
-		case IDC_GAMESTART:
-			gameStart(g_hTimerStatus, g_hWordStatus);
+			//
 		}
-		//
 	}
 	return FALSE;
 }
 
-// ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½(ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+// ÀÚ½Ä À©µµ¿ì ÇÁ·Î½ÃÀú(±×¸²ÆÇ ¿µ¿ª)
 LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HDC hDC;
@@ -424,73 +412,73 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 	switch (uMsg) {
 	case WM_SIZE:
-		// È­ï¿½ï¿½ ï¿½ï¿½Â¿ï¿½ DC ï¿½Úµï¿½ ï¿½ï¿½ï¿½
+		// È­¸é Ãâ·Â¿ë DC ÇÚµé ¾ò±â
 		hDC = GetDC(hWnd);
-		// ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½Ê°ï¿½ ï¿½Þ¸ï¿½ DC ï¿½ï¿½ï¿½ï¿½
+		// ¹è°æ ºñÆ®¸Ê°ú ¸Þ¸ð¸® DC »ý¼º
 		cx = LOWORD(lParam);
 		cy = HIWORD(lParam);
 		hBitmap = CreateCompatibleBitmap(hDC, cx, cy);
 		hDCMem = CreateCompatibleDC(hDC);
 		SelectObject(hDCMem, hBitmap);
-		// ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½
+		// ¹è°æ ºñÆ®¸Ê Èò»öÀ¸·Î Ã¤¿ò
 		SelectObject(hDCMem, GetStockObject(WHITE_BRUSH));
 		SelectObject(hDCMem, GetStockObject(WHITE_PEN));
 		Rectangle(hDCMem, 0, 0, cx, cy);
-		// È­ï¿½ï¿½ ï¿½ï¿½Â¿ï¿½ DC ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
+		// È­¸é Ãâ·Â¿ë DC ÇÚµé ÇØÁ¦
 		ReleaseDC(hWnd, hDC);
 		return 0;
 	case WM_PAINT:
-		// È­ï¿½ï¿½ ï¿½ï¿½Â¿ï¿½ DC ï¿½Úµï¿½ ï¿½ï¿½ï¿½
+		// È­¸é Ãâ·Â¿ë DC ÇÚµé ¾ò±â
 		hDC = BeginPaint(hWnd, &ps);
-		// ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ È­ï¿½é¿¡ ï¿½ï¿½ï¿½ï¿½
+		// ¹è°æ ºñÆ®¸ÊÀ» È­¸é¿¡ Àü¼Û
 		BitBlt(hDC, 0, 0, cx, cy, hDCMem, 0, 0, SRCCOPY);
-		// È­ï¿½ï¿½ ï¿½ï¿½Â¿ï¿½ DC ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
+		// È­¸é Ãâ·Â¿ë DC ÇÚµé ÇØÁ¦
 		EndPaint(hWnd, &ps);
 		return 0;
 
 	case WM_LBUTTONDOWN:
-		// ï¿½ï¿½ï¿½ì½º Å¬ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½
+		// ¸¶¿ì½º Å¬¸¯ ÁÂÇ¥ ¾ò±â
 		x0 = LOWORD(lParam);
 		y0 = HIWORD(lParam);
 		bDrawing = true;
 		return 0;
-		// ======= ï¿½ï¿½È£ =======
+		// ======= Á¤È£ =======
 	case WM_MOUSEMOVE:
 		if (bDrawing && g_bCommStarted) {
 			if (g_currentSelectFigureMode == MODE_ERASE || g_currentSelectFigureMode == MODE_LINE)
 			{
-				// ï¿½ï¿½ï¿½ì½º Å¬ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½
+				// ¸¶¿ì½º Å¬¸¯ ÁÂÇ¥ ¾ò±â
 				x1 = LOWORD(lParam);
 				y1 = HIWORD(lParam);
-				// ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				// ¼± ±×¸®±â ¸Þ½ÃÁö º¸³»±â
 				g_drawlinemsg.x0 = x0;
 				g_drawlinemsg.y0 = y0;
 				g_drawlinemsg.x1 = x1;
 				g_drawlinemsg.y1 = y1;
 
-				// ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				// Àü¼Û ¸Þ½ÃÁöÀÇ ¼±¿¡ ´ëÇÑ »ö»ó°ú ±½±â ¼³Á¤
 				g_drawlinemsg.color = g_clientDrawDetailInformation.color;
 				g_drawlinemsg.width = g_clientDrawDetailInformation.width;
 
 				//sendMsgLen(g_sock, sizeof(g_drawlinemsg));
 				//sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
 				sendn(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0, serveraddr, g_isUDP);
-				// ï¿½ï¿½ï¿½ì½º Å¬ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½ï¿½ï¿½
+				// ¸¶¿ì½º Å¬¸¯ ÁÂÇ¥ °»½Å
 				x0 = x1;
 				y0 = y1;
 			}
 		}
 		return 0;
 	case WM_LBUTTONUP:
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½Ç¾ï¿½ï¿½ï¿½ ï¿½ï¿½
+		// ¼­¹ö¿Í ¿¬°áÀÌ ¿Ï·áµÇ¾úÀ» ¶§
 		if (g_bCommStarted)
 		{
 			switch (g_currentSelectFigureMode)
 			{
-			// "ï¿½ï¿½ï¿½ì°³" ï¿½ï¿½ï¿½
+				// "Áö¿ì°³" ¸ðµå
 			case MODE_ERASE:
 				break;
-			// "Å¸ï¿½ï¿½" ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+				// "Å¸¿ø" ±×¸®±â ¸ðµå
 			case MODE_ELLIPSE:
 				g_drawellipsemsg.x0 = x0;
 				g_drawellipsemsg.y0 = y0;
@@ -503,11 +491,11 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				sendn(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0, serveraddr, g_isUDP);
 				break;
 
-			// "ï¿½ç°¢ï¿½ï¿½" ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+				// "»ç°¢Çü" ±×¸®±â ¸ðµå
 			case MODE_RECTANGLE:
 				break;
 
-			// "ï¿½ï°¢ï¿½ï¿½" ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+				// "»ï°¢Çü" ±×¸®±â ¸ðµå
 			case MODE_TRIANGLE:
 				break;
 			default:
@@ -516,28 +504,28 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		}
 		bDrawing = false;
 		return 0;
-	// ======== ï¿½ï¿½È£ ==========
-	// ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ======== Á¤È£ ==========
+		// ¼± ±×¸®±â ¸Þ½ÃÁö ¹ÞÀ½
 	case WM_DRAWLINE:
 		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_serverDrawDetailInformation);
 		return 0;
 
-	// Å¸ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// Å¸¿ø ±×¸®±â ¸Þ½ÃÁö ¹ÞÀ½
 	case WM_DRAWELLIPSE:
 		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_serverDrawDetailInformation);
 		return 0;
 
-	// Æ¯ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// Æ¯Á¤ ºÎºÐ Á¶±Ý Áö¿ì±â À©µµ¿ì ¸Þ½ÃÁö ¹ÞÀ½
 	case WM_ERASEALITTLE:
 		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_serverDrawDetailInformation);
 		return 0;
-	//
+		//
 	case WM_ERASEPIC:
-		// ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½
+		// ¹è°æ ºñÆ®¸Ê Èò»öÀ¸·Î Ã¤¿ò
 		SelectObject(hDCMem, GetStockObject(WHITE_BRUSH));
 		SelectObject(hDCMem, GetStockObject(WHITE_PEN));
 		Rectangle(hDCMem, 0, 0, cx, cy);
-		// WM_PAINT ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// WM_PAINT ¸Þ½ÃÁö °­Á¦ »ý¼º
 		InvalidateRect(hWnd, NULL, FALSE);
 		return 0;
 	case WM_DESTROY:
@@ -549,75 +537,75 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-//// ---- ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) ----- //
-//_TCHAR input_result[256]; // input ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
-//_TCHAR ID_NICKNAME[256]; // stdafx.h ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+//// ---- Áö¾È º¯¼ö (·Î±×ÀÎÀ» À§ÇÔ) ----- //
+//_TCHAR input_result[256]; // input °á°ú ÀúÀåÇÒ ¹è¿­
+//_TCHAR ID_NICKNAME[256]; // stdafx.h ÆÄÀÏ¿¡ °°Àº ÁÖ¼Ò¿¡ ÀúÀåÇÏ±â À§ÇÔ
 //
-//// È¨ Ã¢ ï¿½ï¿½ï¿½ï¿½
-//int channel;	//udp Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. stdafx.h ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+//// È¨ Ã¢ º¯¼ö
+//int channel;	//udp Ã¤³Î °¡Á®¿À±â. stdafx.h ÆÄÀÏ¿¡ °°Àº ÁÖ¼Ò¿¡ ÀúÀåÇÏ±â À§ÇÔ
 //
 ////-------------------------------//
 
-// ---- ï¿½ï¿½ï¿½ï¿½ ------------------- //
+// ---- ¿¬°æ ------------------- //
 
 
 //-------------------------------//
 
-// ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½ (ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½) -----------------------------------------------------------------------------------//
+// ·Î±×ÀÎ À©µµ¿ì ÇÁ·Î½ÃÀú (·Î±×ÀÎ ¿µ¿ª) -----------------------------------------------------------------------------------//
 LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
 
 	case WM_CREATE:
-		// ï¿½Î±ï¿½ï¿½ï¿½ È­ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ·Î±×ÀÎ È­¸é ÃÊ±âÈ­ ¹× ÄÁÆ®·Ñ »ý¼º
 																								   //x,y,width,height
-		CreateWindow(_T("STATIC"), _T("ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 500, 100, 300, 100, hwndLogin, NULL, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Æ²
+		CreateWindow(_T("STATIC"), _T("½ºÄÉÄ¡ÄûÁî"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 500, 100, 300, 100, hwndLogin, NULL, NULL, NULL); // ½ºÄÉÄ¡ÄûÁî Å¸ÀÌÆ²
 		CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 400, 300, 400, 40, hwndLogin, (HMENU)ID_ID_INPUT, NULL, NULL);
-		CreateWindow(_T("BUTTON"), _T("ï¿½ßºï¿½È®ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 850, 300, 100, 40, hwndLogin, (HMENU)ID_DUPLICATION_BUTTON, NULL, NULL); // ï¿½ßºï¿½È®ï¿½ï¿½ ï¿½ï¿½Æ°
-		//CreateWindow(_T("STATIC"), _T("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IDï¿½Ô´Ï´ï¿½!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 400, 360, 400, 40, hwndLogin, NULL, NULL, NULL); // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IDï¿½Ô´Ï´ï¿½!
-		CreateWindow(_T("BUTTON"), _T("ï¿½Î±ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD | WS_DISABLED, 400, 500, 500, 100, hwndLogin, (HMENU)ID_LOGIN_BUTTON, NULL, NULL); // ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° (Ã³ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­)
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwndLogin, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL);
+		CreateWindow(_T("BUTTON"), _T("Áßº¹È®ÀÎ"), WS_VISIBLE | WS_CHILD, 850, 300, 100, 40, hwndLogin, (HMENU)ID_DUPLICATION_BUTTON, NULL, NULL); // Áßº¹È®ÀÎ ¹öÆ°
+		//CreateWindow(_T("STATIC"), _T("»ç¿ë °¡´ÉÇÑ IDÀÔ´Ï´Ù!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 400, 360, 400, 40, hwndLogin, NULL, NULL, NULL); // »ç¿ë °¡´ÉÇÑ IDÀÔ´Ï´Ù!
+		CreateWindow(_T("BUTTON"), _T("·Î±×ÀÎ"), WS_VISIBLE | WS_CHILD | WS_DISABLED, 400, 500, 500, 100, hwndLogin, (HMENU)ID_LOGIN_BUTTON, NULL, NULL); // ·Î±×ÀÎ ¹öÆ° (Ã³À½ ºñÈ°¼ºÈ­)
+		CreateWindow(_T("BUTTON"), _T("µ¹¾Æ°¡±â"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwndLogin, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL);
 		break;
 
 	case WM_COMMAND:
-		// ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½
+		// ¹öÆ° Å¬¸¯ ÀÌº¥Æ® Ã³¸®
 		switch (LOWORD(wParam)) {
-			// 'ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ Ã³ï¿½ï¿½
+			// 'µ¹¾Æ°¡±â' ¹öÆ° Å¬¸¯ Ã³¸®
 		case ID_BACKHOME_BUTTON:
-			// ï¿½Î±ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ø¾ï¿½ï¿½Ï´Âµï¿½ ï¿½Ï´ï¿½ ï¿½Î±ï¿½ï¿½ï¿½Ã¢ ï¿½ï¿½ï¿½ï¿½
+			// ·Î±×ÀÎ Ã¢À» ¼û±â°í ¸ÞÀÎÃ¢À» º¸ÀÌ°Ô ÇØ¾ßÇÏ´Âµ¥ ÀÏ´Ü ·Î±×ÀÎÃ¢ ¼û±è
 			ShowWindow(hwndLogin, SW_HIDE);
 			break;
 
-		case ID_LOGIN_BUTTON: // ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		case ID_LOGIN_BUTTON: // ·Î±×ÀÎ ¹öÆ°À» Å¬¸¯ÇßÀ» ½Ã
 
-			_tcscpy(ID_NICKNAME, input_result); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ID ï¿½ï¿½ï¿½ï¿½
-			MessageBox(hwndLogin, ID_NICKNAME, _T("ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½."), MB_OK);
+			_tcscpy(ID_NICKNAME, input_result); // ÇöÀç ÀÔ·ÂÇÑ ID ÀúÀå
+			MessageBox(hwndLogin, ID_NICKNAME, _T("¸ÞÀÎ È­¸éÀ¸·Î ÀÌµ¿ÇÕ´Ï´Ù."), MB_OK);
 
-			CreateAndShowWindow_Home(hwndHome); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ï¿½Ï±ï¿½
+			CreateAndShowWindow_Home(hwndHome); // ¸ÞÀÎ »ý¼º ¹× º¸ÀÌ°ÔÇÏ±â
 			ShowWindow(hwndLogin, SW_HIDE);
 			break;
 
-		case ID_ID_INPUT: // IDï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½! ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+		case ID_ID_INPUT: // ID¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä! ÀÔ·ÂÇßÀ» ½Ã
 			break;
 
-		case ID_DUPLICATION_BUTTON: //ï¿½ßºï¿½ È®ï¿½ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½ßºï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½
-			_TCHAR userId[256]; // ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½?
+		case ID_DUPLICATION_BUTTON: //Áßº¹ È®ÀÎ ¹öÆ° Å¬¸¯ÇßÀ» ½Ã, Áßº¹ È®ÀÎÇÏ±â
+			_TCHAR userId[256]; // ÀÌ¹Ì ÀÖ´Â À¯Àú¾ÆÀÌµð?
 			_tcscpy(userId, _T("abc123")); // Copy the string "abc123" into userId
 			GetDlgItemText(hwndLogin, ID_ID_INPUT, input_result, sizeof(input_result));
 
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ Idï¿½ï¿½, ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+			// ÇöÀç ÀÖ´Â Id¿Í, ÀÔ·ÂÇÑ ¾ÆÀÌµð ¿ÍÀÇ ºñ±³
 			if (_tcscmp(userId, input_result) == 0 && _tcscmp(userId, _T("")))
 			{
-				MessageBox(hwndLogin, _T("ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½Ô´Ï´ï¿½. ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), _T("ï¿½ßºï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½"), MB_OK);
+				MessageBox(hwndLogin, _T("ÀÌ¹Ì ÀÖ´Â ¾ÆÀÌµðÀÔ´Ï´Ù. ´Ù¸¥ ¾ÆÀÌµð¸¦ »ç¿ëÇØÁÖ¼¼¿ä."), _T("Áßº¹ È®ÀÎ °á°ú"), MB_OK);
 
-				// ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
+				// ÀÌ¹Ì ÀÖ´Â ¾ÆÀÌµðÀÎ °æ¿ì ·Î±×ÀÎ ¹öÆ° ºñÈ°¼ºÈ­
 				EnableWindow(GetDlgItem(hwndLogin, ID_LOGIN_BUTTON), FALSE);
 			}
 			else
 			{
-				MessageBox(hwndLogin, _T("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½Ô´Ï´ï¿½."), _T("ï¿½ßºï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½"), MB_OK);
+				MessageBox(hwndLogin, _T("»ç¿ë °¡´ÉÇÑ ¾ÆÀÌµðÀÔ´Ï´Ù."), _T("Áßº¹ È®ÀÎ °á°ú"), MB_OK);
 
-				// ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
+				// »ç¿ë °¡´ÉÇÑ ¾ÆÀÌµðÀÎ °æ¿ì ·Î±×ÀÎ ¹öÆ° È°¼ºÈ­
 				EnableWindow(GetDlgItem(hwndLogin, ID_LOGIN_BUTTON), TRUE);
 			}
 			break;
@@ -640,56 +628,56 @@ LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lP
 //----------------------------------------------------------------------------------------------------------------------//
 
 
-//-------------------------------------È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½ -----------------------------------------------------------------------//
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
+//-------------------------------------È¨ À©µµ¿ì ÇÁ·Î½ÃÀú -----------------------------------------------------------------------//
+// À©µµ¿ì ÇÁ·Î½ÃÀú (Áö¾È)
 LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
 
 	case WM_CREATE:
-		// È¨ ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// È¨ ¸ÞÀÎ È­¸é ÃÊ±âÈ­ ¹× ÄÁÆ®·Ñ »ý¼º
 																							   //x,y,width,height
-		CreateWindow(_T("STATIC"), ID_NICKNAME, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 900, 10, 100, 30, hwnd, NULL, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½ id ï¿½ï¿½ï¿½
-		CreateWindow(_T("STATIC"), _T("ï¿½ï¿½ ï¿½Ý°ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 1000, 10, 200, 30, hwnd, NULL, NULL, NULL); // id ï¿½ï¿½ ï¿½Ý°ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!
-		CreateWindow(_T("STATIC"), _T("ï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 50, 50, 1150, 100, hwnd, NULL, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Æ²
+		CreateWindow(_T("STATIC"), ID_NICKNAME, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 900, 10, 100, 30, hwnd, NULL, NULL, NULL); // À¯Àú id Ãâ·Â
+		CreateWindow(_T("STATIC"), _T("´Ô ¹Ý°©½À´Ï´Ù!"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 1000, 10, 200, 30, hwnd, NULL, NULL, NULL); // id ´Ô ¹Ý°©½À´Ï´Ù!
+		CreateWindow(_T("STATIC"), _T("°øÀÚ»çÇ× ³»¿ë"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 50, 50, 1150, 100, hwnd, NULL, NULL, NULL); // ½ºÄÉÄ¡ÄûÁî Å¸ÀÌÆ²
 
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_NOTICE_BUTTON, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		CreateWindow(_T("BUTTON"), _T("°øÁö Àü¼Û"), WS_VISIBLE | WS_CHILD, 1042, 185, 174, 54, hwnd, (HMENU)ID_NOTICE_BUTTON, NULL, NULL); // °øÁö Àü¼Û
 
-		CreateWindow(_T("BUTTON"), _T("TCP Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_CHANNEL_A_BUTTON, NULL, NULL); // Ã¤ï¿½ï¿½ A ï¿½ï¿½ï¿½ï¿½
-		CreateWindow(_T("BUTTON"), _T("UDP Ã¤ï¿½ï¿½1 ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_CHANNEL_B_BUTTON, NULL, NULL); // Ã¤ï¿½ï¿½ B ï¿½ï¿½ï¿½ï¿½
+		CreateWindow(_T("BUTTON"), _T("TCP Ã¤³Î ÀÔÀå"), WS_VISIBLE | WS_CHILD, 300, 200, 640, 100, hwnd, (HMENU)ID_CHANNEL_A_BUTTON, NULL, NULL); // Ã¤³Î A ÀÔÀå
+		CreateWindow(_T("BUTTON"), _T("UDP Ã¤³Î1 ÀÔÀå"), WS_VISIBLE | WS_CHILD, 300, 350, 640, 100, hwnd, (HMENU)ID_CHANNEL_B_BUTTON, NULL, NULL); // Ã¤³Î B ÀÔÀå
 
-		//CreateWindow(L"BUTTON", L"ï¿½æ¸¸ï¿½ï¿½ï¿½", WS_VISIBLE | WS_CHILD, 282, 600, 320, 67, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-		CreateWindow(_T("BUTTON"), _T("UDP Ã¤ï¿½ï¿½2 ï¿½ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_CHANNEL_RANDOM_BUTTON, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//CreateWindow(L"BUTTON", L"¹æ¸¸µé±â", WS_VISIBLE | WS_CHILD, 282, 600, 320, 67, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // ¹æ ¸¸µé±â
+		CreateWindow(_T("BUTTON"), _T("UDP Ã¤³Î2 ÀÔÀå"), WS_VISIBLE | WS_CHILD, 300, 500, 640, 100, hwnd, (HMENU)ID_CHANNEL_RANDOM_BUTTON, NULL, NULL); // ·£´ý ÀÔÀå
 
 
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½
+		CreateWindow(_T("BUTTON"), _T("µ¹¾Æ°¡±â"), WS_VISIBLE | WS_CHILD, 100, 100, 100, 30, hwnd, (HMENU)ID_BACKHOME_BUTTON, NULL, NULL); // µ¹¾Æ°¡±â
 		break;
 
 	case WM_COMMAND:
-		// ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½
+		// ¹öÆ° Å¬¸¯ ÀÌº¥Æ® Ã³¸®
 		switch (LOWORD(wParam)) {
-			// 'ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ Ã³ï¿½ï¿½
+			// 'µ¹¾Æ°¡±â' ¹öÆ° Å¬¸¯ Ã³¸®
 		case ID_BACKHOME_BUTTON:
-			// ï¿½Î±ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½
+			// ·Î±×ÀÎ Ã¢À» ¼û±â°í ¸ÞÀÎ Ã¢À» ´Ù½Ã º¸ÀÌ°Ô ÇÔ
 		/*	ShowWindow(hwnd, SW_SHOW);*/
 			ShowWindow(hwnd, SW_HIDE);
 			break;
 
-		case ID_NOTICE_BUTTON: //[ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½
-			CreateAndShowWindow_Home_Pass(hwndHome_Pass); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ð¹ï¿½È£ ï¿½Ô·ï¿½ Ã¢ ï¿½ï¿½ï¿½ï¿½
+		case ID_NOTICE_BUTTON: //[°øÁö Àü¼Û] ¹öÆ° Å¬¸¯½Ã
+			CreateAndShowWindow_Home_Pass(hwndHome_Pass); // °ü¸®ÀÚ ºñ¹Ð¹øÈ£ ÀÔ·Â Ã¢ ¶ç¿ì±â
 			break;
 
-		case ID_CHANNEL_A_BUTTON: // TCP Ã¤ï¿½ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½
-			channel = CHANNEL_TCP;	// tcp Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		case ID_CHANNEL_A_BUTTON: // TCP Ã¤³Î ¹öÆ° Å¬¸¯½Ã
+			channel = CHANNEL_TCP;	// tcp Ã¤³Î ¹öÀü 0À¸·Î º¯°æ
 			ShowWindow(g_hDrawDlg, SW_SHOW);
 			CreateAndShowDialog(hwnd);
 			break;
-		case ID_CHANNEL_B_BUTTON: // UDP Ã¤ï¿½ï¿½1 ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½
-			channel = CHANNEL_UDP1;	//udp Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		case ID_CHANNEL_B_BUTTON: // UDP Ã¤³Î1 ¹öÆ° Å¬¸¯½Ã
+			channel = CHANNEL_UDP1;	//udp Ã¤³Î ¹öÀü 1·Î º¯°æ
 			CreateAndShowDialog(hwnd);
 			break;
-		case ID_CHANNEL_RANDOM_BUTTON: // UDP Ã¤ï¿½ï¿½2 ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½
-			channel = CHANNEL_UDP2;	//udp Ã¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		case ID_CHANNEL_RANDOM_BUTTON: // UDP Ã¤³Î2 ¹öÆ° Å¬¸¯½Ã
+			channel = CHANNEL_UDP2;	//udp Ã¤³Î ¹öÀü 2·Î º¯°æ
 			CreateAndShowDialog(hwnd);
 			break;
 		default:
@@ -710,41 +698,41 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 //----------------------------------------------------------------------------------------------------------------------//
 
 
-//------------------------------------- È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½ -----------------------------------------------------------------------//
+//------------------------------------- È¨ °øÁö»çÇ× À©µµ¿ì ÇÁ·Î½ÃÀú -----------------------------------------------------------------------//
 // 
- _TCHAR input_notice_result[256]; // input ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­
+_TCHAR input_notice_result[256]; // input °á°ú ÀúÀåÇÒ ¹è¿­
 // 
-// È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½
+// È¨ °øÁö»çÇ× À©µµ¿ì ÇÁ·Î½ÃÀú
 LRESULT CALLBACK Home_NoticeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
 
 	case WM_CREATE:
-		// ï¿½Î±ï¿½ï¿½ï¿½ È­ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ·Î±×ÀÎ È­¸é ÃÊ±âÈ­ ¹× ÄÁÆ®·Ñ »ý¼º
 																								   //x,y,width,height
-		CreateWindow(_T("STATIC"), _T("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 200, 50, 200, 50, hwnd, NULL, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Æ²
-		CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_NOTICE_INPUT, NULL, NULL);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ input
-		CreateWindow(_T("BUTTON"), _T("È®ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // È®ï¿½ï¿½ ï¿½ï¿½Æ°
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
+		CreateWindow(_T("STATIC"), _T("°øÁö»çÇ× ÀÔ·Â"), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 200, 50, 200, 50, hwnd, NULL, NULL, NULL); // ½ºÄÉÄ¡ÄûÁî Å¸ÀÌÆ²
+		CreateWindow(_T("EDIT"), _T(""), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_NOTICE_INPUT, NULL, NULL);	// °øÁö»çÇ× ÀÔ·Â input
+		CreateWindow(_T("BUTTON"), _T("È®ÀÎ"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // È®ÀÎ ¹öÆ°
+		CreateWindow(_T("BUTTON"), _T("Ãë¼Ò"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// Ãë¼Ò ¹öÆ°
 		break;
 
 	case WM_COMMAND:
-		// ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½
+		// ¹öÆ° Å¬¸¯ ÀÌº¥Æ® Ã³¸®
 		switch (LOWORD(wParam)) {
-			// 'ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ Ã³ï¿½ï¿½
+			// 'Ãë¼Ò' ¹öÆ° Å¬¸¯ Ã³¸®
 		case ID_CANCLE_BUTTON:
-			// È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½
+			// È¨ °øÁö»çÇ× ÀÔ·ÂÃ¢À» ¼û±â°í ¸ÞÀÎ Ã¢À» ´Ù½Ã º¸ÀÌ°Ô ÇÔ
 		/*	ShowWindow(hwnd, SW_SHOW);*/
 			ShowWindow(hwnd, SW_HIDE);
 			break;
-		case ID_OK_BUTTON: //È®ï¿½ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½ - input ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
-			
+		case ID_OK_BUTTON: //È®ÀÎ ¹öÆ° Å¬¸¯½Ã - input ³»¿ëÀÌ ÀúÀåµÊ.
+
 
 			GetDlgItemText(hwnd, ID_NOTICE_INPUT, input_notice_result, sizeof(input_notice_result));
-			MessageBox(hwnd, input_notice_result, _T("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½"), MB_OK); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-			BoradcaseSendToNotice(input_notice_result); //ï¿½ï¿½ï¿½Û°ï¿½ï¿½ï¿½ï¿½ï¿½
+			MessageBox(hwnd, input_notice_result, _T("°øÁö»çÇ× Àü¼Û ³»¿ë"), MB_OK); // °øÁö»çÇ× Àü¼ÛÇÒ ³»¿ë ¶ç¿ì±â
+			BoradcaseSendToNotice(input_notice_result); //Àü¼Û°¡´ÀÀÚ
 
-			//ShowWindow(hwnd, SW_HIDE);	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½Ã¢ ï¿½Ý±ï¿½
+			//ShowWindow(hwnd, SW_HIDE);	// °øÁö»çÇ× ÀÔ·ÂÃ¢ ´Ý±â
 			break;
 		default:
 			break;
@@ -764,47 +752,47 @@ LRESULT CALLBACK Home_NoticeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
 //----------------------------------------------------------------------------------------------------------------------//
 
 
-//------------------------------------- È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ð¹ï¿½È£ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½ -----------------------------------------------------------------------//
-// È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½
+//------------------------------------- È¨ °øÁö»çÇ× ºñ¹Ð¹øÈ£ À©µµ¿ì ÇÁ·Î½ÃÀú -----------------------------------------------------------------------//
+// È¨ °øÁö»çÇ× À©µµ¿ì ÇÁ·Î½ÃÀú
 LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
 
 	case WM_CREATE:
-		// ï¿½Î±ï¿½ï¿½ï¿½ È­ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ·Î±×ÀÎ È­¸é ÃÊ±âÈ­ ¹× ÄÁÆ®·Ñ »ý¼º
 																								   //x,y,width,height
-		CreateWindow(_T("STATIC"), _T("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 100, 50, 400, 50, hwnd, NULL, NULL, NULL); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ð¹ï¿½È£ Å¸ï¿½ï¿½Æ²
-		CreateWindow(_T("EDIT"), _T("ï¿½ï¿½Ð¹ï¿½È£ ï¿½Ô·ï¿½ï¿½Ï±ï¿½"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_PASSWORD_INPUT, NULL, NULL);	// ï¿½ï¿½Ð¹ï¿½È£ ï¿½Ô·ï¿½ input
-		CreateWindow(_T("BUTTON"), _T("È®ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // È®ï¿½ï¿½ ï¿½ï¿½Æ°
-		CreateWindow(_T("BUTTON"), _T("ï¿½ï¿½ï¿½"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
+		CreateWindow(_T("STATIC"), _T("°ü¸®ÀÚ ºñ¹Ð¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä."), WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 100, 50, 400, 50, hwnd, NULL, NULL, NULL); // °ü¸®ÀÚ ºñ¹Ð¹øÈ£ Å¸ÀÌÆ²
+		CreateWindow(_T("EDIT"), _T("ºñ¹Ð¹øÈ£ ÀÔ·ÂÇÏ±â"), WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, 100, 150, 400, 50, hwnd, (HMENU)ID_PASSWORD_INPUT, NULL, NULL);	// ºñ¹Ð¹øÈ£ ÀÔ·Â input
+		CreateWindow(_T("BUTTON"), _T("È®ÀÎ"), WS_VISIBLE | WS_CHILD, 180, 300, 120, 50, hwnd, (HMENU)ID_OK_BUTTON, NULL, NULL); // È®ÀÎ ¹öÆ°
+		CreateWindow(_T("BUTTON"), _T("Ãë¼Ò"), WS_VISIBLE | WS_CHILD, 320, 300, 120, 50, hwnd, (HMENU)ID_CANCLE_BUTTON, NULL, NULL);		// Ãë¼Ò ¹öÆ°
 		break;
 
 	case WM_COMMAND:
-		// ï¿½ï¿½Æ° Å¬ï¿½ï¿½ ï¿½Ìºï¿½Æ® Ã³ï¿½ï¿½
+		// ¹öÆ° Å¬¸¯ ÀÌº¥Æ® Ã³¸®
 		switch (LOWORD(wParam)) {
-			// 'ï¿½ï¿½ï¿½' ï¿½ï¿½Æ° Å¬ï¿½ï¿½ Ã³ï¿½ï¿½
+			// 'Ãë¼Ò' ¹öÆ° Å¬¸¯ Ã³¸®
 		case ID_CANCLE_BUTTON:
-			// È¨ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ð¹ï¿½È£ ï¿½Ô·ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½
+			// È¨ °øÁö»çÇ× ºñ¹Ð¹øÈ£ ÀÔ·ÂÃ¢À» ¼û±â°í ¸ÞÀÎ Ã¢À» ´Ù½Ã º¸ÀÌ°Ô ÇÔ
 		/*	ShowWindow(hwnd, SW_SHOW);*/
 			ShowWindow(hwnd, SW_HIDE);
 			break;
-		case ID_OK_BUTTON: //È®ï¿½ï¿½ ï¿½ï¿½Æ° Å¬ï¿½ï¿½ï¿½ï¿½ - input ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
-			_TCHAR password[256]; // ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½?
+		case ID_OK_BUTTON: //È®ÀÎ ¹öÆ° Å¬¸¯½Ã - input ³»¿ëÀÌ ÀúÀåµÊ.
+			_TCHAR password[256]; // ÀÌ¹Ì ÀÖ´Â À¯Àú¾ÆÀÌµð?
 			_tcscpy(password, _T("abc123")); // Copy the string "abc123" into userId
-			
+
 			GetDlgItemText(hwnd, ID_PASSWORD_INPUT, input_result, sizeof(input_result));
 
 
-			// ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï´ï¿½ï¿½ï¿½ ï¿½ï¿½
-			if (_tcscmp(password, input_result) == 0 )
+			// ºñ¹Ð¹øÈ£°¡ ÀÏÄ¡ÇÏ´ÂÁö ºñ±³
+			if (_tcscmp(password, input_result) == 0)
 			{
-				CreateAndShowWindow_Home_Notice(hwndHome_Notice); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
+				CreateAndShowWindow_Home_Notice(hwndHome_Notice); // °øÁö»çÇ× ÀÔ·Â È­¸é º¸¿©ÁÖ±â
 				ShowWindow(hwnd, SW_HIDE);
 			}
 			else
 			{
-				MessageBox(hwndHome_Pass, _T("ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½. ï¿½Ù½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½."), _T("ï¿½ï¿½ï¿½ï¿½"), MB_OK);
-				
+				MessageBox(hwndHome_Pass, _T("ºñ¹Ð¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä."), _T("¿À·ù"), MB_OK);
+
 			}
 			break;
 		default:
@@ -825,12 +813,12 @@ LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 //----------------------------------------------------------------------------------------------------------------------//
 
 
-// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½(1) - ï¿½ï¿½ï¿½ï¿½
+// ¼ÒÄÏ Åë½Å ½º·¹µå ÇÔ¼ö(1) - ¸ÞÀÎ
 DWORD WINAPI ClientMain(LPVOID arg)
 {
 	int retval;
 
-	if (g_isIPv6 == false && g_isUDP == false) { // TCP/IPv4 ï¿½ï¿½ï¿½ï¿½
+	if (g_isIPv6 == false && g_isUDP == false) { // TCP/IPv4 ¼­¹ö
 		// socket()
 		g_sock = socket(AF_INET, SOCK_STREAM, 0);
 		if (g_sock == INVALID_SOCKET) err_quit("socket()");
@@ -843,7 +831,7 @@ DWORD WINAPI ClientMain(LPVOID arg)
 		retval = connect(g_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 		if (retval == SOCKET_ERROR) err_quit("connect()");
 	}
-	else if (g_isIPv6 == true && g_isUDP == false) { // TCP/IPv6 ï¿½ï¿½ï¿½ï¿½
+	else if (g_isIPv6 == true && g_isUDP == false) { // TCP/IPv6 ¼­¹ö
 		// socket()
 		g_sock = socket(AF_INET6, SOCK_STREAM, 0);
 		if (g_sock == INVALID_SOCKET) err_quit("socket()");
@@ -857,104 +845,104 @@ DWORD WINAPI ClientMain(LPVOID arg)
 		retval = connect(g_sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 		if (retval == SOCKET_ERROR) err_quit("connect()");
 	}
-	else if (g_isIPv6 == false && g_isUDP == true) { // UDP/IPv4 ï¿½ï¿½ï¿½ï¿½
-		//========================================== ï¿½ï¿½ï¿½ï¿½ ==========================================//
-		
-		//--------------------- UDP ï¿½ï¿½ï¿½ï¿½ 1 ----------------------//
-		if (channel == CHANNEL_UDP1) { //UDP Ã¤ï¿½ï¿½ 1 ï¿½Ì¶ï¿½ï¿½
-			MessageBox(NULL, _T("ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ UDP Ã¤ï¿½ï¿½1 IPv4 Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), _T("ï¿½Ë¸ï¿½"), MB_ICONERROR);
+	else if (g_isIPv6 == false && g_isUDP == true) { // UDP/IPv4 ¼­¹ö
+		//========================================== Áö¾È ==========================================//
+
+		//--------------------- UDP ¼­¹ö 1 ----------------------//
+		if (channel == CHANNEL_UDP1) { //UDP Ã¤³Î 1 ÀÌ¶ó¸é
+			MessageBox(NULL, _T("Áö¾ÈÀÌ°¡ ±¸ÇöÁßÀÎ UDP Ã¤³Î1 IPv4 Å¬¶óÀÌ¾ðÆ® ¼ÒÄÏÀÓ"), _T("¾Ë¸²"), MB_ICONERROR);
 			// socket()
 			g_sock = socket(AF_INET, SOCK_DGRAM, 0);
 			if (g_sock == INVALID_SOCKET) err_quit("socket()");
 
-			// ï¿½ï¿½Æ¼Ä³ï¿½ï¿½Æ® ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ - (UDPï¿½ï¿½ ï¿½ï¿½ï¿½á¼³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, connet() ï¿½ï¿½ï¿½Ê¿ï¿½)
+			// ¸ÖÆ¼Ä³½ºÆ® ±×·ì °¡ÀÔ - (UDP´Â ¿¬°á¼³Á¤À» ÇÏÁö ¾ÊÀ¸¹Ç·Î, connet() ºÒÇÊ¿ä)
 			struct ip_mreq mreq;
-			mreq.imr_multiaddr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1); // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ Å»ï¿½ï¿½ï¿½ï¿½ IPv4 ï¿½ï¿½Æ¼ï¿½É½ï¿½Æ® address(ï¿½Ö¼ï¿½) (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¸ï¿½)
-			mreq.imr_interface.s_addr = htonl(INADDR_ANY);		// ï¿½ï¿½ï¿½ï¿½ ip address (ï¿½ï¿½)
+			mreq.imr_multiaddr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1); // °¡ÀÔÇÏ°Å³ª Å»ÅðÇÒ IPv4 ¸ÖÆ¼ÄÉ½ºÆ® address(ÁÖ¼Ò) (°¡ÀÔÇÒ µ¿¾Æ¸®)
+			mreq.imr_interface.s_addr = htonl(INADDR_ANY);		// ·ÎÄÃ ip address (³ª)
 			retval = setsockopt(g_sock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
 				(char*)&mreq, sizeof(mreq));
 			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
 
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½Ê±ï¿½È­
+			// ¼ÒÄÏ ÁÖ¼Ò ±¸Á¶Ã¼ ÃÊ±âÈ­
 			ZeroMemory(&serveraddr, sizeof(serveraddr));
 			serveraddr.sin_family = AF_INET;
 			serveraddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1);
 			serveraddr.sin_port = htons(SERVERPORT);
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// µ¥ÀÌÅÍ Åë½Å¿¡ »ç¿ëÇÒ º¯¼ö
 			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel1 !!";
 			int len;
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// µ¥ÀÌÅÍ º¸³»±â
 			retval = sendto(g_sock, buf, strlen(buf), 0,
 				(SOCKADDR*)&serveraddr, sizeof(serveraddr));
 			if (retval == SOCKET_ERROR) {
 				err_display("sendto()");
 			}
 
-			// ï¿½ï¿½Æ¼Ä³ï¿½ï¿½Æ® ï¿½×·ï¿½ Å»ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ udp Ã¤ï¿½ï¿½ xï¿½Ò¶ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ï¼ï¿½)
+			// ¸ÖÆ¼Ä³½ºÆ® ±×·ì Å»Åð (¿¬°æ¾Æ udp Ã¤³Î xÇÒ¶§ ÀÌ·¸°Ô ÇÏ¼À)
 			retval = setsockopt(g_sock, IPPROTO_IP, IP_DROP_MEMBERSHIP,
 				(char*)&mreq, sizeof(mreq));
 			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
 		}
 		//------------------------------------------------------//
 
-		//--------------------- UDP ï¿½ï¿½ï¿½ï¿½ 2 ----------------------//
-		else if (channel == CHANNEL_UDP2) { //UDP Ã¤ï¿½ï¿½ 2ï¿½ï¿½ï¿½
-			MessageBox(NULL, _T("ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ UDP Ã¤ï¿½ï¿½2 IPv4 Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"), _T("ï¿½Ë¸ï¿½"), MB_ICONERROR);
+		//--------------------- UDP ¼­¹ö 2 ----------------------//
+		else if (channel == CHANNEL_UDP2) { //UDP Ã¤³Î 2¶ó¸é
+			MessageBox(NULL, _T("Áö¾ÈÀÌ°¡ ±¸ÇöÁßÀÎ UDP Ã¤³Î2 IPv4 Å¬¶óÀÌ¾ðÆ® ¼ÒÄÏÀÓ"), _T("¾Ë¸²"), MB_ICONERROR);
 			// socket()
 			g_sock = socket(AF_INET, SOCK_DGRAM, 0);
 			if (g_sock == INVALID_SOCKET) err_quit("socket()");
 
-			// ï¿½ï¿½Æ¼Ä³ï¿½ï¿½Æ® ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ - (UDPï¿½ï¿½ ï¿½ï¿½ï¿½á¼³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, connet() ï¿½ï¿½ï¿½Ê¿ï¿½)
+			// ¸ÖÆ¼Ä³½ºÆ® ±×·ì °¡ÀÔ - (UDP´Â ¿¬°á¼³Á¤À» ÇÏÁö ¾ÊÀ¸¹Ç·Î, connet() ºÒÇÊ¿ä)
 			struct ip_mreq mreq;
-			mreq.imr_multiaddr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2); // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ Å»ï¿½ï¿½ï¿½ï¿½ IPv4 ï¿½ï¿½Æ¼ï¿½É½ï¿½Æ® address(ï¿½Ö¼ï¿½) (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¸ï¿½)
-			mreq.imr_interface.s_addr = htonl(INADDR_ANY);		// ï¿½ï¿½ï¿½ï¿½ ip address (ï¿½ï¿½)
+			mreq.imr_multiaddr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2); // °¡ÀÔÇÏ°Å³ª Å»ÅðÇÒ IPv4 ¸ÖÆ¼ÄÉ½ºÆ® address(ÁÖ¼Ò) (°¡ÀÔÇÒ µ¿¾Æ¸®)
+			mreq.imr_interface.s_addr = htonl(INADDR_ANY);		// ·ÎÄÃ ip address (³ª)
 			retval = setsockopt(g_sock, IPPROTO_IP, IP_ADD_MEMBERSHIP,
 				(char*)&mreq, sizeof(mreq));
 			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
 
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½Ê±ï¿½È­
+			// ¼ÒÄÏ ÁÖ¼Ò ±¸Á¶Ã¼ ÃÊ±âÈ­
 			ZeroMemory(&serveraddr, sizeof(serveraddr));
 			serveraddr.sin_family = AF_INET;
 			serveraddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2);
 			serveraddr.sin_port = htons(SERVERPORT);
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// µ¥ÀÌÅÍ Åë½Å¿¡ »ç¿ëÇÒ º¯¼ö
 			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel2 !!";
 			int len;
 
-			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			// µ¥ÀÌÅÍ º¸³»±â
 			retval = sendto(g_sock, buf, strlen(buf), 0,
 				(SOCKADDR*)&serveraddr, sizeof(serveraddr));
 			if (retval == SOCKET_ERROR) {
 				err_display("sendto()");
 			}
 
-			// ï¿½ï¿½Æ¼Ä³ï¿½ï¿½Æ® ï¿½×·ï¿½ Å»ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ udp Ã¤ï¿½ï¿½ xï¿½Ò¶ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ï¼ï¿½)
+			// ¸ÖÆ¼Ä³½ºÆ® ±×·ì Å»Åð (¿¬°æ¾Æ udp Ã¤³Î xÇÒ¶§ ÀÌ·¸°Ô ÇÏ¼À)
 			retval = setsockopt(g_sock, IPPROTO_IP, IP_DROP_MEMBERSHIP,
 				(char*)&mreq, sizeof(mreq));
 			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
 
 		}
 		//------------------------------------------------------//
-		
+
 		//==========================================================================================//
 	}
-	else if (g_isIPv6 == true && g_isUDP == true) { // UDP/IPv6 ï¿½ï¿½ï¿½ï¿½
-		MessageBox(NULL, _T("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½."), _T("ï¿½Ë¸ï¿½"), MB_ICONERROR);
+	else if (g_isIPv6 == true && g_isUDP == true) { // UDP/IPv6 ¼­¹ö
+		MessageBox(NULL, _T("¾ÆÁ÷ ±¸ÇöÇÏÁö ¾Ê¾Ò½À´Ï´Ù."), _T("¾Ë¸²"), MB_ICONERROR);
 		exit(1);
 	}
-	MessageBox(NULL, _T("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½."), _T("ï¿½Ë¸ï¿½"), MB_ICONINFORMATION);
+	MessageBox(NULL, _T("¼­¹ö¿¡ Á¢¼ÓÇß½À´Ï´Ù."), _T("¾Ë¸²"), MB_ICONINFORMATION);
 
-	// ï¿½Ð±ï¿½ & ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ÀÐ±â & ¾²±â ½º·¹µå »ý¼º
 	HANDLE hThread[2];
 	hThread[0] = CreateThread(NULL, 0, ReadThread, NULL, 0, NULL);
 	hThread[1] = CreateThread(NULL, 0, WriteThread, NULL, 0, NULL);
 	if (hThread[0] == NULL || hThread[1] == NULL) exit(1);
 	g_bCommStarted = true;
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+	// ½º·¹µå Á¾·á ´ë±â (µÑ Áß ÇÏ³ª¶óµµ Á¾·áÇÒ ¶§±îÁö)
 	retval = WaitForMultipleObjects(2, hThread, FALSE, INFINITE);
 	retval -= WAIT_OBJECT_0;
 	if (retval == 0)
@@ -964,7 +952,7 @@ DWORD WINAPI ClientMain(LPVOID arg)
 	CloseHandle(hThread[0]);
 	CloseHandle(hThread[1]);
 
-	MessageBox(NULL, _T("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."), _T("ï¿½Ë¸ï¿½"), MB_ICONERROR);
+	MessageBox(NULL, _T("¿¬°áÀÌ ²÷°å½À´Ï´Ù."), _T("¾Ë¸²"), MB_ICONERROR);
 	EnableWindow(g_hBtnSendFile, FALSE);
 	EnableWindow(g_hBtnSendMsg, FALSE);
 	EnableWindow(g_hBtnErasePic, FALSE);
@@ -973,7 +961,7 @@ DWORD WINAPI ClientMain(LPVOID arg)
 	return 0;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½(2) - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+// ¼ÒÄÏ Åë½Å ½º·¹µå ÇÔ¼ö(2) - µ¥ÀÌÅÍ ¼ö½Å
 DWORD WINAPI ReadThread(LPVOID arg)
 {
 	int retval;
@@ -984,13 +972,13 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	char reciever[20], sender[20], tmp[5];
 
 
-	// ------ ï¿½ï¿½ï¿½ï¿½ --------
+	// ------ ¿¬°æ --------
 	char senderName[256];
 	char recieverName[256];
 	char sendMsg[256];
 	char word[10];
 
-	// ====== ï¿½ï¿½È£ ========
+	// ====== Á¤È£ ========
 	DRAWELLIPSE_MSG* drawEllipse_msg;
 	int serveraddrLen;
 	int len;
@@ -998,7 +986,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 
 	while (1) {
 
-		//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ±ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+		//// µ¥ÀÌÅÍ ¹Þ±â(°íÁ¤ ±æÀÌ)
 		//retval = recvn(g_sock, (char*)&len, sizeof(int), 0);
 		//if (retval == SOCKET_ERROR) 
 		//{
@@ -1010,7 +998,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		//	break;
 		//}
 
-		//// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ±ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+		//// µ¥ÀÌÅÍ ¹Þ±â(°¡º¯ ±æÀÌ)
 		//retval = recvn(g_sock, (char*)&comm_msg, len, 0);
 		//if (retval == 0 || retval == SOCKET_ERROR) {
 		//	err_display("recv()");
@@ -1021,9 +1009,6 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		//	break;
 		//}
 		// 
-		if (isMessageQueue == TRUE) {
-
-		}
 
 		retval = recvn(g_sock, (char*)&comm_msg, BUFSIZE, 0, serveraddr, g_isUDP);
 		if (retval == 0 || retval == SOCKET_ERROR) {
@@ -1037,13 +1022,13 @@ DWORD WINAPI ReadThread(LPVOID arg)
 
 		switch (comm_msg.type)
 		{
-		// ============ ï¿½ï¿½ï¿½ï¿½ ==========
+			// ============ ¿¬°æ ==========
 		case TYPE_CHAT:
 			if (comm_msg.type == TYPE_CHAT) {
 				chat_msg = (CHAT_MSG*)&comm_msg;
 				sscanf(chat_msg->msg, "{%[^}]%*s%s", senderName, sendMsg);
 
- 				if (strncmp(sendMsg, "/w ", 3) == 0) {
+				if (strncmp(sendMsg, "/w ", 3) == 0) {
 					sscanf(sendMsg, "%s %s %s", tmp, sender, reciever);
 					if (strcmp(reciever, NICKNAME_CHAR) == 0) {
 						MySendFile(sender, reciever, chat_msg->msg);
@@ -1055,9 +1040,9 @@ DWORD WINAPI ReadThread(LPVOID arg)
 				}
 
 				WideCharToMultiByte(CP_ACP, 0, quizWord[roundNum], 10, word, 10, NULL, NULL);
-				if (strcmp(sendMsg, word) == 0) {  // ï¿½ï¿½ï¿½Ã¾î¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				if (strcmp(sendMsg, word) == 0) {  // Á¦½Ã¾î¸¦ ¸ÂÃá °æ¿ì: Á¤´äÀÓÀ» Ãâ·ÂÇÏ°í »õ ¶ó¿îµå ½ÃÀÛ
 
-					DisplayText("[%s] ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½!\r\n", word);
+					DisplayText("[%s] Á¤´äÀÔ´Ï´Ù!\r\n", word);
 					newRound();
 				}
 			}
@@ -1068,7 +1053,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 			break;
 		case TYPE_DRAWLINE:
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
-			// ============ ï¿½ï¿½ï¿½ï¿½ ============
+			// ============ ÁöÀ± ============
 			g_serverDrawDetailInformation.width = drawline_msg->width;
 			// ==============================
 			g_serverDrawDetailInformation.color = drawline_msg->color;
@@ -1076,7 +1061,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 				MAKEWPARAM(drawline_msg->x0, drawline_msg->y0),
 				MAKELPARAM(drawline_msg->x1, drawline_msg->y1));
 			break;
-		// ======== ï¿½ï¿½È£ ==========
+			// ======== Á¤È£ ==========
 		case TYPE_DRAWELLIPSE:
 			drawEllipse_msg = (DRAWELLIPSE_MSG*)&comm_msg;
 			g_serverDrawDetailInformation.width = drawEllipse_msg->width;
@@ -1099,26 +1084,26 @@ DWORD WINAPI ReadThread(LPVOID arg)
 	return 0;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½(3) - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û½ï¿½
+// ¼ÒÄÏ Åë½Å ½º·¹µå ÇÔ¼ö(3) - µ¥ÀÌÅÍ ¼Û½Å
 DWORD WINAPI WriteThread(LPVOID arg)
 {
 	int retval, len;
 	char* nickName;
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	// ¼­¹ö¿Í µ¥ÀÌÅÍ Åë½Å
 	while (1) {
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½
+		// ¾²±â ¿Ï·á ±â´Ù¸®±â
 		WaitForSingleObject(g_hWriteEvent, INFINITE);
-		// ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ 0ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ¹®ÀÚ¿­ ±æÀÌ°¡ 0ÀÌ¸é º¸³»Áö ¾ÊÀ½
 		if (strlen(g_chatmsg.msg) == 0) {
-			// [ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½Æ° È°ï¿½ï¿½È­
+			// [¸Þ½ÃÁö Àü¼Û] ¹öÆ° È°¼ºÈ­
 			EnableWindow(g_hBtnSendMsg, TRUE);
-			// ï¿½Ð±ï¿½ ï¿½Ï·ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½
+			// ÀÐ±â ¿Ï·á ¾Ë¸®±â
 			SetEvent(g_hReadEvent);
 			continue;
 		}
-		// ============ ï¿½ï¿½È£ ===========
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ============ Á¤È£ ===========
+		// µ¥ÀÌÅÍ º¸³»±â
 
 		char sendMsg[256];
 		if (g_chatmsg.type == TYPE_CHAT) {
@@ -1128,25 +1113,25 @@ DWORD WINAPI WriteThread(LPVOID arg)
 		}
 		len = sizeof(g_chatmsg);
 
-		// ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// °íÁ¤ Å©±â µ¥ÀÌÅÍ Àü¼Û
 		retval = sendn(g_sock, (char*)&g_chatmsg, BUFSIZE, 0, serveraddr, g_isUDP);
 
 		//retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
-		//// ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//// °¡º¯ Å©±â µ¥ÀÌÅÍ Àü¼Û
 		//retval = sendn(g_sock, (char*)&g_chatmsg, len, 0);
 		if (retval == SOCKET_ERROR) break;
 
 
-		// [ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½Æ° È°ï¿½ï¿½È­
+		// [¸Þ½ÃÁö Àü¼Û] ¹öÆ° È°¼ºÈ­
 		EnableWindow(g_hBtnSendMsg, TRUE);
-		// ï¿½Ð±ï¿½ ï¿½Ï·ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½
+		// ÀÐ±â ¿Ï·á ¾Ë¸®±â
 		SetEvent(g_hReadEvent);
 	}
 	return 0;
 }
 
-// ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
-void DisplayText(const char *fmt, ...)
+// ¿¡µðÆ® ÄÁÆ®·Ñ Ãâ·Â ÇÔ¼ö
+void DisplayText(const char* fmt, ...)
 {
 	va_list arg;
 	va_start(arg, fmt);
