@@ -37,13 +37,9 @@ void MySendFile(char* senderName, char* reciverName, char* msg) {
 			err_display("send()");
 			break;
 		}
-		//printf("[TCP 클라이언트] %d+%d바이트를 "
-		//	"보냈습니다.\n", sizeof(int), retval);
+		printf("[TCP 클라이언트] %d+%d바이트를 "
+			"보냈습니다.\n", sizeof(int), retval);
 	}
 
 	fclose(fp);
-}
-
-void printMessageQueue(HWND hDlg) {
-	
 }
