@@ -78,6 +78,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ShowWindow(hWnd, SW_SHOWNORMAL);
 	//UpdateWindow(hWnd);
 
+	HWND hDlg = (HWND)DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DialogProc);
+
 	int retval;
 
 	// 윈속 초기화
