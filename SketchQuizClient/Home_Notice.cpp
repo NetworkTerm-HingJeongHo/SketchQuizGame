@@ -12,7 +12,6 @@ void CreateAndShowWindow_Home_Notice(HWND hWnd)
 		MessageBox(NULL, L"윈도우 생성 실패!", L"에러", MB_ICONERROR);
 	}
 	ShowWindow(hwndHome_Notice, SW_SHOW);
-	g_bDialogVisible = true;
 }
 
 

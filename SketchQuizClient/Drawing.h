@@ -1,8 +1,5 @@
 #pragma once
 
-// 대화 상자를 만들고 표시하는 함수
-void CreateAndShowDialog(HWND hWnd);
-
 // 타입 정의
 // ======================= 정호 =======================
 
@@ -26,6 +23,8 @@ typedef struct _DRAW_DETAIL_INFORMATION
 
 // 기능 정의
 // ======================= 지윤 =======================
+// 대화 상자를 만들고 표시하는 함수
+void CreateAndShowDialog(HWND hWnd);
 void SelectPenColor(DRAW_DETAIL_INFORMATION* g_drawDetailInformation);
 void AddLineWidthOption(HWND hDlg);
 void SelectLineWidth(HWND hDlg, DRAW_DETAIL_INFORMATION* g_drawDetailInformation);

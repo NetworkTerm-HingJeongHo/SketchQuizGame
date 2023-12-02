@@ -66,6 +66,13 @@ int main(int argc, char* argv[])
 	// listen()
 	retval = listen(listen_sock4, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
+
+	// TCP/IPv4 소켓에 논블로킹 모드 설정
+	u_long nonBlockingModeOn = 1;
+	retval = ioctlsocket(listen_sock4, FIONBIO, &nonBlockingModeOn);
+	if (retval == SOCKET_ERROR) {
+		err_quit("ioctlsocket()");
+	}
 	/*----- TCP/IPv4 소켓 초기화 종료 -----*/
 
 	/*----- TCP/IPv6 소켓 초기화 시작 -----*/
