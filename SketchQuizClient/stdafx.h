@@ -155,4 +155,6 @@ static DRAW_DETAIL_INFORMATION g_drawDetailInformation;
 static HWND g_hFigureSelect; // 그릴 도형 선택하는 부분
 
 static DRAWELLIPSE_MSG g_drawellipsemsg; // 타원 그리기 메시지
+
+static SOCKADDR_IN serveraddr; // 서버 주소
 //

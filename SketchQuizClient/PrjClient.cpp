@@ -460,7 +460,7 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 				//sendMsgLen(g_sock, sizeof(g_drawlinemsg));
 				//sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
-				sendn(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
+				sendn(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0, serveraddr, g_isUDP);
 				// 마우스 클릭 좌표 갱신
 				x0 = x1;
 				y0 = y1;
@@ -486,7 +486,7 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawellipsemsg.width = g_drawDetailInformation.width;
 				//sendMsgLen(g_sock, sizeof(g_drawellipsemsg));
 				//sendn(g_sock, (char*)&g_drawellipsemsg, sizeof(g_drawellipsemsg), 0);
-				sendn(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0);
+				sendn(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0, serveraddr, g_isUDP);
 				break;
 
 			// "사각형" 그리기 모드
@@ -827,7 +827,6 @@ DWORD WINAPI ClientMain(LPVOID arg)
 		if (g_sock == INVALID_SOCKET) err_quit("socket()");
 
 		// connect()
-		struct sockaddr_in serveraddr;
 		memset(&serveraddr, 0, sizeof(serveraddr));
 		serveraddr.sin_family = AF_INET;
 		inet_pton(AF_INET, g_ipaddr, &serveraddr.sin_addr);
@@ -868,11 +867,10 @@ DWORD WINAPI ClientMain(LPVOID arg)
 			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
 
 			// 소켓 주소 구조체 초기화
-			SOCKADDR_IN remoteaddr;
-			ZeroMemory(&remoteaddr, sizeof(remoteaddr));
-			remoteaddr.sin_family = AF_INET;
-			remoteaddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1);
-			remoteaddr.sin_port = htons(SERVERPORT);
+			ZeroMemory(&serveraddr, sizeof(serveraddr));
+			serveraddr.sin_family = AF_INET;
+			serveraddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1);
+			serveraddr.sin_port = htons(SERVERPORT);
 
 			// 데이터 통신에 사용할 변수
 			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel1 !!";
@@ -880,7 +878,7 @@ DWORD WINAPI ClientMain(LPVOID arg)
 
 			// 데이터 보내기
 			retval = sendto(g_sock, buf, strlen(buf), 0,
-				(SOCKADDR*)&remoteaddr, sizeof(remoteaddr));
+				(SOCKADDR*)&serveraddr, sizeof(serveraddr));
 			if (retval == SOCKET_ERROR) {
 				err_display("sendto()");
 			}
@@ -908,11 +906,10 @@ DWORD WINAPI ClientMain(LPVOID arg)
 			if (retval == SOCKET_ERROR) err_quit("setsockopt()");
 
 			// 소켓 주소 구조체 초기화
-			SOCKADDR_IN remoteaddr;
-			ZeroMemory(&remoteaddr, sizeof(remoteaddr));
-			remoteaddr.sin_family = AF_INET;
-			remoteaddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2);
-			remoteaddr.sin_port = htons(SERVERPORT);
+			ZeroMemory(&serveraddr, sizeof(serveraddr));
+			serveraddr.sin_family = AF_INET;
+			serveraddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP2);
+			serveraddr.sin_port = htons(SERVERPORT);
 
 			// 데이터 통신에 사용할 변수
 			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel2 !!";
@@ -920,7 +917,7 @@ DWORD WINAPI ClientMain(LPVOID arg)
 
 			// 데이터 보내기
 			retval = sendto(g_sock, buf, strlen(buf), 0,
-				(SOCKADDR*)&remoteaddr, sizeof(remoteaddr));
+				(SOCKADDR*)&serveraddr, sizeof(serveraddr));
 			if (retval == SOCKET_ERROR) {
 				err_display("sendto()");
 			}
@@ -986,6 +983,7 @@ DWORD WINAPI ReadThread(LPVOID arg)
 
 	// ====== 정호 ========
 	DRAWELLIPSE_MSG* drawEllipse_msg;
+	int serveraddrLen;
 	int len;
 	//
 
@@ -1014,7 +1012,8 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		//	break;
 		//}
 		// 
-		retval = recvn(g_sock, (char*)&comm_msg, BUFSIZE, 0);
+
+		retval = recvn(g_sock, (char*)&comm_msg, BUFSIZE, 0, serveraddr, g_isUDP);
 		if (retval == 0 || retval == SOCKET_ERROR) {
 			err_display("recv()");
 			break;
@@ -1109,22 +1108,23 @@ DWORD WINAPI WriteThread(LPVOID arg)
 		// ============ 정호 ===========
 		// 데이터 보내기
 
-		// 고정 크기 데이터 전송
-
 		char sendMsg[256];
-		if(g_chatmsg.type==TYPE_CHAT){
-			snprintf(sendMsg,sizeof(sendMsg), "{%s} %s", NICKNAME_CHAR, g_chatmsg.msg);
+		if (g_chatmsg.type == TYPE_CHAT) {
+			snprintf(sendMsg, sizeof(sendMsg), "{%s} %s", NICKNAME_CHAR, g_chatmsg.msg);
 			strcpy(g_chatmsg.msg, sendMsg);
-			
+
 		}
 		len = sizeof(g_chatmsg);
 
-		retval = sendn(g_sock, (char*)&g_chatmsg, BUFSIZE, 0);
+		// 고정 크기 데이터 전송
+		retval = sendn(g_sock, (char*)&g_chatmsg, BUFSIZE, 0, serveraddr, g_isUDP);
 
 		//retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
 		//// 가변 크기 데이터 전송
 		//retval = sendn(g_sock, (char*)&g_chatmsg, len, 0);
 		if (retval == SOCKET_ERROR) break;
+
+
 		// [메시지 전송] 버튼 활성화
 		EnableWindow(g_hBtnSendMsg, TRUE);
 		// 읽기 완료 알리기

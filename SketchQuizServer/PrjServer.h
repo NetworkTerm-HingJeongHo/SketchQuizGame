@@ -35,7 +35,7 @@ INT_PTR CALLBACK DialogProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 // 家南 沥焊 包府 窃荐
 bool AddSocketInfoTCP(SOCKET sock);
 bool AddSocketInfoUDP(SOCKADDR_IN addr);
-void RemoveSocketInfo(int nIndex);
+void RemoveSocketInfo(SOCKET sock);
 void addMessage(char* message);
 SOCKETINFO* GetSocketInfo(SOCKET sock);
 
