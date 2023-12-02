@@ -575,7 +575,7 @@ LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lP
 			break;
 
 		case ID_LOGIN_BUTTON: // 로그인 버튼을 클릭했을 시
-
+			
 			_tcscpy(ID_NICKNAME, input_result); // 현재 입력한 ID 저장
 			MessageBox(hwndLogin, ID_NICKNAME, _T("메인 화면으로 이동합니다."), MB_OK);
 
@@ -591,6 +591,14 @@ LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lP
 			_tcscpy(userId, _T("abc123")); // Copy the string "abc123" into userId
 			GetDlgItemText(hwndLogin, ID_ID_INPUT, input_result, sizeof(input_result));
 
+
+			// ---- 로그인 할때 TCP 연결 ---- //
+			_tcscpy(ID_NICKNAME, input_result); // 현재 입력한 ID 저장
+			WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR 형 문자열을 char* 형 문자열로 변경
+			LoginProcessClient(); //TCP 연결. ->
+			// ---------------------------- //
+			 
+			 
 			// 현재 있는 Id와, 입력한 아이디 와의 비교
 			if (_tcscmp(userId, input_result) == 0 && _tcscmp(userId, _T("")))
 			{
@@ -812,6 +820,99 @@ LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 	}
 	return 0;
 }
+
+//----------------------------------------------------------------------------------------------------------------------//
+
+//--------------------------------------------------지안----------------------------------------------------------------//
+// 소켓 통신 스레드 함수 (0) - 로그인할때 소켓 통신하기
+// 클라이언트와 데이터 통신
+DWORD WINAPI LoginProcessClient()
+{
+
+	int retval;
+	// socket()
+	g_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (g_sock == INVALID_SOCKET) err_quit("socket()");
+	
+	// connect() : 기존 TCP 연결이 아닌 새로 만든것
+	SOCKADDR_IN Loginserveraddr;
+	ZeroMemory(&Loginserveraddr, sizeof(Loginserveraddr));
+
+	Loginserveraddr.sin_family = AF_INET; //server에 대한 설정
+	Loginserveraddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR); //server에 대한 설정
+	Loginserveraddr.sin_port = htons(SERVERPORT); //server에 대한 설정
+	retval = connect(g_sock, (SOCKADDR*)&Loginserveraddr, sizeof(Loginserveraddr)); //연결할때, 서버소켓 정보를 준다. -> establishied 상태
+	if (retval == SOCKET_ERROR) err_quit("connect()");
+
+	
+	
+	// 데이터 통신에 사용할 변수
+	//char buf[BUFSIZE + 1]="TCP연결해라잉";
+	//int len;
+
+	//retval = send(g_sock, buf, strlen(buf), 0); //버퍼사이즈로 보내기
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//	//break;
+	//}
+	
+
+	int len;
+	len = sizeof(NICKNAME_CHAR);
+
+	// 고정 크기 데이터 전송
+	retval = sendn(g_sock, (char*)&NICKNAME_CHAR, BUFSIZE, 0, serveraddr, false);
+
+	printf("[TCP 클라이언트] %d바이트를 보냈습니다.\n", retval);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+		//break;
+	}
+
+	//retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
+	//// 가변 크기 데이터 전송
+	//retval = sendn(g_sock, (char*)&g_chatmsg, len, 0);
+	if (retval == SOCKET_ERROR)
+		return 0;
+
+	return 0;
+	/*
+	//// 서버와 데이터 통신
+	while (1) {
+	//	// 데이터 보내기
+		retval = send(g_sock, buf, strlen(buf), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+			//break;
+		}
+		printf("[TCP 클라이언트] %d바이트를 보냈습니다.\n", retval);
+
+		// 데이터 받기
+		retval = recvn(g_sock, (char*)&buf, BUFSIZE, 0, serveraddr, false); //
+		//retval = recvn(g_sock, buf, retval, 0); // retval를 다시 넣은 이유 : 내가 보낸만큼 다시 받기 위해서이다. (10byte보냈으면 10만큼 받게 N을 설정해준거)
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+			//break;
+		}
+		else if (retval == 0)
+			//break;
+
+		// 받은 데이터 출력
+		buf[retval] = '\0';
+		printf("[TCP 클라이언트] %d바이트를 받았습니다.\n", retval);
+		printf("[받은 데이터] %s\n", buf);
+	}
+
+	//HANDLE hThread[2];
+
+	//hThread[1] = CreateThread(NULL, 0, LoginProcessClient, (LPVOID)1, 0, NULL);
+	//WaitForMultipleObjects(2, hThread, TRUE, INFINITE);
+	// //윈속 종료
+	//WSACleanup();
+	*/
+
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------//
 
