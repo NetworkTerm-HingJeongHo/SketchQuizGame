@@ -46,15 +46,6 @@ typedef struct _ERASEPIC_MSG
 	char dummy[SIZE_DAT];
 } ERASEPIC_MSG;
 
-
-// ======== 연경 =======
-typedef struct _MESSAGEQUEUE {
-	char queue[256][100] = { NULL };         // 메시지 원형 큐: 이전 대화내용 표시. 꽉 차면 가장 오래된 메시지부터 지워진다.
-	int head = 0;                 // 원형 큐 인덱스
-	int tail = 0;
-} MESSAGEQUEUE;
-// ========================
-
 // 메인 윈도우(첫화면) 프로시저
 LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 // 대화상자(그림판) 프로시저

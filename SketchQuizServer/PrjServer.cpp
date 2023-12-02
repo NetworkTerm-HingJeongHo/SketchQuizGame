@@ -243,6 +243,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// 데이터 받기
 			addrlen = sizeof(clientaddr);
 			retval = recvfrom(socket_UDP, buf, BUFSIZE, 0, (SOCKADDR*)&clientaddr, &addrlen);
+
       // ================== 연경 ============
 			addMessage(buf);
       // ====================================
