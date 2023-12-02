@@ -1,5 +1,7 @@
 #pragma once
 
+#define SERVERIP4_CHAR_UDP1 "235.7.8.18" // 그룹 1
+#define SERVERIP4_CHAR_UDP2 "235.7.8.19" // 그룹 1
 #define SERVERPORT 9000
 #define BUFSIZE    256
 // ==== 정호 ====
