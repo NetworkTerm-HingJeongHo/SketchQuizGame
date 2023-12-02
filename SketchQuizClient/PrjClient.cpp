@@ -3,6 +3,7 @@
 // ---- 지안 변수 (로그인을 위함) ----- //
 _TCHAR input_result[256]; // input 결과 저장할 배열
 _TCHAR ID_NICKNAME[256]; // stdafx.h 파일에 같은 주소에 저장하기 위함
+HANDLE LoginProcessClientThread; // 로그인 프로세스 스레드, stdafx.h 파일에 같은 주소에 저장하기 위함
 
 // 홈 창 변수
 int channel;	//udp 채널 가져오기. stdafx.h 파일에 같은 주소에 저장하기 위함
@@ -597,7 +598,8 @@ LRESULT CALLBACK LoginWndProc(HWND hwndLogin, UINT msg, WPARAM wParam, LPARAM lP
 			// ---- 로그인 할때 TCP 연결 ---- //
 			_tcscpy(ID_NICKNAME, input_result); // 현재 입력한 ID 저장
 			WideCharToMultiByte(CP_ACP, 0, ID_NICKNAME, 256, NICKNAME_CHAR, 256, NULL, NULL); //_TCHAR 형 문자열을 char* 형 문자열로 변경
-			LoginProcessClient(); //TCP 연결. ->
+			//LoginProcessClient(); //TCP 연결. ->
+			 LoginProcessClientThread = CreateThread(NULL, 0, LoginProcessClient, NULL, 0, NULL); //TCP 연결 및 스레드 생성
 			// ---------------------------- //
 			 
 			 
@@ -823,7 +825,7 @@ LRESULT CALLBACK Home_PassWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 //--------------------------------------------------지안----------------------------------------------------------------//
 // 소켓 통신 스레드 함수 (0) - 로그인할때 소켓 통신하기
 // 클라이언트와 데이터 통신
-DWORD WINAPI LoginProcessClient()
+DWORD WINAPI LoginProcessClient(LPVOID arg)
 {
 
 	int retval;
