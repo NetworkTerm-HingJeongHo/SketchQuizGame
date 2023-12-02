@@ -101,6 +101,7 @@ static int			 g_lineWidth;     // 선 그리기 굵기
 
 // 로그인 관련 전역 변수
 extern _TCHAR		ID_NICKNAME[256];	// 현재 사용자 아이디 전역변수
+extern HANDLE LoginProcessClientThread; // 로그인 프로세스 스레드
 
 // 홈 사용자 정의 상수
 #define ID_CHANNEL_A_BUTTON		2500	// 채널 A 버튼 ( TCP)
