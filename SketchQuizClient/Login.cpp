@@ -9,5 +9,4 @@ void CreateAndShowWindow_Login(HWND hWnd)
 	hwndLogin = CreateWindow(_T("LoginWindowClass"), _T("로그인 창"), WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, NULL, NULL, g_hInstance, NULL);
 	ShowWindow(hwndLogin, SW_SHOW);
-	g_bDialogVisible = true;
 }

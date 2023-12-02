@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
-		if (!IsDialogMessage(g_hDialog, &msg)) // 대화 상자 메시지 처리
+		if (!IsDialogMessage(g_hMainWindow, &msg)) // 대화 상자 메시지 처리
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -118,17 +118,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	{
 		if (LOWORD(wParam) == 1) // '그림판' 버튼 클릭
 		{
-			if (!g_bDrawDlgVisible) // 대화 상자가 현재 보이지 않는 경우
-			{
-				// 대화 상자를 만들고 표시하는 함수 호출
-				CreateAndShowDialog(hWnd);
-			}
-			else
-			{
-				// 대화 상자가 이미 보이는 경우, 대화 상자를 활성화합니다.
-				SetForegroundWindow(g_hDialog);
-			}
-			// 빈 윈도우창 숨기기
+			CreateAndShowDialog(hWnd);
+
 			ShowWindow(hWnd, SW_HIDE);
 		}
 		//---지안 ----//
@@ -176,6 +167,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	// ========= 지윤 =========
 	static HWND hBtnPenColor;
 	static HWND hLineWidth;
+	static HWND hDlgChannel;
 
 	// ========= 정호 =========
 	static HWND hFigureSelect;	// 그릴 도형 선택
@@ -362,7 +354,7 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			closesocket(g_sock);
 			EndDialog(hDlg, IDCANCEL);
 			//ShowWindow(hDlg, SW_HIDE); 
-			//ShowWindow(hDlg, SW_SHOW);
+			//ShowWindow(hwndHome, SW_SHOW);
 
 			//CreateRankDlg(hDlg);
 			return TRUE;
@@ -667,13 +659,8 @@ LRESULT CALLBACK HomeWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 		case ID_CHANNEL_A_BUTTON: // TCP 채널 버튼 클릭시
 			channel = CHANNEL_TCP;	// tcp 채널 버전 0으로 변경
-			if (g_bDrawDlgVisible) {
-				ShowWindow(g_hDrawDlg, SW_SHOW);
-			}
-			else {
-				CreateAndShowDialog(hwnd);
-
-			}
+			ShowWindow(g_hDrawDlg, SW_SHOW);
+			CreateAndShowDialog(hwnd);
 			break;
 		case ID_CHANNEL_B_BUTTON: // UDP 채널1 버튼 클릭시
 			channel = CHANNEL_UDP1;	//udp 채널 버전 1로 변경
