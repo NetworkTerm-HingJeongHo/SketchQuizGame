@@ -4,8 +4,8 @@
 // 클라이언트 관리 배열
 int nTotalSockets = 0;
 int nTotalUDPSockets = 0;
-SOCKETINFO* SocketInfoArray[FD_SETSIZE];
-SOCKADDR_IN UDPSocketInfoArray[FD_SETSIZE];
+SOCKETINFO* SocketInfoArray[FD_SETSIZE]; //TCP 유저들 있는 변수
+SOCKADDR_IN UDPSocketInfoArray[FD_SETSIZE]; //UDP 유저들 있는 변수
 
 SOCKET listen_sock4;
 SOCKADDR_IN serveraddr;
@@ -216,6 +216,11 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			// 고정 데이터 받기
 			retval = recv(ptr->sock, ptr->buf, BUFSIZE, 0);
+			// ======== 지안 ==========//
+			// 
+			printf("[TCP 클라이언트] %d바이트를 받았습니다.\n", retval);
+			printf("[받은 데이터] %s\n", ptr->buf);
+			// ======================//
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 				RemoveSocketInfo(wParam);
