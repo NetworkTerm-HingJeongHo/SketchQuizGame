@@ -359,10 +359,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]님이 퇴장하였습니다.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
 
-			//EndDialog(hDlg, IDCANCEL);
 			closesocket(g_sock);
-			ShowWindow(hDlg, SW_HIDE); 
-			ShowWindow(hDlg, SW_SHOW);
+			EndDialog(hDlg, IDCANCEL);
+			//ShowWindow(hDlg, SW_HIDE); 
+			//ShowWindow(hDlg, SW_SHOW);
 
 			//CreateRankDlg(hDlg);
 			return TRUE;
@@ -458,8 +458,9 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawlinemsg.color = g_drawDetailInformation.color;
 				g_drawlinemsg.width = g_drawDetailInformation.width;
 
-				sendMsgLen(g_sock, sizeof(g_drawlinemsg));
-				sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
+				//sendMsgLen(g_sock, sizeof(g_drawlinemsg));
+				//sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
+				sendn(g_sock, (char*)&g_drawlinemsg, SIZE_TOT, 0);
 				// 마우스 클릭 좌표 갱신
 				x0 = x1;
 				y0 = y1;
@@ -483,8 +484,9 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawellipsemsg.y1 = HIWORD(lParam);
 				g_drawellipsemsg.color = g_drawDetailInformation.color;
 				g_drawellipsemsg.width = g_drawDetailInformation.width;
-				sendMsgLen(g_sock, sizeof(g_drawellipsemsg));
-				sendn(g_sock, (char*)&g_drawellipsemsg, sizeof(g_drawellipsemsg), 0);
+				//sendMsgLen(g_sock, sizeof(g_drawellipsemsg));
+				//sendn(g_sock, (char*)&g_drawellipsemsg, sizeof(g_drawellipsemsg), 0);
+				sendn(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0);
 				break;
 
 			// "사각형" 그리기 모드
@@ -989,20 +991,30 @@ DWORD WINAPI ReadThread(LPVOID arg)
 
 	while (1) {
 
-		// 데이터 받기(고정 길이)
-		retval = recvn(g_sock, (char*)&len, sizeof(int), 0);
-		if (retval == SOCKET_ERROR) 
-		{
-			err_display("recvn()");
-			break;
-		}
-		else if (retval == 0)
-		{
-			break;
-		}
+		//// 데이터 받기(고정 길이)
+		//retval = recvn(g_sock, (char*)&len, sizeof(int), 0);
+		//if (retval == SOCKET_ERROR) 
+		//{
+		//	err_display("recvn()");
+		//	break;
+		//}
+		//else if (retval == 0)
+		//{
+		//	break;
+		//}
 
-		// 데이터 받기(가변 길이)
-		retval = recvn(g_sock, (char*)&comm_msg, len, 0);
+		//// 데이터 받기(가변 길이)
+		//retval = recvn(g_sock, (char*)&comm_msg, len, 0);
+		//if (retval == 0 || retval == SOCKET_ERROR) {
+		//	err_display("recv()");
+		//	break;
+		//}
+		//else if (retval == 0)
+		//{
+		//	break;
+		//}
+		// 
+		retval = recvn(g_sock, (char*)&comm_msg, BUFSIZE, 0);
 		if (retval == 0 || retval == SOCKET_ERROR) {
 			err_display("recv()");
 			break;
@@ -1106,9 +1118,12 @@ DWORD WINAPI WriteThread(LPVOID arg)
 			
 		}
 		len = sizeof(g_chatmsg);
-		retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
-		// 가변 크기 데이터 전송
-		retval = sendn(g_sock, (char*)&g_chatmsg, len, 0);
+
+		retval = sendn(g_sock, (char*)&g_chatmsg, BUFSIZE, 0);
+
+		//retval = sendn(g_sock, (char*)&len, sizeof(int), 0);
+		//// 가변 크기 데이터 전송
+		//retval = sendn(g_sock, (char*)&g_chatmsg, len, 0);
 		if (retval == SOCKET_ERROR) break;
 		// [메시지 전송] 버튼 활성화
 		EnableWindow(g_hBtnSendMsg, TRUE);
