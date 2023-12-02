@@ -359,10 +359,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			snprintf(g_chatmsg.msg, sizeof(g_chatmsg), "[%s]¥‘¿Ã ≈¿Â«œø¥Ω¿¥œ¥Ÿ.", NICKNAME_CHAR);
 			SetEvent(g_hWriteEvent);
 
-			//EndDialog(hDlg, IDCANCEL);
 			closesocket(g_sock);
-			ShowWindow(hDlg, SW_HIDE); 
-			ShowWindow(hDlg, SW_SHOW);
+			EndDialog(hDlg, IDCANCEL);
+			//ShowWindow(hDlg, SW_HIDE); 
+			//ShowWindow(hDlg, SW_SHOW);
 
 			//CreateRankDlg(hDlg);
 			return TRUE;

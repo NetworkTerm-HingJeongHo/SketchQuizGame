@@ -16,7 +16,7 @@ SOCKET socket_UDP;
 //int head = 0, tail = 0;           // 원형 큐 인덱스
 MESSAGEQUEUE g_msgQueue;
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int main(int argc, char* argv[])
 {
 	// ========= 정호 ========
 	// 윈도우 클래스 등록
@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ShowWindow(hWnd, SW_SHOWNORMAL);
 	//UpdateWindow(hWnd);
 
-	HWND hDlg = (HWND)DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DialogProc);
+	//HWND hDlg = (HWND)DialogBox(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, DialogProc);
 
 	int retval;
 
@@ -131,6 +131,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// FD_READ로 데이터를 수신할 수 있도록 설정
 	retval = WSAAsyncSelect(socket_UDP, hWnd, WM_SOCKET, FD_READ | FD_CLOSE);
 	if (retval == SOCKET_ERROR) err_quit("WSAAsyncSelect()");
+
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 
 	// 윈속 종료
 	WSACleanup();
@@ -360,15 +366,15 @@ void RemoveSocketInfo(int nIndex)
 {
 	SOCKETINFO *ptr = SocketInfoArray[nIndex];
 
-		// 클라이언트 정보 얻기
-		struct sockaddr_in clientaddr;
-		int addrlen = sizeof(clientaddr);
-		getpeername(ptr->sock, (struct sockaddr *)&clientaddr, &addrlen);
-		// 클라이언트 정보 출력
-		char addr[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-		printf("[TCP/IPv4 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-			addr, ntohs(clientaddr.sin_port));
+	// 클라이언트 정보 얻기
+	struct sockaddr_in clientaddr;
+	int addrlen = sizeof(clientaddr);
+	getpeername(ptr->sock, (struct sockaddr *)&clientaddr, &addrlen);
+	// 클라이언트 정보 출력
+	char addr[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
+	printf("[TCP/IPv4 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
+		addr, ntohs(clientaddr.sin_port));
 
 
 	// 소켓 닫기
