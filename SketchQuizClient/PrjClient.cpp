@@ -360,10 +360,10 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return TRUE;
 		//	======== 지윤 ==========
 		case IDC_PENCOLOR:
-			SelectPenColor(&g_drawDetailInformation);
+			SelectPenColor(&g_clientDrawDetailInformation);
 			return TRUE;
 		case IDC_LINEWIDTH:
-			SelectLineWidth(hDlg, &g_drawDetailInformation);
+			SelectLineWidth(hDlg, &g_clientDrawDetailInformation);
 			return TRUE;
 
 		// ========= 정호 ===========
@@ -374,11 +374,21 @@ INT_PTR CALLBACK DlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				EnableWindow(g_hBtnPenColor, FALSE);
 				// 색상 흰색 고정
-				g_drawDetailInformation.color = RGB(255, 255, 255);
+				if (!g_isBeforeModeErase)
+				{
+					g_isBeforeModeErase = true;
+					g_lastSelectColor = g_clientDrawDetailInformation.color;
+					g_clientDrawDetailInformation.color = RGB(255, 255, 255);
+				}
 			}
 			else
 			{
-				EnableWindow(g_hBtnPenColor, TRUE);
+				if (g_isBeforeModeErase)
+				{	
+					g_isBeforeModeErase = false;
+					g_clientDrawDetailInformation.color = g_lastSelectColor;
+					EnableWindow(g_hBtnPenColor, TRUE);
+				}
 			}
 			return TRUE;
 		//
@@ -447,8 +457,8 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawlinemsg.y1 = y1;
 
 				// 전송 메시지의 선에 대한 색상과 굵기 설정
-				g_drawlinemsg.color = g_drawDetailInformation.color;
-				g_drawlinemsg.width = g_drawDetailInformation.width;
+				g_drawlinemsg.color = g_clientDrawDetailInformation.color;
+				g_drawlinemsg.width = g_clientDrawDetailInformation.width;
 
 				//sendMsgLen(g_sock, sizeof(g_drawlinemsg));
 				//sendn(g_sock, (char*)&g_drawlinemsg, sizeof(g_drawlinemsg), 0);
@@ -474,8 +484,8 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				g_drawellipsemsg.y0 = y0;
 				g_drawellipsemsg.x1 = LOWORD(lParam);
 				g_drawellipsemsg.y1 = HIWORD(lParam);
-				g_drawellipsemsg.color = g_drawDetailInformation.color;
-				g_drawellipsemsg.width = g_drawDetailInformation.width;
+				g_drawellipsemsg.color = g_clientDrawDetailInformation.color;
+				g_drawellipsemsg.width = g_clientDrawDetailInformation.width;
 				//sendMsgLen(g_sock, sizeof(g_drawellipsemsg));
 				//sendn(g_sock, (char*)&g_drawellipsemsg, sizeof(g_drawellipsemsg), 0);
 				sendn(g_sock, (char*)&g_drawellipsemsg, SIZE_TOT, 0, serveraddr, g_isUDP);
@@ -497,17 +507,17 @@ LRESULT CALLBACK ChildWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	// ======== 정호 ==========
 	// 선 그리기 메시지 받음
 	case WM_DRAWLINE:
-		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_serverDrawDetailInformation);
 		return 0;
 
 	// 타원 그리기 메시지 받음
 	case WM_DRAWELLIPSE:
-		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		DrawEllipseProcess(hWnd, hDCMem, wParam, lParam, g_serverDrawDetailInformation);
 		return 0;
 
 	// 특정 부분 조금 지우기 윈도우 메시지 받음
 	case WM_ERASEALITTLE:
-		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_drawDetailInformation);
+		DrawLineProcess(hWnd, hDCMem, wParam, lParam, g_serverDrawDetailInformation);
 		return 0;
 	//
 	case WM_ERASEPIC:
@@ -1044,9 +1054,9 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		case TYPE_DRAWLINE:
 			drawline_msg = (DRAWLINE_MSG*)&comm_msg;
 			// ============ 지윤 ============
-			g_drawDetailInformation.width = drawline_msg->width;
+			g_serverDrawDetailInformation.width = drawline_msg->width;
 			// ==============================
-			g_drawDetailInformation.color = drawline_msg->color;
+			g_serverDrawDetailInformation.color = drawline_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWLINE,
 				MAKEWPARAM(drawline_msg->x0, drawline_msg->y0),
 				MAKELPARAM(drawline_msg->x1, drawline_msg->y1));
@@ -1054,8 +1064,8 @@ DWORD WINAPI ReadThread(LPVOID arg)
 		// ======== 정호 ==========
 		case TYPE_DRAWELLIPSE:
 			drawEllipse_msg = (DRAWELLIPSE_MSG*)&comm_msg;
-			g_drawDetailInformation.width = drawEllipse_msg->width;
-			g_drawDetailInformation.color = drawEllipse_msg->color;
+			g_serverDrawDetailInformation.width = drawEllipse_msg->width;
+			g_serverDrawDetailInformation.color = drawEllipse_msg->color;
 			SendMessage(g_hDrawWnd, WM_DRAWELLIPSE,
 				MAKEWPARAM(drawEllipse_msg->x0, drawEllipse_msg->y0),
 				MAKELPARAM(drawEllipse_msg->x1, drawEllipse_msg->y1));
