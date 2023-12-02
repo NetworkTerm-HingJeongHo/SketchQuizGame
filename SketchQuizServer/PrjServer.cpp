@@ -208,6 +208,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case FD_READ:
 		// TCP socket
+		printf("FD_READ\n");
 		if (wParam != socket_UDP)
 		{
 			ptr = GetSocketInfo(wParam);
@@ -226,6 +227,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				RemoveSocketInfo(wParam);
 				return;
 			}
+			printf("[TCP] 데이터 길이 : %d, 데이터 : %s\n", retval, buf);
 			// 받은 바이트 수 누적
 			ptr->recvbytes += retval;
 
@@ -237,6 +239,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// 데이터 받기
 			addrlen = sizeof(clientaddr);
 			retval = recvfrom(socket_UDP, buf, BUFSIZE, 0, (SOCKADDR*)&clientaddr, &addrlen);
+			printf("[UDP] 데이터 길이 : %d, 데이터 : %s\n", retval, buf);
 			if (retval == SOCKET_ERROR) {
 				err_display("recvfrom()");
 				return;

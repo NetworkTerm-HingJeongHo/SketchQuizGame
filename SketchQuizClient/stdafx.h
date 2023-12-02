@@ -28,8 +28,8 @@
 #include "resource.h" // 그림판 다이어로그창
 
 /*식별자*/
-#define SERVERIP4_CHAR_UDP1 "235.7.8.18" // UDP 서버1 (지안)
-#define SERVERIP4_CHAR_UDP2 "235.7.8.19" // UDP 서버2 (지안)
+#define SERVERIP4_CHAR_UDP1 "239.0.0.1" // UDP 서버1 (지안)
+#define SERVERIP4_CHAR_UDP2 "239.0.0.2" // UDP 서버2 (지안)
 #define SERVERIP4_CHAR   "127.0.0.1" //브로드캐스트 대상 주소 및 서버 ip char 버전 (지안)
 #define SERVERIP4  _T("127.0.0.1")
 #define SERVERIP6  _T("::1")
@@ -136,6 +136,8 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 #define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
 #define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
 #define WM_ERASEALITTLE (WM_USER+4)		// 특정 부분 조금 지우기 윈도우 메시지
+#define WM_DRAWRECTANGLE (WM_USER+5)	// 메시지 타입 : 사각형 그리기
+#define WM_DRAWTRIAGNGLE (WM_USER+6)	// 메시지 타입 : 삼각형 그리기
 
 // 그리기 모드 종류
 #define MODE_ERASE 4500
