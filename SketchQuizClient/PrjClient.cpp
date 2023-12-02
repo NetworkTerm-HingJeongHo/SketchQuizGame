@@ -869,12 +869,13 @@ DWORD WINAPI ClientMain(LPVOID arg)
 			serveraddr.sin_addr.s_addr = inet_addr(SERVERIP4_CHAR_UDP1);
 			serveraddr.sin_port = htons(SERVERPORT);
 
+
 			// 데이터 통신에 사용할 변수
 			char buf[BUFSIZE + 1] = "hello, I'am UDP JIAN. UDP Channel1 !!";
 			int len;
 
 			// 데이터 보내기
-			retval = sendto(g_sock, buf, strlen(buf), 0,
+			retval = sendto(g_sock, buf, BUFSIZE, 0,
 				(SOCKADDR*)&serveraddr, sizeof(serveraddr));
 			if (retval == SOCKET_ERROR) {
 				err_display("sendto()");
