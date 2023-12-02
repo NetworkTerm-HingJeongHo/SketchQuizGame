@@ -362,28 +362,36 @@ bool AddSocketInfoTCP(SOCKET sock)
 }
 
 // 소켓 정보 삭제
-void RemoveSocketInfo(int nIndex)
+void RemoveSocketInfo(SOCKET sock)
 {
-	SOCKETINFO *ptr = SocketInfoArray[nIndex];
 
 	// 클라이언트 정보 얻기
 	struct sockaddr_in clientaddr;
 	int addrlen = sizeof(clientaddr);
-	getpeername(ptr->sock, (struct sockaddr *)&clientaddr, &addrlen);
+	getpeername(sock, (struct sockaddr*)&clientaddr, &addrlen);
 	// 클라이언트 정보 출력
 	char addr[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 	printf("[TCP/IPv4 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		addr, ntohs(clientaddr.sin_port));
 
+	// 클라이언트 소켓 제거
+	for (int i = 0; i < nTotalSockets; i++)
+	{
+		SOCKETINFO* ptr = SocketInfoArray[i];
+		// 찾았을 경우, 해당 소켓 반환
+		if (ptr->sock == sock)
+		{
+			if (i != (nTotalSockets - 1))
+			{
+				SocketInfoArray[i] = SocketInfoArray[nTotalSockets - 1];
+			}
+			--nTotalSockets;
+		}
+	}
 
 	// 소켓 닫기
-	closesocket(ptr->sock);
-	delete ptr;
-
-	if (nIndex != (nTotalSockets - 1))
-		SocketInfoArray[nIndex] = SocketInfoArray[nTotalSockets - 1];
-	--nTotalSockets;
+	closesocket(sock);
 }
 
 
