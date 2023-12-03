@@ -14,17 +14,11 @@
 #define IDC_ERASEPIC                    1009
 #define IDC_SENDFILE                    1010
 #define IDC_DUMMY                       1011
-
-// =========== 지윤 ===========
 #define IDC_PENCOLOR                    3100
 #define IDC_LINEWIDTH                   3101
 #define IDC_DRAWINGTEXTID               3102
 #define IDC_DRAWINGTEXT                 3103
-
-// =========== 정호 ===========
 #define IDC_FIGURE                      4100
-
-// =========== 연경 ===========
 #define IDC_ANNOUNCE                    5010
 #define IDD_DIALOG2                     5101
 #define IDC_EDIT1ST                     5102
@@ -40,6 +34,7 @@
 #define IDC_EDIT_ID3                    5113
 #define IDC_EDITMY                      5114
 #define IDC_EDIT_MYID                   5115
+#define IDC_GAMESTART                   5116
 
 // Next default values for new objects
 // 
