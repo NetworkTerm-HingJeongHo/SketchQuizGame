@@ -144,7 +144,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Login.cpp" />
     <ClCompile Include="PrjServer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -152,7 +151,6 @@
     <ClCompile Include="Winsock.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Login.h" />
     <ClInclude Include="PrjServer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="socket.h" />

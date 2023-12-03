@@ -28,8 +28,8 @@
 #include "resource.h" // 그림판 다이어로그창
 
 /*식별자*/
-#define SERVERIP4_CHAR_UDP1 "239.0.0.1" // UDP 서버1 (지안)
-#define SERVERIP4_CHAR_UDP2 "239.0.0.2" // UDP 서버2 (지안)
+#define SERVERIP4_CHAR_UDP1 "235.7.8.18" // UDP 서버1 (지안)
+#define SERVERIP4_CHAR_UDP2 "235.7.8.19" // UDP 서버2 (지안)
 #define SERVERIP4_CHAR   "127.0.0.1" //브로드캐스트 대상 주소 및 서버 ip char 버전 (지안)
 #define SERVERIP4  _T("127.0.0.1")
 #define SERVERIP6  _T("::1")
@@ -60,8 +60,6 @@ static HWND          g_hWordStatus;   // 제시어 영역
 static int           g_gameScore;     // 게임 점수
 extern _TCHAR* messageQueue[10];      // 메시지 큐(도중에 들어온 클라이언트에게 이전 채팅 내용 표시
 static HWND          g_hDrawDlg;
-static BOOL          isMessageQueue=FALSE;  // 메시지 큐 구조체를 전송받는 경우를 구분할 수 있도록 하는 flag
-static MESSAGEQUEUE g_msgQueue;
 
 // 게임 관련 변수
 static int roundNum = 0;   //진행한 문제 개수. 제시어 배열의 인덱스 역할도 한다.
@@ -70,8 +68,8 @@ static const _TCHAR* quizWord[4] = { _T("apple"), _T("바나나"), _T("포도"),_T("�
 static BOOL isGameOver = FALSE;
 static BOOL isOwner = FALSE;  // 문제를 내는 클라이언트일 경우 isOwner는 TRUE이다. 문제를 맞추는 사람인 경우 FALSE.
 
+
 static char NICKNAME_CHAR[256];
-// =====================================
 
 /* 통신 관련 전역 변수 */
 static volatile bool g_isIPv6;        // IPv4 or IPv6 주소
@@ -138,8 +136,6 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 #define TYPE_DRAWELLIPSE 4000			// 메시지 타입 : 타원 그리기
 #define WM_DRAWELLIPSE (WM_USER+3)		// 타원 그리기 윈도우 메시지
 #define WM_ERASEALITTLE (WM_USER+4)		// 특정 부분 조금 지우기 윈도우 메시지
-#define WM_DRAWRECTANGLE (WM_USER+5)	// 메시지 타입 : 사각형 그리기
-#define WM_DRAWTRIAGNGLE (WM_USER+6)	// 메시지 타입 : 삼각형 그리기
 
 // 그리기 모드 종류
 #define MODE_ERASE 4500
@@ -151,17 +147,8 @@ static HWND			hwndHome_Notice;	// 공지사항 입력 윈도우
 // 현재 그리기 모드 전역 변수
 static int g_currentSelectFigureMode = MODE_LINE;
 
-// 현재 서버로부터 받은세부 그리기 정보 전역 변수
-static DRAW_DETAIL_INFORMATION g_serverDrawDetailInformation;
-
-// 현재 클라이언트가 선택한 그리기 정보 전역 변수
-static DRAW_DETAIL_INFORMATION g_clientDrawDetailInformation;
-
-// 지우개 모드 선택하기 전 클라이언트가 마지막으로 선택한 색깔
-static int g_lastSelectColor = RGB(255, 0, 0);
-
-// 이전 모드가 "지우개" 모드인지 확인하고 한 번만 실행하도록 설정
-static bool g_isBeforeModeErase = false;
+// 현재 세부 그리기 정보 전역 변수
+static DRAW_DETAIL_INFORMATION g_drawDetailInformation;
 
 static HWND g_hFigureSelect; // 그릴 도형 선택하는 부분
 
